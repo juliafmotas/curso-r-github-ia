@@ -1,1038 +1,317 @@
 ---
-title: "Dia 1: Fundamentos e Ambiente R"
-# subtitle: "Curso: Introdu    o    Programa    o em R com GitHub e IA"
+title: "Introdução Programação em R com GitHub, ChatGPT e Claude"
+# subtitle: "Fundamentos e Ambiente de Trabalho"
 author: "Vinícius Silva Junqueira"
 date: "`r Sys.Date()`"
-output:
+output: 
   pdf_document:
-    toc: true
-    toc_depth: 3
     latex_engine: xelatex
-    keep_tex: false
-  html_document:
     toc: true
-    toc_float: true
-    toc_depth: 3
-    code_folding: show
-    theme: flatly
-    highlight: tango
-    df_print: paged
+    toc_depth: 2
+    number_sections: true
+lang: pt-BR
+fontsize: 11pt
+geometry: margin=2.5cm
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[L]{\small Vinícius Silva Junqueira}
+  - \fancyhead[R]{\small \thepage}
+  - \fancyfoot[L]{\small Curso R + GitHub + IA}
+  - \fancyfoot[R]{\small junqueiravinicius@hotmail.com}
+  - \renewcommand{\headrulewidth}{0.4pt}
+  - \renewcommand{\footrulewidth}{0.4pt}
 ---
 
 ```{r setup, include=FALSE}
+# ========================================
+# CHUNK DE SETUP - NÃO APARECE NO PDF
+# ========================================
+# Este chunk define opções globais e (se desejado) carrega pacotes.
+
 knitr::opts_chunk$set(
   echo = TRUE,
+  eval = FALSE,       # Deixe FALSE para exibir o código em sala
   warning = FALSE,
   message = FALSE,
-  comment = "#>",
-  fig.align = "center",
-  fig.width = 8,
-  fig.height = 5
+  error = FALSE,
+  comment = "#>"
 )
+
+# Para executar localmente, descomente o que precisar:
+# library(tidyverse)
+# library(here)
+# library(janitor)
+# library(skimr)
+# library(readxl)
+# library(palmerpenguins)
 ```
 
----
+# Dia 1 — Fundamentos e Ambiente de Trabalho
 
-# OBJETIVO: Objetivos do Dia 1
+> **Objetivos do dia**
+>
+> - Preparar o ambiente (R, RStudio, Git, GitHub) e consolidar o **workflow com fork**.  
+> - Conhecer **objetos básicos** de R: vetores, listas, data.frames, fatores.  
+> - Explorar dados com funções descritivas e boas práticas de **portabilidade** (projetos `.Rproj` e `here`).  
+> - Fazer o **primeiro commit** no SEU fork no GitHub.
 
-Ao final desta aula, você será capaz de:
-
-[OK] Configurar completamente seu ambiente de trabalho (R, RStudio, Git, GitHub)  
-[OK] Entender os tipos de dados e estruturas fundamentais do R  
-[OK] Criar e manipular vetores, listas e data frames  
-[OK] Realizar opera    es b  sicas de indexa    o  
-[OK] Organizar projetos com RStudio Projects  
-[OK] Fazer seu primeiro commit no GitHub  
-[OK] Usar o pacote `here` para caminhos relativos
+**Tempo previsto** 19h00–22h00 (intervalo 20h30–20h50)
 
 ---
 
-# MATERIAL: Parte 1: Ambientação e Setup (19h00 - 20h30)
+## 1. Ambientação e Setup (≈ 70 min)
 
-## 1.1 Por que R, GitHub e IA?
-
-### Por que R?
-
-**R é uma linguagem de programação estatística** amplamente utilizada em:
-
-- **Pesquisa científica:** análise de dados experimentais
-- **Saúde pública:** epidemiologia, ensaios clínicos
-- GRAFICO: **Economia e finanças:** modelagem econométrica, séries temporais
-- **Ecologia:** análise de biodiversidade, modelos populacionais
-- **Marketing e vendas:** segmentação, análise de campanhas
-- **Ciências sociais:** análise de surveys, dados censitários
-
-**Vantagens:**
-- **Gratuito e open-source**
-- **Comunidade ativa** e acolhedora (R-Ladies, Stack Overflow)
-- **Pacotes especializados** para praticamente qualquer análise
-- **Reprodutibilidade:** RMarkdown permite documentar análises
-- **Visualizações de alta qualidade:** ggplot2 é referência mundial
-
-### Por que GitHub?
-
-**GitHub é uma plataforma de versionamento de código** que permite:
-
-- NOTA: **Histórico completo** de todas as mudanças
-- WORKFLOW: **Colaboração** eficiente em equipe
-- **Backup automático** na nuvem
-- **Portfólio público** de projetos
-- **Compartilhamento** fácil de análises
-
-### Por que IA (ChatGPT e Claude)?
-
-**Ferramentas de IA generativa** aceleram o aprendizado:
-
-- DICA: **Explicações personalizadas** de conceitos difíceis
-- **Debugging assistido:** entender erros rapidamente
-- NOTA: **Documentação automática:** comentar código
-- INICIO: **Produtividade:** sugestões de código e otimizações
-- CURSO: **Tutor 24/7:** responde dúvidas a qualquer momento
-
-> ATENCAO: **Atenção:** IA é uma ferramenta auxiliar. Sempre entenda o código antes de usar!
-
----
-
-## 1.2 Verificação das Instalações
-
-Antes de começar, vamos verificar se tudo está instalado corretamente.
-
-### Verificar R
-
-```{r verificar-r}
-# Versão do R (deve ser 4.0 ou superior)
-R.version.string
-
-# Idealmente 4.3.0 ou mais recente
+### 1.1 Verificações rápidas
+```{r}
+R.version.string           # Versão do R
+# RStudio.Version()$version # Versão do RStudio
+# system("git --version")    # Confirma Git disponível
 ```
 
-### Verificar RStudio
-
-No menu: **Help About RStudio**  
-Versão recomendada: 2023.09 ou superior
-
-### Verificar Git
-
-No **Terminal** do RStudio (aba ao lado de Console):
-
+### 1.2 Configurar Git (uma vez só)
+No **Terminal do RStudio** (funciona em Windows/macOS/Linux):
 ```bash
-git --version
+git config --global user.name "Seu Nome"
+git config --global user.email "seu@email.com"
+# Verificar
+git config --global --list
 ```
 
-Deve retornar algo como: `git version 2.40.0`
+### 1.3 Autenticar no GitHub (PAT recomendado)
+```{r}
+# install.packages("usethis"); install.packages("gitcreds")
+# usethis::create_github_token()  # abre navegador
+# gitcreds::gitcreds_set()        # cole o token
+```
 
-Se não funcionar:
-- **Windows:** Instale Git Bash (https://git-scm.com/)
-- **Mac:** Instale Xcode Command Line Tools (`xcode-select --install`)
-- **Linux:** `sudo apt-get install git` (Ubuntu/Debian)
+**Alternativas:** GitHub Desktop (GUI) ou SSH (avançado).
 
 ---
 
-## 1.3 Instalação de Pacotes Essenciais
+### 1.4 Workflow com Fork (obrigatório para a turma)
 
-Vamos instalar os pacotes que usaremos durante o curso:
-
-```{r install-packages, eval=FALSE}
-# Instalar pacotes (execute apenas uma vez)
-install.packages(c(
-  "tidyverse",   # Conjunto de pacotes para ciência de dados
-  "here",        # Caminhos relativos seguros
-  "janitor",     # Limpeza de dados
-  "skimr",       # Resumos estatísticos
-  "readxl",      # Leitura de arquivos Excel
-  "writexl",     # Escrita de arquivos Excel
-  "rmarkdown",   # Relatórios reproduzíveis
-  "usethis",     # Ferramentas de desenvolvimento
-  "gitcreds"     # Gerenciamento de credenciais Git
-))
+```
+Original (instrutor)  →  FORK (sua conta)  →  CLONE (seu PC)  →  PUSH (para seu fork)
 ```
 
-### Carregar pacotes
-
-```{r load-packages}
-# Carregar pacotes (execute sempre que iniciar uma sess  o)
-library(tidyverse)  # Carrega dplyr, ggplot2, tidyr, etc.
-library(here)       # Para caminhos de arquivos
-```
-
-> DICA: **Dica:** `install.packages()` uma vez, `library()` sempre!
-
----
-
-## 1.4 Configuração do GitHub
-
-### Criar Conta no GitHub
-
-Se ainda não tem: https://github.com/signup
-
-**Dicas:**
-- Use um email profissional/acadêmico
-- Username curto e profissional (seu nome ou variação)
-- Ative autenticação de dois fatores (2FA)
-
-### Configurar Git Local
-
-```{r git-config, eval=FALSE}
-# Configure seu nome e email (use os mesmos do GitHub)
-usethis::use_git_config(
-  user.name = "Seu Nome Completo",
-  user.email = "seu-email@example.com"
-)
-```
-
-Ou no Terminal:
-
+1. Abra: https://github.com/viniciusjunqueira/curso-r-github-ia  
+2. Clique **Fork** → escolha **sua conta** → *Create fork*.  
+3. Clone **SEU fork**:
 ```bash
-git config --global user.name "Seu Nome Completo"
-git config --global user.email "seu-email@example.com"
-```
-
-### Criar Personal Access Token (PAT)
-
-O PAT é como uma senha especial para o Git:
-
-```{r create-token, eval=FALSE}
-# Abre o GitHub para criar token
-usethis::create_github_token()
-```
-
-**No GitHub:**
-1. Dê um nome descritivo (ex: "Curso R 2025")
-2. Selecione expiração (90 dias ou mais)
-3. Marque apenas: `repo`, `workflow`, `gist`
-4. Clique em "Generate token"
-5. **COPIE O TOKEN** (não conseguiremos ver novamente!)
-
-### Salvar Token Localmente
-
-```{r save-token, eval=FALSE}
-# Cole o token quando solicitado
-gitcreds::gitcreds_set()
-```
-
-Pronto! Agora você pode usar Git/GitHub sem digitar senha toda hora.
-
----
-
-## 1.5 Clonando o Repositório do Curso
-
-### Via RStudio (Recomendado)
-
-1. **File     New Project     Version Control     Git**
-2. Cole a URL: `https://github.com/seu-usuario/curso-r-github-ia.git`
-3. Escolha onde salvar no seu computador
-4. Marque "Open in new session"
-5. **Create Project**
-
-### Via Terminal
-
-```bash
-# Navegue até onde quer salvar
-cd ~/Documents
-
-# Clone o repositório
-git clone https://github.com/seu-usuario/curso-r-github-ia.git
-
-# Entre na pasta
+git clone https://github.com/SEU-USUARIO/curso-r-github-ia.git
 cd curso-r-github-ia
-
-# Abra o projeto no RStudio (no Windows, apenas dê um duplo clique no .Rproj)
 ```
+4. Abra o projeto `.Rproj` no RStudio.  
+5. **Cheque o remote**:
+```bash
+git remote -v
+# Deve mostrar seu usuário em origin
+```
+
+> **Por que fork?** Você controla seu repositório, faz commits/push à vontade e não altera o repo do instrutor.
 
 ---
 
-## 1.6 Estrutura do Projeto
-
-Um projeto bem organizado tem esta estrutura:
-
+### 1.5 Estrutura de projeto e portabilidade
 ```
 curso-r-github-ia/
-          curso-r-github-ia.Rproj  # Arquivo do projeto (abra sempre por aqui!)
-          README.md                 # Descrição do projeto
-          .gitignore                # Arquivos que o Git deve ignorar
-   
-          data/                     # Dados
-                raw/                  # Dados originais (NUNCA modificar!)
-                processed/            # Dados limpos/processados
-   
-          scripts/                  # Scripts R
-                01_import.R
-                02_clean.R
-                03_analyze.R
-   
-          output/                   # Resultados
-                figures/              # Gráficos salvos
-                tables/               # Tabelas exportadas
-   
-          materiais/                # Material do curso
-                dia1_fundamentos.Rmd
-                ...
-   
-          docs/                     # Relatórios finais
+├── curso-r-github-ia.Rproj
+├── data/
+│   ├── raw/
+│   └── processed/
+├── scripts/
+├── output/
+│   ├── figures/
+│   └── tables/
+└── docs/
 ```
 
-### Por que usar Projetos RStudio?
+```{r}
+# Caminhos: sempre prefira here::here()
+# install.packages("here")
+# library(here)
+# caminho <- here("data", "raw", "dados.csv")
+# caminho
+```
 
-[OK] **Working directory automático:** sempre aponta para a pasta do projeto  
-[OK] **Portabilidade:** funciona em qualquer computador  
-[OK] **Organização:** mantém tudo junto  
-[OK] **Integração com Git:** painel Git aparece automaticamente
+> **UTF-8**: salve arquivos com `File → Save with Encoding → UTF-8` (evita problemas de acentuação em todos os SOs).
 
 ---
 
-## 1.7 O Pacote `here`
+## 2. Fundamentos de R (≈ 40 min)
 
-O `here` resolve problemas de caminhos de arquivos:
+### 2.1 Objetos básicos e operações
+```{r}
+# Números, lógicos, strings
+x_num <- 3.14; x_log <- TRUE; x_chr <- "Olá, R!"
+class(x_num); typeof(x_num)
+class(x_log); typeof(x_log)
+class(x_chr); typeof(x_chr)
 
-```{r demo-here}
-# Caminho absoluto (RUIM - não funciona em outro computador)
-# dados <- read_csv("C:/Users/Vinicius/Documents/curso/data/dados.csv")
+# Aritmética
+10 + 2; 10 - 2; 10 * 2; 10 / 3; 2 ^ 3
 
-# Caminho relativo com here (BOM - funciona em qualquer lugar)
-here::here()  # Mostra a raiz do projeto
-
-# Como usar
-caminho_dados <- here("data", "raw", "exemplo.csv")
-print(caminho_dados)
-
-# Na prática:
-# dados <- read_csv(here("data", "raw", "dados.csv"))
+# Especiais
+Inf; -Inf; NaN; NA
 ```
 
-**Sempre use `here()` para referenciar arquivos!**
+### 2.2 Vetores e indexação
+```{r}
+v <- c(10, 20, 30, 40, 50)
+length(v); mean(v); sum(v)
 
----
+v[1]; v[2:4]; v[-1]
+sel <- v > 25; sel; v[sel]
 
-# INTERVALO: INTERVALO (20h30 - 20h50)
-
-Aproveite para:
-- Tomar água/café
-- Conferir se todas as instalações funcionaram
-- Tirar dúvidas no grupo
-
----
-
-# GRAFICO: Parte 2: Fundamentos do R (20h50 - 22h00)
-
-## 2.1 R como Calculadora
-
-O jeito mais simples de começar: usar R como calculadora avançada!
-
-```{r calculadora}
-# Operações básicas
-2 + 3        # Adição
-10 - 4       # Subtração
-5 * 6        # Multiplicação
-20 / 4       # Divisão
-2^3          # Potência
-sqrt(16)     # Raiz quadrada
-log(10)      # Logaritmo natural
-log10(100)   # Logaritmo base 10
-
-# Ordem de operações (PEMDAS)
-2 + 3 * 4        # 14, não 20!
-(2 + 3) * 4      # 20, com parênteses
+names(v) <- letters[1:5]
+v["c"]
 ```
 
----
-
-## 2.2 Objetos e Atribuição
-
-No R, guardamos valores em **objetos** usando `<-` (atalho: Alt + -)
-
-```{r objetos}
-# Criar objetos
-x <- 5
-y <- 10
-nome <- "Vinicius"
-aprovado <- TRUE
-
-# Ver conteúdo
-x
-print(y)
-
-# Usar em operações
-resultado <- x + y
-resultado
-
-# Sobrescrever
-x <- 20
-x  # Agora vale 20, não mais 5!
-```
-
-### Regras para Nomes de Objetos
-
-[OK] **Permitido:**
-```{r nomes-permitidos}
-idade <- 30
-idade_media <- 25
-idadeMedia <- 25  # camelCase (menos comum em R)
-idade2 <- 27
-```
-
-[X] **NÃO permitido:**
-```{r nomes-proibidos, eval=FALSE}
-2idade <- 30        # Não pode começar com número
-idade-media <- 25   # Hífen não é permitido (use _)
-minha idade <- 30   # Sem espaços!
-```
-
-> DICA: **Convenção R:** Use `snake_case` (palavras separadas por `_`)
-
----
-
-## 2.3 Tipos de Dados Fundamentais
-
-O R tem 6 tipos b  sicos, mas vamos focar nos 4 principais:
-
-### Numeric (N  meros)
-
-```{r numeric}
-# Inteiros e decimais
-altura <- 1.75
-peso <- 70
-idade <- 30
-
-# Verificar tipo
-class(altura)
-typeof(altura)  # double = n  mero com decimais
-```
-
-### Character (Texto/String)
-
-```{r character}
-# Sempre entre aspas (simples ' ou duplas ")
-nome <- "Maria Silva"
-cidade <- 'S  o Paulo'
-curso <- "R Programming"
-
-class(nome)
-
-# Concatenar strings
-paste("Ol  ,", nome)
-paste0("Ol  , ", nome)  # Sem espa  o autom  tico
-```
-
-### Logical (L  gico)
-
-```{r logical}
-# Apenas TRUE ou FALSE (sempre mai  sculas)
-aprovado <- TRUE
-reprovado <- FALSE
-tem_dados <- TRUE
-
-class(aprovado)
-
-# Atalhos: T para TRUE, F para FALSE (mas evite, menos claro)
-x <- T
-```
-
-### Factor (Fator/Categ  rico)
-
-```{r factor}
-# Para vari  veis categ  ricas com n  veis fixos
-sexo <- factor(c("M", "F", "F", "M", "M"))
-escolaridade <- factor(
-  c("Fundamental", "M  dio", "Superior", "M  dio"),
-  levels = c("Fundamental", "M  dio", "Superior"),
-  ordered = TRUE  # Tem ordem
-)
-
-class(sexo)
-levels(sexo)
-```
-
-### Convers  o entre Tipos
-
-```{r conversao}
-# Numeric para character
-x <- 42
-y <- as.character(x)
-y
-class(y)
-
-# Character para numeric
-texto <- "3.14"
-numero <- as.numeric(texto)
-numero
-
-# Logical para numeric (TRUE = 1, FALSE = 0)
-as.numeric(TRUE)
-as.numeric(FALSE)
-
-# Cuidado com convers  es imposs  veis!
-as.numeric("abc")  # Retorna NA (missing)
-```
-
----
-
-## 2.4 Vetores
-
-**Vetor**    a estrutura de dados mais b  sica do R.    uma sequ  ncia de elementos **do mesmo tipo**.
-
-### Criando Vetores
-
-```{r vetores-criar}
-# Fun    o c() = combine
-idades <- c(23, 45, 19, 34, 28)
-nomes <- c("Ana", "Bruno", "Carla", "Diego", "Elena")
-aprovados <- c(TRUE, TRUE, FALSE, TRUE, TRUE)
-
-# Sequ  ncias
-1:10                    # 1, 2, 3, ..., 10
-10:1                    # Decrescente
-seq(0, 100, by = 10)    # 0, 10, 20, ..., 100
-seq(0, 1, length.out = 5)  # 5 n  meros entre 0 e 1
-
-# Repeti    es
-rep(5, times = 3)       # 5, 5, 5
-rep(c(1, 2), times = 3) # 1, 2, 1, 2, 1, 2
-rep(c(1, 2), each = 3)  # 1, 1, 1, 2, 2, 2
-```
-
-### Propriedades de Vetores
-
-```{r vetores-propriedades}
-idades <- c(23, 45, 19, 34, 28)
-
-length(idades)    # Tamanho
-class(idades)     # Tipo
-typeof(idades)    # Tipo interno
-
-# Estat  sticas descritivas
-mean(idades)      # M  dia
-median(idades)    # Mediana
-sd(idades)        # Desvio padr  o
-min(idades)       # M  nimo
-max(idades)       # M  ximo
-sum(idades)       # Soma
-range(idades)     # M  nimo e m  ximo
-```
-
-### Opera    es Vetorizadas
-
-O R opera em vetores inteiros automaticamente!
-
-```{r vetores-operacoes}
-# Aritm  ticas
-x <- c(1, 2, 3, 4, 5)
-x + 10           # Soma 10 a cada elemento
-x * 2            # Multiplica cada elemento por 2
-x^2              # Eleva cada elemento ao quadrado
-
-# Entre vetores
-y <- c(10, 20, 30, 40, 50)
-x + y            # Soma elemento por elemento
-x * y            # Multiplica elemento por elemento
-
-# Exemplo pr  tico: IMC
-peso <- c(70, 85, 62, 90, 75)
-altura <- c(1.75, 1.80, 1.65, 1.78, 1.82)
-imc <- peso / altura^2
-imc
-```
-
----
-
-## 2.5 Indexa    o de Vetores
-
-**Indexa    o** = acessar elementos espec  ficos de um vetor.
-
-### Por Posi    o
-
-```{r indexacao-posicao}
-nomes <- c("Ana", "Bruno", "Carla", "Diego", "Elena")
-
-# Primeiro elemento (R come  a em 1, n  o em 0!)
-nomes[1]
-
-# Terceiro elemento
-nomes[3]
-
-# M  ltiplos elementos
-nomes[c(1, 3, 5)]  # Posi    es 1, 3 e 5
-
-# Sequ  ncia
-nomes[2:4]  # Do 2   ao 4  
-
-#   ltimo elemento
-nomes[length(nomes)]
-
-# Todos menos o primeiro
-nomes[-1]
-
-# Todos menos o 2   e 4  
-nomes[-c(2, 4)]
-```
-
-### Por Condi    o L  gica
-
-```{r indexacao-logica}
-idades <- c(23, 45, 19, 34, 28)
-
-# Quem tem mais de 25 anos?
-idades > 25
-
-# Pegar apenas quem tem mais de 25
-idades[idades > 25]
-
-# M  ltiplas condi    es (& = E, | = OU)
-idades[idades > 20 & idades < 40]  # Entre 20 e 40
-idades[idades < 20 | idades > 40]  # Menor que 20 OU maior que 40
-
-# Exemplo pr  tico
-nomes <- c("Ana", "Bruno", "Carla", "Diego", "Elena")
-idades <- c(23, 45, 19, 34, 28)
-
-# Nomes de quem tem mais de 25 anos
-nomes[idades > 25]
-```
-
-### Por Nome
-
-```{r indexacao-nome}
-# Vetores podem ter nomes
-notas <- c(ana = 8.5, bruno = 7.0, carla = 9.5)
-notas
-
-# Acessar por nome
-notas["ana"]
-notas[c("ana", "carla")]
-
-# Ver os nomes
-names(notas)
-
-# Adicionar nomes depois
-idades <- c(23, 45, 19)
-names(idades) <- c("Ana", "Bruno", "Carla")
-idades
-```
-
----
-
-## 2.6 Valores Ausentes (NA)
-
-`NA` = Not Available (valor ausente/faltante)
-
-```{r na-values}
-# Criar vetor com NA
-alturas <- c(1.75, NA, 1.82, 1.68, NA)
-
-# Identificar NAs
-is.na(alturas)
-
-# Contar quantos NAs
-sum(is.na(alturas))
-
-# Fun    es com NA precisam de na.rm = TRUE
-mean(alturas)              # Retorna NA
-mean(alturas, na.rm = TRUE)  # Ignora NAs
-
-# Remover NAs
-alturas[!is.na(alturas)]   # ! = NOT (nega    o)
-na.omit(alturas)
-```
-
----
-
-## 2.7 Listas
-
-**Listas** podem conter elementos de **tipos diferentes** (vetores s   um tipo).
-
-```{r listas}
-# Criar lista
-pessoa <- list(
-  nome = "Ana Silva",
-  idade = 28,
-  altura = 1.68,
-  casado = FALSE,
-  filhos = c("Jo  o", "Maria")
-)
-
-# Ver estrutura
-str(pessoa)
-
-# Acessar elementos (3 formas)
-pessoa$nome           # Pelo nome (mais comum)
-pessoa[["nome"]]      # Pelo nome (alternativa)
-pessoa[[1]]           # Pela posi    o
-
-# Acessar sub-elementos
-pessoa$filhos[1]      # Primeiro filho
-```
-
----
-
-## 2.8 Data Frames
-
-**Data frame** = tabela de dados (como Excel, mas melhor!)
-
-```{r dataframes}
-# Criar data frame
+### 2.3 Listas e data.frames
+```{r}
+# Lista: tipos mistos
+lst <- list(id = 1, nome = "Ana", aprovado = TRUE)
+lst$nome
+
+# Data frame
 alunos <- data.frame(
-  nome = c("Ana", "Bruno", "Carla", "Diego"),
-  idade = c(23, 25, 22, 24),
-  nota = c(8.5, 7.0, 9.5, 8.0),
-  aprovado = c(TRUE, TRUE, TRUE, TRUE)
+  id = 1:4,
+  nome = c("Ana", "Bruno", "Caio", "Dani"),
+  nota = c(8.5, 7.2, 9.1, 6.8),
+  ativo = c(TRUE, TRUE, FALSE, TRUE),
+  stringsAsFactors = FALSE
 )
+str(alunos); nrow(alunos); ncol(alunos); names(alunos)
+head(alunos, 2); tail(alunos, 2)
 
-# Ver dados
-alunos
-print(alunos)
-
-# Estrutura
-str(alunos)
-
-# Primeiras linhas
-head(alunos, 2)  # Primeiras 2 linhas
-
-#   ltimas linhas
-tail(alunos, 2)
-
-# Dimens  es
-nrow(alunos)     # N  mero de linhas
-ncol(alunos)     # N  mero de colunas
-dim(alunos)      # Ambos
-
-# Nomes das colunas
-names(alunos)
-colnames(alunos)
-```
-
-### Acessar Colunas
-
-```{r df-colunas}
-# Por nome ($ - mais comum)
+# Acesso e novas colunas
 alunos$nome
-alunos$nota
-
-# Por posi    o
-alunos[, 3]      # Terceira coluna
-alunos[, "nota"] # Por nome (alternativa)
-
-# M  ltiplas colunas
-alunos[, c("nome", "nota")]
-alunos[, c(1, 3)]
+alunos$aprov <- ifelse(alunos$nota >= 7, "Aprovado", "Recuperação")
 ```
 
-### Acessar Linhas
+### 2.4 Fatores
+```{r}
+sexo <- factor(c("F", "M", "M", "F"), levels = c("F", "M"))
+levels(sexo)
 
-```{r df-linhas}
-# Por posi    o
-alunos[1, ]      # Primeira linha (todas as colunas)
-alunos[2:3, ]    # Linhas 2 e 3
-
-# Por condi    o
-alunos[alunos$nota > 8, ]           # Quem tirou mais de 8
-alunos[alunos$idade < 24, ]         # Quem tem menos de 24 anos
-alunos[alunos$nome == "Ana", ]      # Linha da Ana
-```
-
-### Acessar C  lulas Espec  ficas
-
-```{r df-celulas}
-# [linha, coluna]
-alunos[1, 2]           # Linha 1, coluna 2 (idade da Ana)
-alunos[2, "nota"]      # Nota do Bruno
-alunos[1:2, c(1, 3)]   # Linhas 1-2, colunas nome e nota
-```
-
-### Adicionar Colunas
-
-```{r df-adicionar}
-# Criar nova coluna
-alunos$frequencia <- c(95, 87, 100, 92)
-alunos
-
-# Colunas calculadas
-alunos$nota_ajustada <- alunos$nota * 1.1  # Aumenta 10%
-alunos
+conceito <- factor(c("B", "A", "C", "A"), levels = c("C", "B", "A"), ordered = TRUE)
+summary(conceito)
 ```
 
 ---
 
-## 2.9 Fun    es   teis de Explora    o
+## 3. Exploração inicial de dados (≈ 30 min)
 
-```{r exploracao}
-# Criar dataset de exemplo
-dados <- data.frame(
-  id = 1:5,
-  nome = c("Ana", "Bruno", "Carla", "Diego", "Elena"),
-  idade = c(23, 45, 19, 34, 28),
-  altura = c(1.65, 1.80, 1.58, 1.75, 1.70),
-  peso = c(58, 85, 52, 78, 65)
-)
+> Vamos usar um dataset real (`palmerpenguins`) para praticar **inspeção e resumo**.
 
-# Resumo estat  stico
-summary(dados)
+```{r}
+# install.packages("palmerpenguins")
+# library(palmerpenguins)
+# library(dplyr)
 
-# Estrutura detalhada
-str(dados)
+# dplyr::glimpse(penguins)
+# names(penguins)
+# summary(penguins)
+# colSums(is.na(penguins))
 
-# Glimpse (tidyverse) - mais compacto
-dplyr::glimpse(dados)
+# Selecionar colunas principais
+# peng_min <- penguins[, c("species","bill_length_mm","bill_depth_mm","flipper_length_mm","body_mass_g")]
+# head(peng_min)
 
-# Primeiras/  ltimas linhas
-head(dados, 3)
-tail(dados, 2)
+# Nova variável: razão do bico
+# penguins$raz_bico <- with(penguins, bill_length_mm / bill_depth_mm)
 
-# Ver dados em planilha (n  o usar em scripts - s   interativo)
-# View(dados)
+# Estatísticas
+# mean(penguins$flipper_length_mm, na.rm = TRUE)
+# tapply(penguins$flipper_length_mm, penguins$species, mean, na.rm = TRUE)
+```
+
+> **Dica**: quando houver NAs, use `na.rm = TRUE` nas funções de resumo.
+
+---
+
+## 4. Entrada/Saída (I/O) e encoding (≈ 15 min)
+
+```{r}
+# library(readr)
+# library(here)
+
+# Leitura CSV em UTF-8
+# dados <- readr::read_csv(here("data","raw","dados.csv"), locale = readr::locale(encoding = "UTF-8"))
+
+# Para arquivos Latin1 (com acentos vindos do Windows)
+# dados <- readr::read_csv(here("data","raw","dados.csv"), locale = readr::locale(encoding = "latin1"))
+
+# Excel
+# library(readxl)
+# plan <- readxl::read_excel(here("data","raw","planilha.xlsx"), sheet = 1)
+
+# Salvando sempre em UTF-8
+# readr::write_csv(plan, here("output","tables","planilha_export.csv"))
+```
+
+> **Portabilidade**: evite caminhos absolutos; prefira `here()` dentro de um projeto `.Rproj`.
+
+---
+
+## 5. Exercícios guiados (≈ 20–25 min)
+
+### Exercício 1 — Vetores
+1. Crie um vetor numérico de 8 valores.  
+2. Calcule média, mediana e desvio-padrão.  
+3. Filtre os valores **acima da média**.
+
+```{r}
+# Seu código aqui
+```
+
+### Exercício 2 — Data frame
+1. Crie um `data.frame` com colunas: `id`, `nome`, `nota`, `ativo`.  
+2. Crie `situacao` com `ifelse(nota >= 7, "Aprovado", "Recuperação")`.  
+3. Mostre só `nome` e `situacao` das 2 primeiras linhas.
+
+```{r}
+# Seu código aqui
+```
+
+### Exercício 3 — Exploração `palmerpenguins`
+1. Conte NAs por coluna.  
+2. Crie `massa_kg = body_mass_g/1000`.  
+3. Calcule a **média de `flipper_length_mm` por espécie**.
+
+```{r}
+# Seu código aqui
 ```
 
 ---
 
-# EXERCICIO: Exerc  cios Pr  ticos
+## 6. Primeiro commit (≈ 5 min)
 
-## Exerc  cio 1: Calculadora e Objetos
-
-```{r ex1, eval=FALSE}
-# a) Calcule: (15 + 23) * 4 / 2
-
-
-# b) Crie objetos para seu nome, idade e cidade
-
-
-# c) Use paste() para criar a frase: "Meu nome    [nome], tenho [idade] anos e moro em [cidade]"
-
-
-# d) Calcule quantos meses voc   tem de vida (idade * 12)
-
-```
-
-## Exerc  cio 2: Vetores
-
-```{r ex2, eval=FALSE}
-# a) Crie um vetor com as temperaturas da semana: 25, 27, 23, 26, 28, 30, 29
-
-
-# b) Calcule a temperatura m  dia
-
-
-# c) Quais dias tiveram temperatura acima de 26?
-
-
-# d) Crie um vetor com os dias da semana e combine com as temperaturas
-
-```
-
-## Exerc  cio 3: Data Frames
-
-```{r ex3, eval=FALSE}
-# a) Crie um data frame com informa    es de 5 amigos:
-#    - nome, idade, cidade, profiss  o
-
-
-# b) Mostre apenas os nomes
-
-
-# c) Filtre apenas quem tem mais de 25 anos
-
-
-# d) Adicione uma coluna "salario" com valores fict  cios
-
-```
-
-## Exerc  cio 4: An  lise Real
-
-```{r ex4, eval=FALSE}
-# Dataset: pacientes de uma cl  nica
-pacientes <- data.frame(
-  id = 1:10,
-  idade = c(34, 45, 23, 56, 41, 29, 38, 52, 31, 47),
-  peso = c(70, 85, 58, 92, 75, 63, 80, 88, 65, 78),
-  altura = c(1.68, 1.75, 1.60, 1.82, 1.70, 1.65, 1.78, 1.80, 1.63, 1.73),
-  pressao_alta = c(F, T, F, T, T, F, F, T, F, T)
-)
-
-# a) Calcule o IMC de cada paciente (peso / altura^2)
-
-
-# b) Quantos pacientes t  m hipertens  o?
-
-
-# c) Qual a m  dia de idade dos hipertensos vs. n  o hipertensos?
-
-
-# d) Crie uma categoria de IMC: "Baixo" (<18.5), "Normal" (18.5-24.9), 
-#    "Sobrepeso" (25-29.9), "Obesidade" (>=30)
-
-```
-
----
-
-# OBJETIVO: Pr  tica Guiada: Primeiro Script
-
-Vamos criar nosso primeiro script completo!
-
-## Passo 1: Criar Script
-
-No RStudio:
-- **File     New File     R Script** (Ctrl + Shift + N)
-- Salve como: `scripts/01_fundamentos.R`
-
-## Passo 2: Escrever C  digo
-
-```{r script-completo, eval=FALSE}
-# ============================================================================
-# Script: An  lise Explorat  ria - Fundamentos
-# Autor: Seu Nome
-# Data: 2025-01-XX
-# Descri    o: Primeiro script do curso - an  lise de dados fict  cios de sa  de
-# ============================================================================
-
-# Carregar pacotes ----
-library(tidyverse)
-library(here)
-
-# Criar dados ----
-# Dados fict  cios de uma cl  nica
-dados_clinica <- data.frame(
-  paciente_id = 1:20,
-  idade = sample(20:70, 20, replace = TRUE),
-  sexo = sample(c("M", "F"), 20, replace = TRUE),
-  peso = rnorm(20, mean = 70, sd = 15),
-  altura = rnorm(20, mean = 1.70, sd = 0.10),
-  pressao_sistolica = rnorm(20, mean = 120, sd = 15),
-  fumante = sample(c(TRUE, FALSE), 20, replace = TRUE)
-)
-
-# Explorar dados ----
-glimpse(dados_clinica)
-summary(dados_clinica)
-
-# Criar vari  veis derivadas ----
-dados_clinica$imc <- dados_clinica$peso / dados_clinica$altura^2
-dados_clinica$hipertenso <- dados_clinica$pressao_sistolica >= 140
-
-# An  lises simples ----
-# M  dia de idade
-mean(dados_clinica$idade)
-
-# Propor    o de fumantes
-mean(dados_clinica$fumante)  # TRUE = 1, FALSE = 0
-
-# IMC m  dio por sexo
-tapply(dados_clinica$imc, dados_clinica$sexo, mean)
-
-# Quantos hipertensos?
-table(dados_clinica$hipertenso)
-
-# Exportar dados processados ----
-# (vamos aprender mais sobre isso no Dia 4)
-# write_csv(dados_clinica, here("data", "processed", "dados_clinica_processados.csv"))
-
-# Fim do script ----
-```
-
-## Passo 3: Executar
-
-- **Linha por linha:** Ctrl + Enter
-- **Tudo:** Ctrl + Shift + Enter
-- **At   a linha atual:** Ctrl + Alt + B
-
----
-
-# GITHUB: Primeiro Commit no GitHub
-
-Agora vamos versionar nosso trabalho!
-
-## Via RStudio (Recomendado)
-
-1. **Aba Git** (canto superior direito)
-2. Marque [OK] os arquivos modificados
-3. Clique em **Commit**
-4. Escreva mensagem: `"Dia 1: adiciona fundamentos e primeiro script"`
-5. Clique **Commit**
-6. Clique **Push**       
-
-## Via Terminal
-
+No **Terminal do RStudio**:
 ```bash
-# Ver o que mudou
-git status
-
-# Adicionar arquivos
-git add .
-
-# Commit
-git commit -m "Dia 1: adiciona fundamentos e primeiro script"
-
-# Enviar para GitHub
-git push
+git add scripts/01_fundamentos.R
+git commit -m "Dia 1: fundamentos de R e setup"
+git push origin main
 ```
 
-## Verificar
-
-Abra seu reposit  rio no GitHub e veja os arquivos l  !     
+> Confirme no seu repositório **forkado** no GitHub se apareceu o commit.
 
 ---
 
-# MATERIAL: Para Casa
+## 7. Checklist de encerramento
 
-1. **Revisar** todo o material do Dia 1
-2. **Refazer** os exerc  cios sem consultar as respostas
-3. **Explorar** os cheat sheets (Help     Cheat Sheets no RStudio)
-4. **Experimentar** com seus pr  prios dados (se tiver)
-5. **Ler** cap  tulos 1-3 do [R for Data Science](https://r4ds.hadley.nz/)
-
----
-
-#      Recursos Adicionais
-
-## Documenta    o
-
-- [R for Data Science (2e)](https://r4ds.hadley.nz/) - Cap  tulos 1-4
-- [Hands-On Programming with R](https://rstudio-education.github.io/hopr/)
-- [RStudio Cheat Sheets](https://posit.co/resources/cheatsheets/)
-
-## Pr  tica
-
-- [Swirl](https://swirlstats.com/) - Aprenda R dentro do R
-- [R-exercises](https://www.r-exercises.com/) - Exerc  cios pr  ticos
-
-## Comunidades
-
-- [Posit Community](https://community.rstudio.com/)
-- [Stack Overflow [r]](https://stackoverflow.com/questions/tagged/r)
-- [R-Ladies](https://rladies.org/)
+- [ ] R, RStudio e Git instalados.  
+- [ ] Git configurado (`user.name` e `user.email`).  
+- [ ] **Fork criado** e **clone do SEU fork**.  
+- [ ] Projeto `.Rproj` aberto; `here()` funcionando.  
+- [ ] Script `01_fundamentos.R` salvo em UTF-8.  
+- [ ] Commit/push realizados para **SEU fork**.  
 
 ---
 
-#     D  vidas Frequentes
-
-**P: Por que usar `<-` em vez de `=` para atribuição?**  
-R: Conven    o hist  rica do R. Ambos funcionam, mas `<-`    mais idiom  tico.
-
-**P: Por que meu c  digo n  o funciona?**  
-R: Principais causas: (1) par  nteses/aspas n  o fechados, (2) v  rgulas faltando, (3) objeto n  o existe (typo no nome), (4) pacote n  o carregado.
-
-**P: Devo usar `library()` ou `require()`?**  
-R: Use `library()`. Ela d   erro se o pacote n  o existe (o que    bom!).
-
-**P: Como limpar o console?**  
-R: Ctrl + L (mas isso n  o remove objetos, s   limpa visualmente).
-
-**P: Como remover objetos da mem  ria?**  
-R: `rm(nome_objeto)` ou `rm(list = ls())` para remover tudo.
-
----
-
-# CURSO: Conclus  o do Dia 1
-
-Parab  ns!      Voc   completou o Dia 1 e agora sabe:
-
-[OK] Configurar ambiente completo (R, RStudio, Git, GitHub)  
-[OK] Tipos de dados e estruturas fundamentais  
-[OK] Criar e manipular vetores e data frames  
-[OK] Indexar e filtrar dados  
-[OK] Organizar projetos e usar caminhos relativos  
-[OK] Fazer commits no GitHub  
-
-**Amanh  :** L  gica de programa    o, fun    es customizadas e uso de IA!
-
----
-
-**  ltima atualiza    o:** `r Sys.Date()`  
-**Contato:** seu-email@example.com  
-**Reposit  rio:** https://github.com/seu-usuario/curso-r-github-ia
+## 8. Referências rápidas
+- **R for Data Science (2e)**: https://r4ds.hadley.nz/  
+- **Happy Git with R**: https://happygitwithr.com/  
+- **Cheatsheets Posit**: https://posit.co/resources/cheatsheets/  
+- **palmerpenguins**: https://allisonhorst.github.io/palmerpenguins/
