@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  rstudio:
+    image: rocker/tidyverse:4.3.0
+    container_name: curso-r-rstudio
+    ports:
+      - "8787:8787"
+    environment:
+      - DISABLE_AUTH=true
+      - ROOT=TRUE
+      - USERID=${USERID:-1000}
+      - GROUPID=${GROUPID:-1000}
+    volumes:
+      - ./:/home/rstudio/curso-r
+      - r-packages:/usr/local/lib/R/site-library
+    restart: unless-stopped
+    command: >
+      bash -c "
+      R -e 'install.packages(c(
+        \"tidyverse\",
+        \"ggplot2\",
+        \"dplyr\",
+        \"tidyr\",
+        \"readr\",
+        \"readxl\",
+        \"rmarkdown\",
+        \"knitr\",
+        \"here\",
+        \"janitor\",
+        \"lubridate\",
+        \"stringr\",
+        \"forcats\",
+        \"plotly\",
+        \"DT\",
+        \"shiny\"
+      ), repos=\"https://cran.rstudio.com/\")' &&
+      /init
+      "
+
+  # Opcional: Jupyter para quem prefere notebooks
+  jupyter:
+    image: jupyter/r-notebook:latest
+    container_name: curso-r-jupyter
+    ports:
+      - "8888:8888"
+    environment:
+      - JUPYTER_ENABLE_LAB=yes
+    volumes:
+      - ./:/home/jovyan/work
+    restart: unless-stopped
+    profiles:
+      - jupyter
+
+volumes:
+  r-packages:

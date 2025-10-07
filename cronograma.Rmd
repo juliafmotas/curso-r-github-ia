@@ -1,562 +1,1225 @@
 ---
 title: "Introdução Programação em R com GitHub, ChatGPT e Claude"
-# subtitle: "An  lise de Dados Moderna para Iniciantes de Diversas   reas"
+# subtitle: "Análise de Dados Moderna para Iniciantes"
 author: "Vinícius Silva Junqueira"
 date: "`r Sys.Date()`"
 output: 
   pdf_document:
+    latex_engine: xelatex
     toc: true
     toc_depth: 2
     number_sections: true
+lang: pt-BR
 fontsize: 11pt
 geometry: margin=2.5cm
 header-includes:
   - \usepackage{fancyhdr}
   - \pagestyle{fancy}
-  - \fancyhead[R]{Curso R + GitHub + IA}
+  - \fancyhead[L]{\small Vinícius Silva Junqueira}
+  - \fancyhead[R]{\small \thepage}
+  - \fancyfoot[L]{\small Curso R + GitHub + IA}
+  - \fancyfoot[R]{\small junqueiravinicius@hotmail.com}
+  - \renewcommand{\headrulewidth}{0.4pt}
+  - \renewcommand{\footrulewidth}{0.4pt}
+---
+
+```{r setup, include=FALSE}
+# ========================================
+# CHUNK DE SETUP - NÃO APARECE NO PDF
+# ========================================
+# Este chunk carrega todos os pacotes e configurações necessários
+# para que o documento compile sem erros
+
+# Configurações globais do knitr
+knitr::opts_chunk$set(
+  echo = TRUE,        # Mostrar código nos chunks
+  eval = FALSE,       # NÃO executar código (apenas mostrar)
+  warning = FALSE,    # Não mostrar warnings
+  message = FALSE,    # Não mostrar mensagens
+  error = FALSE,      # Não parar com erros
+  comment = "#>"      # Prefixo para output
+)
+
+# Carregar pacotes necessários (se você tiver chunks executáveis)
+# Descomente se precisar executar código de verdade:
+# library(tidyverse)
+# library(here)
+# library(knitr)
+# library(readxl)
+```
+
+\newpage
+
+# Informações Gerais do Curso
+
+**Carga horária total:** 16 horas  
+**Datas:** 17/11, 18/11, 24/11 e 25/11  
+**Horário:** 19h00 às 22h00 (com intervalo de 20 minutos às 20h30)  
+**Tempo líquido por dia:** 2h40 de conteúdo efetivo  
+**Público-alvo:** Iniciantes de diversas áreas (ciências agrárias, saúde, economia, biologia, ciências sociais)  
+**Material:** Repositório GitHub com datasets, scripts e exercícios  
+**Repositório original:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Sistemas Operacionais:** Windows, macOS e Linux (curso compatível com todos)
+
+---
+
+## ⚠️ Importante: Workflow com Fork
+
+**Cada aluno deve fazer um FORK do repositório original para trabalhar em sua própria cópia!**
+
+**O que você vai fazer no Dia 1:**
+1. 🔹 Criar conta no GitHub (se não tiver)
+2. 🔹 Configurar Git no seu computador
+3. 🔹 Autenticar no GitHub
+4. 🔑 **FAZER FORK** → Criar sua cópia pessoal do repositório
+5. 📥 **CLONAR SEU FORK** → Baixar para seu computador
+6. 💻 Trabalhar e fazer commits
+7. 📤 **PUSH PARA SEU FORK** → Suas mudanças vão para SUA cópia
+
+**Entenda a diferença:**
+
+```
+❌ ERRADO - Clonar diretamente o original:
+   viniciusjunqueira/repo → [CLONE] → Seu computador
+   Resultado: Você NÃO conseguirá fazer push!
+
+✅ CORRETO - Fazer fork primeiro:
+   viniciusjunqueira/repo → [FORK] → SEU-USUARIO/repo
+                                            ↓
+                                        [CLONE]
+                                            ↓
+                                      Seu computador
+   Resultado: Você PODE fazer push para SEU fork! ✅
+```
+
+**Vantagens do fork:**
+- ✅ Você tem controle total sobre sua cópia
+- ✅ Pode fazer commits e push sem restrições
+- ✅ O repositório original permanece protegido
+- ✅ Aprende workflow real de contribuição open source
+- ✅ Se errar, não afeta ninguém além de você
+
+**Instruções detalhadas sobre como fazer o fork estão na seção "Fork do Repositório do Curso" no Dia 1.**
+
+---
+
+## Pré-requisitos Técnicos
+
+### Instalações Obrigatórias (para todos os sistemas)
+
+#### 1. R (versão 4.3 ou superior)
+- **Download:** https://cran.r-project.org/
+- **Windows:** Executar instalador `.exe`
+- **macOS:** Instalar arquivo `.pkg` (verificar se é Apple Silicon ou Intel)
+- **Linux (Ubuntu/Debian):**
+  ```bash
+  sudo apt update
+  sudo apt install r-base r-base-dev
+  ```
+
+#### 2. RStudio Desktop (versão 2023.09 ou superior)
+- **Download:** https://posit.co/download/rstudio-desktop/
+- **Todos os sistemas:** Instalar o arquivo apropriado para seu SO
+- **Linux:** Também disponível via `.deb` ou `.rpm`
+
+#### 3. Git
+- **Windows:** https://git-scm.com/download/win (inclui Git Bash)
+- **macOS:** 
+  - Vem pré-instalado (verificar com `git --version` no Terminal)
+  - Ou instalar via: https://git-scm.com/download/mac
+- **Linux:**
+  ```bash
+  sudo apt install git  # Ubuntu/Debian
+  sudo yum install git  # CentOS/Fedora
+  ```
+
+#### 4. Conta no GitHub
+- **Todos os sistemas:** https://github.com/signup
+- Gratuita e necessária para o curso
+
+---
+
+## Estrutura Pedagógica
+
+- **Multiplataforma:** Todo conteúdo funciona em Windows, macOS e Linux
+- **RStudio como IDE padrão:** Garante experiência consistente entre sistemas
+- **Teoria + Prática:** Cada conceito é seguido de exercício prático
+- **Aprendizado Incremental:** Commits no GitHub ao final de cada dia
+- **Casos Multidisciplinares:** Exemplos de várias áreas do conhecimento
+- **IA como Ferramenta:** Uso estratégico de ChatGPT e Claude
+- **Caminhos relativos:** Uso de `here::here()` para portabilidade total
+
+---
+
+## Pacotes R Necessários
+
+### Instalação no Dia 1 (funciona em todos os sistemas)
+```r
+# Pacotes principais
+install.packages(c("tidyverse", "here", "janitor", "skimr", 
+                   "readxl", "writexl", "rmarkdown", "usethis",
+                   "gitcreds"))
+```
+
+### Instalação no Dia 4 (integração com IA)
+```r
+# Ferramentas de IA
+install.packages(c("gptstudio", "chattr", "httr2"))
+```
+
+**Nota:** A instalação de pacotes é idêntica em todos os sistemas operacionais.
+
 ---
 
 \newpage
 
-# Informa    es Gerais do Curso
+# Dia 1: 17/11 (Segunda) - Fundamentos e Ambiente de Trabalho
 
-**Carga hor  ria total:** 16 horas  
-**Per  odo:** Segunda a sexta-feira  
-**Hor  rio:** 19h00   s 22h00 (com intervalo de 20 minutos   s 20h30)  
-**Tempo l  quido por dia:** 2h40 de conte  do efetivo  
-**P  blico-alvo:** Iniciantes de diversas   reas (sa  de, economia, biologia, ci  ncias sociais, gest  o)  
-**Material:** Reposit  rio GitHub com datasets, scripts e exerc  cios  
-**Reposit  rio:** https://github.com/viniciusjunqueira/curso-r-github-ia  
-**Pr  -requisito:** Computador com R, RStudio e Git instalados
+## 19h00 - 20h30 | Ambientação e Setup Completo
+
+### Apresentação do Curso (20min)
+- Objetivos e metodologia
+- Por que R, GitHub e IA?
+- Panorama das áreas de aplicação
+- Apresentação dos participantes e expectativas
+- **Verificação dos sistemas:** todos com R, RStudio e Git instalados?
+
+### Configuração do Ambiente (50min)
+
+**Visão Geral do Processo:**
+Antes de começar, entenda o fluxo completo que vamos seguir:
+
+1. ✅ **Verificar instalações** (R, RStudio, Git)
+2. ✅ **Configurar Git local** (nome e email)
+3. ✅ **Autenticar no GitHub** (PAT, GitHub Desktop ou SSH)
+4. 🔑 **FAZER FORK** do repositório (criar SUA cópia)
+5. 📥 **Clonar SEU fork** para seu computador
+6. 💻 **Trabalhar nos seus arquivos** localmente
+7. 📤 **Fazer commit e push** para SEU fork
+
+**Por que este fluxo?**
+- Você trabalha em SUA cópia independente
+- Não interfere no repositório original do instrutor
+- Aprende o workflow real usado em projetos open source
 
 ---
 
-## Estrutura Pedag  gica
-
-- **Teoria + Pr  tica:** Cada conceito    seguido de exerc  cio pr  tico
-- **Aprendizado Incremental:** Commits no GitHub ao final de cada dia
-- **Casos Multidisciplinares:** Exemplos de sa  de, economia, biodiversidade e marketing
-- **IA como Ferramenta:** Uso estrat  gico de ChatGPT e Claude para aprendizado e produtividade
-- **Projeto Final:** An  lise completa com dados reais e relat  rio reprodut  vel
-
----
-
-## Materiais Necess  rios
-
-### Instala    o Pr  via (Obrigat  rio)
-- R (vers  o 4.3+): https://cran.r-project.org/
-- RStudio (vers  o 2023.09+): https://posit.co/download/rstudio-desktop/
-- Git: https://git-scm.com/downloads
-- Conta no GitHub: https://github.com/
-
-### Pacotes R (instalados no Dia 1)
+#### Verificação das Instalações
 ```r
-install.packages(c("tidyverse", "here", "janitor", "skimr", 
-                   "readxl", "writexl", "rmarkdown"))
+# No Console do RStudio (funciona em todos os sistemas)
+R.version.string          # Verificar versão do R
+RStudio.Version()$version # Verificar versão do RStudio
+system("git --version")   # Verificar Git (funciona em todos os SO)
+```
+
+#### Configuração Git Local (multiplataforma)
+**No Terminal do RStudio** (recomendado - funciona em todos os sistemas):
+```bash
+git config --global user.name "Seu Nome"
+git config --global user.email "seu@email.com"
+```
+
+**Verificar configuração:**
+```bash
+git config --global --list
+```
+
+**Nota:** O RStudio Terminal funciona igual no Windows, macOS e Linux!
+
+#### Autenticação GitHub (3 métodos - escolha o mais fácil)
+
+**Método 1: Personal Access Token (PAT) - Recomendado**
+```r
+# No Console do RStudio (todos os sistemas)
+install.packages("usethis")
+install.packages("gitcreds")
+
+usethis::create_github_token()  # Abre navegador para criar token
+gitcreds::gitcreds_set()        # Cole o token quando solicitado
+```
+
+**Método 2: GitHub Desktop (Interface Gráfica)**
+- Download: https://desktop.github.com/
+- Disponível para Windows e macOS
+- Autenticação automática via navegador
+
+**Método 3: SSH Keys (Avançado - Opcional)**
+- Configuração via `ssh-keygen` (todos os sistemas)
+- Instruções: https://happygitwithr.com/ssh-keys.html
+
+---
+
+### Fork do Repositório do Curso (15min)
+
+**⚠️ PASSO OBRIGATÓRIO: Cada aluno deve criar sua própria cópia (fork) do repositório!**
+
+#### Por que fazer Fork?
+- ✅ Você terá controle total sobre sua cópia pessoal
+- ✅ Poderá fazer commits e push sem restrições
+- ✅ O repositório original do instrutor permanece protegido
+- ✅ Aprende o workflow real usado em projetos open source
+
+#### Passo a Passo: Como Fazer o Fork
+
+**1. Acessar o repositório original (3min)**
+- Abra seu navegador
+- Acesse: https://github.com/viniciusjunqueira/curso-r-github-ia
+- Faça login na sua conta GitHub (se ainda não estiver logado)
+
+**2. Criar o Fork (2min)**
+- No canto superior direito da página, clique no botão **"Fork"** 
+- Uma tela aparecerá perguntando onde criar o fork
+- **Owner:** Selecione sua conta (seu nome de usuário)
+- **Repository name:** Mantenha `curso-r-github-ia` (pode deixar igual)
+- **Description:** (Opcional) Você pode adicionar uma descrição
+- **Desmarque** a opção "Copy the main branch only" se quiser todas as branches
+- Clique em **"Create fork"** (botão verde)
+
+**3. Aguardar a criação (1min)**
+- O GitHub irá copiar todo o repositório para sua conta
+- Quando terminar, você será redirecionado automaticamente
+- Agora você tem: `https://github.com/SEU-USUARIO/curso-r-github-ia`
+
+**4. Verificar que é seu fork (1min)**
+- No topo da página, você verá:
+  ```
+  SEU-USUARIO / curso-r-github-ia
+  forked from viniciusjunqueira/curso-r-github-ia
+  ```
+- Isso confirma que é SUA cópia pessoal!
+
+#### Diagrama do Workflow
+
+```
+┌─────────────────────────────────────────────────────────┐
+│  Repositório Original (Instrutor - READ ONLY)           │
+│  viniciusjunqueira/curso-r-github-ia                    │
+│  ⚠️  Você NÃO pode fazer push aqui                      │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     │ FORK (você cria uma cópia)
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│  Seu Fork no GitHub (Sua conta - VOCÊ CONTROLA)        │
+│  SEU-USUARIO/curso-r-github-ia                          │
+│  ✅ Você PODE fazer push aqui                           │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     │ CLONE (você baixa localmente)
+                     ↓
+┌─────────────────────────────────────────────────────────┐
+│  Seu Computador Local                                   │
+│  ~/Documents/curso-r-github-ia/                         │
+│  ✅ Aqui você edita arquivos e faz commits              │
+└────────────────────┬────────────────────────────────────┘
+                     │
+                     │ PUSH (você envia mudanças)
+                     ↓
+          Volta para seu Fork no GitHub
+```
+
+#### Notas Importantes
+- 📌 **SEMPRE clone SEU fork**, não o repositório original
+- 📌 A URL do seu fork é: `https://github.com/SEU-USUARIO/curso-r-github-ia`
+- 📌 Substitua `SEU-USUARIO` pelo seu nome de usuário do GitHub
+- 📌 Se clonar o repo errado, você não conseguirá fazer push!
+
+---
+
+### Clonagem do SEU Fork (20min)
+
+**⚠️ IMPORTANTE: Clone SEU fork, não o repositório original!**
+
+#### Opção 1: Via RStudio (Recomendado - Funciona em Todos)
+1. File → New Project → Version Control → Git
+2. **Repository URL:** `https://github.com/SEU-USUARIO/curso-r-github-ia`
+   - ⚠️ **Atenção:** Use **SEU-USUARIO**, não `viniciusjunqueira`!
+   - Exemplo: Se seu usuário é `maria123`, use: `https://github.com/maria123/curso-r-github-ia`
+3. **Project directory name:** Deixe como `curso-r-github-ia`
+4. **Create project as subdirectory of:** Escolha pasta local (ex: `~/Documents`)
+5. Clique em **"Create Project"**
+6. Aguarde o download - pode demorar alguns minutos
+
+#### Opção 2: Via Terminal do RStudio
+```bash
+# Substitua SEU-USUARIO pelo seu nome de usuário do GitHub!
+git clone https://github.com/SEU-USUARIO/curso-r-github-ia.git
+cd curso-r-github-ia
+```
+Depois: File → Open Project → Selecionar `.Rproj`
+
+#### Opção 3: GitHub Desktop (Windows/macOS)
+1. Abra o GitHub Desktop
+2. File → Clone Repository
+3. Na aba "GitHub.com", procure por `curso-r-github-ia`
+4. **Importante:** Selecione o que está em **SUA conta**, não do instrutor!
+5. Escolha pasta local
+6. Clone
+7. Depois: Repository → Open in RStudio
+
+#### Verificar se Clonou o Fork Correto
+```bash
+# No Terminal do RStudio, verificar repositórios remotos
+git remote -v
+
+# ✅ Deve aparecer SEU usuário:
+# origin  https://github.com/SEU-USUARIO/curso-r-github-ia.git (fetch)
+# origin  https://github.com/SEU-USUARIO/curso-r-github-ia.git (push)
+
+# ❌ Se aparecer viniciusjunqueira, você clonou o errado!
+# Veja solução na seção Troubleshooting
+```
+
+### Estrutura de Pastas e Portabilidade
+```
+curso-r-github-ia/
+├── curso-r-github-ia.Rproj  # SEMPRE use projetos!
+├── data/
+│   ├── raw/                  # Dados originais
+│   └── processed/            # Dados limpos
+├── scripts/                  # Scripts R
+├── output/                   # Resultados
+│   ├── figures/
+│   └── tables/
+└── docs/                     # Documentação
+```
+
+**IMPORTANTE - Caminhos Relativos (Portabilidade):**
+```r
+# ❌ RUIM - Específico de sistema
+dados <- read.csv("C:/Users/Nome/Documents/dados.csv")  # Só Windows
+dados <- read.csv("/Users/nome/Documents/dados.csv")    # Só macOS
+
+# ✅ BOM - Funciona em todos os sistemas
+library(here)
+dados <- read.csv(here("data", "raw", "dados.csv"))
+
+# O here::here() constrói caminhos corretos automaticamente!
 ```
 
 ---
 
-\newpage
-
-# Segunda-feira     Dia 1: Fundamentos e Ambiente Reprodut  vel
-
-## 19h00     20h30 | Ambienta    o e Setup Completo
-
-### Apresenta    o do Curso (20min)
-- Objetivos e metodologia
-- Por que R, GitHub e IA?
-- Panorama das   reas de aplica    o
-- Apresenta    o dos participantes e expectativas
-
-### Configura    o do Ambiente (50min)
-- Verifica    o das instala    es (R, RStudio, Git)
-- **Cria    o de conta GitHub** (se ainda n  o tiver)
-- **Configura    o Git local:**
-  - `git config --global user.name "Seu Nome"`
-  - `git config --global user.email "seu@email.com"`
-- **Autentica    o GitHub:**
-  - Cria    o de Personal Access Token (PAT)
-  - Configura    o com `gitcreds::gitcreds_set()`
-  - Alternativa: GitHub Desktop (interface gr  fica)
-
-### Clonagem do Reposit  rio do Curso (20min)
-- Clone via RStudio ou linha de comando
-- Estrutura de pastas: `data/`, `scripts/`, `output/`, `docs/`
-- **Cria    o do primeiro Projeto RStudio (.Rproj)**
-- Import  ncia do working directory e `here::here()`
+## 20h30 - 20h50 | INTERVALO
 
 ---
 
-## 20h30     20h50 | INTERVALO
-
----
-
-## 20h50     22h00 | Fundamentos do R
+## 20h50 - 22h00 | Fundamentos do R
 
 ### Objetos e Estruturas de Dados (40min)
-- Vetores: num  rico, l  gico, string
+- Vetores: numérico, lógico, string
 - Listas e data.frames
-- Fatores: vari  veis categ  ricas
-- Fun    es b  sicas: `c()`, `length()`, `class()`, `typeof()`
+- Fatores: variáveis categóricas
+- Funções básicas: `c()`, `length()`, `class()`, `typeof()`
 
-### Explora    o Inicial de Dados (30min)
+**Nota:** Todo código R funciona identicamente em Windows, macOS e Linux!
+
+### Exploração Inicial de Dados (30min)
 - `str()`, `head()`, `tail()`, `names()`
-- `dplyr::glimpse()` (vis  o moderna)
-- `summary()` para estat  sticas descritivas
-- **Indexa    o:** por posi    o `[1]`, por nome `$coluna`, por condi    o
+- `dplyr::glimpse()` (visão moderna)
+- `summary()` para estatísticas descritivas
+- **Indexação:** por posição `[1]`, por nome `$coluna`, por condição
 
-### Pr  tica Guiada (20min)
+### Prática Guiada (20min)
 - Criar vetores e data.frames
-- Manipular objetos b  sicos
+- Manipular objetos básicos
 - **Primeiro script:** salvar como `01_fundamentos.R`
-- **Primeiro commit:** "Fundamentos do R - Dia 1"
+- **Salvando com encoding correto (importante!):**
+  - File → Save with Encoding → UTF-8 (para acentos funcionarem)
+
+### Primeiro Commit (multiplataforma)
+
+**No Terminal do RStudio:**
+```bash
+# Adicionar arquivo ao stage
+git add scripts/01_fundamentos.R
+
+# Criar commit com mensagem
+git commit -m "Fundamentos do R - Dia 1"
+
+# Enviar para SEU fork no GitHub
+git push origin main
+# Nota: "origin" aponta para SEU fork
+```
+
+**Alternativa - Interface Gráfica do RStudio:**
+1. Vá na aba **"Git"** (painel superior direito)
+2. Marque o checkbox dos arquivos que quer commitar
+3. Clique em **"Commit"**
+4. Escreva mensagem: `Fundamentos do R - Dia 1`
+5. Clique em **"Commit"**
+6. Clique em **"Push"** (seta verde apontando para cima)
+
+**Verificação:**
+- Acesse `https://github.com/SEU-USUARIO/curso-r-github-ia`
+- Você deve ver seu commit lá!
+- O repositório original do instrutor **NÃO** será afetado ✅
 
 ## Para Casa
-- Revisar conceitos no material do reposit  rio
-- Experimentar com seus pr  prios dados (se tiver)
+- Revisar conceitos no material do repositório
+- Experimentar com seus próprios dados (se tiver)
+- **Lembrete:** Todos os commits vão para SEU fork, não afetam o repositório original
+
+---
+
+## ✅ Checklist - Verifique se tudo está correto
+
+Antes de terminar o Dia 1, confirme cada item:
+
+- [ ] **Git configurado:** `git config --global --list` mostra meu nome e email
+- [ ] **GitHub autenticado:** Consegui criar PAT e configurar com `gitcreds`
+- [ ] **Fork criado:** Existe `https://github.com/MEU-USUARIO/curso-r-github-ia`
+- [ ] **Repositório clonado:** Tenho pasta `curso-r-github-ia` no meu computador
+- [ ] **Projeto RStudio aberto:** Vejo `.Rproj` na pasta
+- [ ] **Remote correto:** `git remote -v` mostra MEU usuário (não viniciusjunqueira)
+- [ ] **Primeiro commit feito:** Script `01_fundamentos.R` existe no GitHub
+- [ ] **Push funcionou:** Consigo ver minhas mudanças no meu fork do GitHub
+
+**Se algum item não estiver ✅ marcado, peça ajuda ao instrutor!**
+
+---
+
+## 📌 (Opcional) Sincronizar com Repositório Original
+
+Se o instrutor fizer atualizações no repositório original durante o curso, você pode sincronizar seu fork:
+
+**Configurar uma vez (adicionar "upstream"):**
+```bash
+# Adicionar repositório original como "upstream"
+git remote add upstream https://github.com/viniciusjunqueira/curso-r-github-ia.git
+
+# Verificar configuração
+git remote -v
+# Deve mostrar:
+# origin    (seu fork)
+# upstream  (original do instrutor)
+```
+
+**Quando o instrutor avisar de atualizações, sincronize:**
+```bash
+# 1. Buscar atualizações do original
+git fetch upstream
+
+# 2. Ir para sua branch principal
+git checkout main
+
+# 3. Mesclar atualizações na sua branch
+git merge upstream/main
+
+# 4. Enviar para seu fork no GitHub
+git push origin main
+```
+
+**Alternativa via Interface do GitHub:**
+1. Acesse seu fork: `https://github.com/SEU-USUARIO/curso-r-github-ia`
+2. Se houver atualizações, aparecerá: "This branch is X commits behind viniciusjunqueira:main"
+3. Clique em **"Sync fork"** → **"Update branch"**
+4. No RStudio: `git pull origin main` para baixar as atualizações
 
 ---
 
 \newpage
 
-# Ter  a-feira     Dia 2: L  gica, Fun    es e Boas Pr  ticas
+# Dia 2: 18/11 (Terça) - Lógica, Funções e Introdução ao Tidyverse
 
-## 19h00     20h30 | Programa    o em R
+## 19h00 - 20h30 | Programação em R
 
-### Operadores e Condicionais (35min)
-- **Operadores l  gicos:** `&`, `|`, `!`, `%in%`
+### Operadores e Condicionais (30min)
+- **Operadores lógicos:** `&`, `|`, `!`, `%in%`
 - **Operadores relacionais:** `==`, `!=`, `>`, `<`, `>=`, `<=`
 - **Condicionais:**
   - `if` e `else` (estrutura completa)
   - `ifelse()` vetorizado
-  - `dplyr::case_when()` para m  ltiplas condi    es
+  - `dplyr::case_when()` para múltiplas condições
 
-### Loops e Itera    o (25min)
+### Loops e Funções (25min)
 - Loop `for`: sintaxe e casos de uso
-- Vetoriza    o vs. loops (efici  ncia)
-- Breve men    o a `while` e `repeat`
-- Fam  lia `apply()` (conceitual)
+- Vetorização vs. loops (eficiência)
+- **Funções customizadas:**
+  - Sintaxe: `function(argumentos) { corpo }`
+  - Argumentos e retorno
+  - **Exemplo prático:** função para calcular IMC
 
-### Fun    es Customizadas (30min)
-- Sintaxe: `function(argumentos) { corpo }`
-- Argumentos obrigat  rios e opcionais
-- Valor de retorno: `return()` vs.   ltima linha
-- Documenta    o interna com coment  rios
-- **Exemplo pr  tico:** fun    o para calcular IMC por categoria
+### Boas Práticas e Debugging (25min)
+- **Naming conventions:** `snake_case`
+- **Comentários eficientes**
+- **Lendo mensagens de erro**
+- **IA como assistente:** ChatGPT vs Claude
+- Uso ético: sempre entender o código
 
----
-
-## 20h30     20h50 | INTERVALO
-
----
-
-## 20h50     22h00 | Boas Pr  ticas e IA Assistida
-
-### Boas Pr  ticas de C  digo (25min)
-- **Naming conventions:** `snake_case` para objetos e fun    es
-- **Coment  rios eficientes:** o qu   vs. por qu  
-- **Organiza    o:** uma opera    o por linha
-- **Estilo:** espa  amento, indenta    o
-- Pacotes   teis: `styler::style_file()`, `lintr`
-
-### Debugging e Gest  o de Erros (25min)
-- **Lendo mensagens de erro:** anatomy of an error
-- **Estrat  gias de debugging:**
-  - `print()` para check points
-  - `traceback()` para rastrear erros
-  - `debug()` e `undebug()`
-  - Breakpoints no RStudio
-- **Tipos comuns de erro:** syntax, object not found, type mismatch
-
-### IA como Assistente de C  digo (20min)
-- **ChatGPT vs Claude:** quando usar cada um
-  - ChatGPT: debugging r  pido, sugest  es de c  digo
-  - Claude: revis  o detalhada, explica    es conceituais, documenta    o
-- **Boas pr  ticas:**
-  - Fornecer contexto adequado
-  - Verificar e testar c  digo gerado
-  - Aprender com as sugest  es (n  o apenas copiar)
-  -   tica: sempre entender o c  digo que voc   usa
-
-### Pr  tica: Depura    o Assistida (20min)
-- Corrigir scripts com erros intencionais
+### IA Assistida (10min)
+- Depurar scripts com erros
 - Usar ChatGPT/Claude para explicar problemas
-- Criar fun    o complexa com assist  ncia de IA
-- **Commit:** "L  gica, fun    es e debugging - Dia 2"
+- **Commit:** `git commit -m "Lógica, funções e boas práticas - Dia 2"`
 
 ---
 
-\newpage
+## 20h30 - 20h50 | INTERVALO
 
-# Quarta-feira     Dia 3: Manipula    o Moderna de Dados
+---
 
-## 19h00     20h30 | Tidyverse e dplyr
+## 20h50 - 22h00 | Introdução ao Tidyverse
 
-### Filosofia Tidyverse (15min)
-- Princ  pios: tidy data, pipe, verbos consistentes
-- Carregar o tidyverse: `library(tidyverse)`
-- Estrutura de dados tidy: uma observa    o por linha
+### Filosofia Tidyverse (10min)
+- Princípios: tidy data, pipe, verbos consistentes
+- Carregar: `library(tidyverse)`
 
-### Verbos Essenciais do dplyr (45min)
-- **`filter()`:** filtrar linhas por condi    o
+### Verbos Essenciais do dplyr (50min)
+- **`filter()`:** filtrar linhas por condição
 - **`select()`:** selecionar colunas
 - **`mutate()`:** criar/modificar colunas
 - **`arrange()`:** ordenar linhas
 - **`summarize()`:** resumir dados
-- **`group_by()`:** agrupar para opera    es
-- **Operador pipe:** `%>%` ou `|>` (native pipe)
+- **`group_by()`:** agrupar para operações
+- **Operador pipe:** `%>%` (tidyverse) ou `|>` (R nativo 4.1+)
 
-### Exemplo Integrado (30min)
-- Dataset: dados de sa  de p  blica (ex: vacina    o por estado)
+**Nota:** Ambos os pipes funcionam em todos os sistemas!
+
+### Exemplo Integrado (25min)
+- Dataset: dados de saúde pública ou agricultura
 - Pipeline completo com todos os verbos
-- **Casos multidisciplinares:**
-  - Sa  de: taxa de vacina    o por regi  o
-  - Economia: PIB per capita por pa  s
-  - Biologia: abund  ncia de esp  cies por bioma
+- **Prática:** criar pipeline com dados reais
+
+### Para Casa
+- Praticar pipeline com dataset fornecido
+- Documentar código com comentários
 
 ---
 
-## 20h30     20h50 | INTERVALO
+\newpage
 
----
+# Dia 3: 24/11 (Segunda) - Manipulação Avançada e Visualização
 
-## 20h50     22h00 | Transforma    o e Limpeza
+## 19h00 - 20h30 | Transformação e I/O de Dados
 
-### Tidyr para Reshape (30min)
-- **`pivot_longer()`:** wide     long
-- **`pivot_wider()`:** long     wide
-- Casos de uso: dados de painel, s  ries temporais
-- **`separate()`** e **`unite()`:** manipular strings em colunas
+### Tidyr para Reshape (25min)
+- **`pivot_longer()`:** wide → long
+- **`pivot_wider()`:** long → wide
+- **`separate()`** e **`unite()`**
 
 ### Tratamento de Valores Ausentes (20min)
-- Identificar: `is.na()`, `anyNA()`, `sum(is.na())`
-- Remover: `na.omit()`, `drop_na()`, `complete.cases()`
+- Identificar: `is.na()`, `sum(is.na())`
+- Remover: `drop_na()`, `na.omit()`
 - Imputar: `replace_na()`, `fill()`
-- Decis  es: quando remover vs. imputar
 
-### Ferramentas Modernas de Explora    o (20min)
-- **`janitor::clean_names()`:** padronizar nomes de colunas
-- **`janitor::tabyl()`:** tabelas de frequ  ncia
-- **`skimr::skim()`:** sum  rio estat  stico completo
-- **`dplyr::count()`** e **`add_count()`**
+### Leitura e Escrita de Arquivos (35min)
 
-### Pr  tica com Claude (20min)
-- Criar pipeline complexo
-- Usar Claude para:
-  - Otimizar c  digo
-  - Sugerir alternativas
-  - Explicar cada etapa
-  - Documentar o pipeline
-- **Commit:** "Manipula    o e limpeza com tidyverse - Dia 3"
+#### Encoding e Separadores (IMPORTANTE!)
+```r
+# CSV com encoding correto (para acentuação)
+# Windows (Latin1) vs macOS/Linux (UTF-8)
+library(readr)
 
-### Exerc  cio Para Casa
-- Pipeline de an  lise com dataset de sua   rea
-- Documentar cada etapa com coment  rios
+# Detectar encoding automaticamente
+dados <- read_csv(here("data", "raw", "dados.csv"), 
+                  locale = locale(encoding = "UTF-8"))
+
+# Para arquivos Windows com acentos problemáticos
+dados <- read_csv(here("data", "raw", "dados.csv"),
+                  locale = locale(encoding = "latin1"))
+
+# Excel - funciona igual em todos os sistemas
+library(readxl)
+dados <- read_excel(here("data", "raw", "planilha.xlsx"), 
+                    sheet = 1)
+
+# Salvar sempre em UTF-8 (padrão universal)
+write_csv(dados, here("output", "resultado.csv"))
+```
+
+#### Separadores de Decimal (Região)
+```r
+# Brasil usa vírgula, EUA/UK usam ponto
+# readr detecta automaticamente, mas pode especificar:
+dados <- read_csv2(arquivo)  # Para separador ";"  e decimal ","
+dados <- read_csv(arquivo)   # Para separador "," e decimal "."
+```
+
+#### Caminhos de Arquivos (Portabilidade)
+```r
+# ❌ EVITE barras específicas de sistema
+"C:\\Users\\nome\\arquivo.csv"      # Windows (barra invertida)
+"/Users/nome/arquivo.csv"           # macOS/Linux (barra normal)
+
+# ✅ USE here::here() (funciona em TODOS)
+library(here)
+arquivo <- here("data", "raw", "dados.csv")
+
+# here() constrói o caminho correto para seu sistema!
+# Windows: "C:\Users\...\curso\data\raw\dados.csv"
+# macOS: "/Users/.../curso/data/raw/dados.csv"
+# Linux: "/home/.../curso/data/raw/dados.csv"
+```
+
+### Organização de Projetos (10min)
+```
+meu-projeto/
+├── meu-projeto.Rproj    # SEMPRE use .Rproj!
+├── README.md
+├── data/
+│   ├── raw/             # Originais (nunca modificar)
+│   └── processed/       # Limpos
+├── scripts/
+│   ├── 01_import.R
+│   ├── 02_clean.R
+│   └── 03_analyze.R
+├── output/
+│   ├── figures/
+│   └── tables/
+└── docs/
+```
+
+**Vantagens de usar Projetos RStudio:**
+- Working directory automático
+- Portabilidade entre sistemas
+- Funciona perfeitamente com Git
+- `here::here()` sempre encontra a raiz do projeto
+
+### Ferramentas Modernas (10min)
+```r
+library(janitor)
+dados <- clean_names(dados)  # Padroniza nomes de colunas
+
+library(skimr)
+skim(dados)  # Resumo estatístico completo
+```
+
+**Commit:** `git commit -m "Transformação e I/O - Dia 3"`
 
 ---
 
-\newpage
-
-# Quinta-feira     Dia 4: I/O de Dados e Visualiza    o
-
-## 19h00     20h30 | Entrada e Sa  da de Dados
-
-### Leitura de Arquivos (40min)
-- **CSV:** `readr::read_csv()` vs. `read.csv()`
-  - Vantagens do readr: velocidade, consist  ncia, encoding
-  - Par  metros: `col_types`, `na`, `skip`, `locale`
-- **Excel:** `readxl::read_excel()`
-  - Especificar sheets: `sheet = "nome"` ou `sheet = 2`
-  - Ranges: `range = "A1:D50"`
-- **Outros formatos:** `.rds`, `.txt`, `.tsv`
-- **Encoding:** lidar com acentua    o (UTF-8)
-
-### Escrita de Arquivos (20min)
-- **CSV:** `readr::write_csv()`
-- **Excel:** `writexl::write_xlsx()`
-- **RDS:** `saveRDS()` e `readRDS()` (formato R nativo)
-- Boas pr  ticas: datas no nome de arquivo, versionamento
-
-### Organiza    o de Projetos (30min)
-- **Estrutura recomendada:**
-  ```
-  meu-projeto/
-            meu-projeto.Rproj
-            README.md
-            data/
-                  raw/          # dados originais (nunca modificar!)
-                  processed/    # dados limpos
-            scripts/
-                  01_import.R
-                  02_clean.R
-                  03_analyze.R
-            output/
-                  figures/
-                  tables/
-            docs/             # relat  rios
-  ```
-- **`here::here()` para caminhos relativos**
-  - Portabilidade entre sistemas
-  - Exemplo: `read_csv(here("data", "raw", "dados.csv"))`
-- **Projetos RStudio:** sempre usar!
+## 20h30 - 20h50 | INTERVALO
 
 ---
 
-## 20h30     20h50 | INTERVALO
+## 20h50 - 22h00 | Visualização com ggplot2
 
----
-
-## 20h50     22h00 | Visualiza    o com ggplot2
-
-### Gram  tica de Gr  ficos (20min)
+### Gramática de Gráficos (15min)
 - Filosofia: camadas sequenciais
-- Estrutura b  sica: `ggplot(data, aes()) + geom_*()`
-- **Aesthetics:** `x`, `y`, `color`, `fill`, `size`, `alpha`
-- **Geometries:** pontos, linhas, barras, boxplots
+- Estrutura: `ggplot(data, aes()) + geom_*()`
+- **Aesthetics:** `x`, `y`, `color`, `fill`, `size`
 
-### Tipos de Gr  ficos (50min)
-- **Dispers  o:** `geom_point()` + `geom_smooth()`
-  - Caso: rela    o entre vari  veis cont  nuas
+### Tipos de Gráficos (50min)
+- **Dispersão:** `geom_point()` + `geom_smooth()`
 - **Barras:** `geom_col()` vs. `geom_bar()`
-  - Caso: compara    o entre categorias
 - **Boxplot:** `geom_boxplot()` + `geom_jitter()`
-  - Caso: distribui    o e outliers
-- **Linhas:** `geom_line()` + `geom_ribbon()`
-  - Caso: s  ries temporais
+- **Linhas:** `geom_line()` (séries temporais)
 - **Histograma:** `geom_histogram()` + `geom_density()`
-  - Caso: distribui    o de frequ  ncias
 
-### Personaliza    o (20min)
-- **Temas:** `theme_minimal()`, `theme_bw()`, `theme_classic()`
-- **T  tulos e labels:** `labs(title, x, y, caption)`
-- **Cores:** `scale_color_brewer()`, `scale_fill_viridis_d()`
-- **Facetas:** `facet_wrap()`, `facet_grid()`
-- **Salvamento:** `ggsave("figura.png", width = 8, height = 6, dpi = 300)`
+### Personalização e Salvamento (15min)
+```r
+# Criar gráfico
+p <- ggplot(dados, aes(x = x, y = y)) +
+  geom_point() +
+  theme_minimal() +
+  labs(title = "Meu Gráfico",
+       x = "Variável X",
+       y = "Variável Y")
 
-### Pr  tica com IA (10min)
-- Usar ChatGPT/Claude para:
-  - Sugerir tipo de gr  fico adequado aos dados
-  - Melhorar est  tica
-  - Corrigir erros de sintaxe
-- **Commit:** "I/O e visualiza    o - Dia 4"
+# Salvar com caminho portável
+ggsave(here("output", "figures", "grafico.png"), 
+       plot = p,
+       width = 8, 
+       height = 6, 
+       dpi = 300)
+
+# Funciona em Windows, macOS e Linux!
+```
+
+**Formatos suportados em todos os sistemas:**
+- PNG: melhor para relatórios e web
+- PDF: melhor para publicações científicas
+- JPEG: comprimido, menor qualidade
+- SVG: vetorial, editável
+
+### Prática (10min)
+- Criar 3 visualizações diferentes
+- Salvar usando `ggsave()` e `here()`
+- **Commit:** `git commit -m "Visualização com ggplot2 - Dia 3"`
 
 ---
 
 \newpage
 
-# Sexta-feira     Dia 5: Relat  rios Reprodut  veis e Projeto Final
+# Dia 4: 25/11 (Terça) - RMarkdown e Integração IA no RStudio
 
-## 19h00     20h30 | RMarkdown/Quarto
+## 19h00 - 20h30 | Relatórios Reprodutíveis com RMarkdown
 
-### Introdu    o    Programa    o Liter  ria (20min)
-- **Conceito:** c  digo + narrativa + resultados
-- **Reprodutibilidade:** garantir que an  lise possa ser replicada
-- RMarkdown vs. Quarto (breve compara    o)
-- Cria    o de novo documento: File     New File     R Markdown
+### Introdução à Programação Literária (15min)
+- **Conceito:** código + narrativa + resultados
+- **Reprodutibilidade entre sistemas**
+- Criar documento: File → New File → R Markdown
 
-### Estrutura de Documentos (40min)
-- **YAML header:**
-  ```yaml
-  ---
-  title: "Minha An  lise"
-  author: "Seu Nome"
-  date: "`r Sys.Date()`"
-  output: html_document
-  ---
-  ```
-- **Markdown b  sico:**
-  - Headers: `#`, `##`, `###`
-  - Listas: `-` ou `1.`
-  -   nfase: `*it  lico*`, `**negrito**`
-  - Links: `[texto](url)`
-- **Chunks de c  digo:**
-  ````markdown
-  ```{r nome-do-chunk, echo=TRUE, warning=FALSE}
-  # seu c  digo aqui
-  ```
-  ````
-- **Op    es   teis:** `echo`, `eval`, `warning`, `message`, `fig.width`, `fig.height`
+### Estrutura de Documentos (35min)
+```yaml
+---
+title: "Minha Análise"
+author: "Seu Nome"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    code_folding: show
+---
+```
 
-### Renderiza    o (20min)
-- Knit para HTML, PDF (requer LaTeX), Word
-- Inline code: usar acento grave + r + c  digo entre acentos graves
-- Tabelas formatadas: `knitr::kable()`, `gt::gt()`
-- **Pr  tica:** criar relat  rio simples com an  lise do Dia 3
+**Markdown Básico (universal):**
+- Headers: `#`, `##`, `###`
+- Listas: `-` ou `1.`
+- Ênfase: `*itálico*`, `**negrito**`
+- Links: `[texto](url)`
+- Imagens: `![descrição](caminho)`
+
+**Chunks de código:**
+````markdown
+```{r nome-chunk, echo=TRUE, warning=FALSE}
+# Use here() para caminhos portáveis!
+dados <- read_csv(here("data", "raw", "dados.csv"))
+```
+````
+
+### Renderização (20min)
+
+**Knit para diferentes formatos:**
+- **HTML:** Funciona em todos os sistemas (padrão)
+- **PDF:** Requer LaTeX (pode ter problemas)
+  - Windows: MiKTeX (https://miktex.org/)
+  - macOS: MacTeX (https://www.tug.org/mactex/)
+  - Linux: `sudo apt install texlive-full`
+  - **Alternativa:** `install.packages("tinytex"); tinytex::install_tinytex()`
+- **Word:** Funciona em todos (requer MS Word instalado para visualizar)
+
+**Dica:** Começe com HTML (sempre funciona), depois experimente PDF.
+
+```r
+# Renderizar programaticamente (qualquer sistema)
+rmarkdown::render(here("docs", "relatorio.Rmd"), 
+                  output_format = "html_document")
+```
+
+### GitHub: Documentação Final (20min)
+
+**Comandos Git (multiplataforma via RStudio Terminal):**
+```bash
+git add .
+git commit -m "Relatório RMarkdown - Dia 4"
+git push
+```
+
+**Arquivo .gitignore (funciona em todos os sistemas):**
+```
+# R files
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# Output files
+*.html
+*.pdf
+output/
+
+# System files (importantes!)
+.DS_Store      # macOS
+Thumbs.db      # Windows
+*~             # Linux
+```
+
+**README.md - Template Portável:**
+```markdown
+# Nome do Projeto
+
+## Sobre
+Este é meu repositório pessoal para o curso "Introdução à Programação em R com GitHub, ChatGPT e Claude", ministrado por Vinícius Silva Junqueira.
+
+**Repositório original do curso:** https://github.com/viniciusjunqueira/curso-r-github-ia
+
+## Como Reproduzir Esta Análise
+
+### Pré-requisitos
+- R 4.3+
+- RStudio
+- Pacotes: tidyverse, here, rmarkdown
+
+### Instalação
+```r
+install.packages(c("tidyverse", "here", "rmarkdown"))
+```
+
+### Execução
+1. Clone este repositório (ou faça seu próprio fork)
+2. Abra o arquivo .Rproj
+3. Execute os scripts na ordem:
+   - `scripts/01_import.R`
+   - `scripts/02_clean.R`
+   - `scripts/03_analyze.R`
+
+**Nota:** Funciona em Windows, macOS e Linux!
+
+## Estrutura do Projeto
+```
+meu-projeto/
+├── data/raw/       # Dados originais
+├── data/processed/ # Dados processados
+├── scripts/        # Scripts R
+├── output/         # Resultados e gráficos
+└── docs/           # Documentação
+```
+
+## Contato
+[Seu nome e informações de contato]
+```
 
 ---
 
-## 20h30     20h50 | INTERVALO
+## 20h30 - 20h50 | INTERVALO
 
 ---
 
-## 20h50     22h00 | Projeto Final e GitHub
+## 20h50 - 22h00 | Integração de IA no RStudio
 
-### Desenvolvimento do Projeto (40min)
-- **Escolha do dataset:**
-  - Op    o 1: Dataset fornecido (dados p  blicos interessantes)
-  - Op    o 2: Dados pr  prios da   rea do aluno
-- **Roteiro do projeto:**
-  1. Importar e explorar dados (`skimr::skim()`)
-  2. Limpar e transformar (`dplyr` + `tidyr`)
-  3. Criar 3-4 visualiza    es relevantes
-  4. Gerar insights e interpreta    es
-  5. Compilar em relat  rio RMarkdown
+### Visão Geral (10min)
+- Por que integrar IA ao RStudio?
+- Ferramentas disponíveis: gptstudio, chattr, APIs
+- **Compatibilidade:** Todas funcionam em Windows, macOS e Linux
 
-- **Trabalho individual ou em duplas**
-- Suporte do instrutor e uso estrat  gico de IA
+### gptstudio: ChatGPT no RStudio (30min)
 
-### GitHub: Versionamento Final (25min)
-- **Conceitos essenciais:**
-  - `git add .`     staging
-  - `git commit -m "mensagem"`     snapshot
-  - `git push`     enviar para GitHub
-- **Arquivo `.gitignore`:**
-  - Ignorar arquivos grandes, tempor  rios, sens  veis
-  - Exemplo:
-    ```
-    .Rproj.user
-    .Rhistory
-    .RData
-    *.html
-    data/raw/*  # se dados forem muito grandes
-    ```
-- **README.md:**
-  - Descri    o do projeto
-  - Estrutura de arquivos
-  - Como reproduzir a an  lise
-  - Depend  ncias (pacotes necess  rios)
-- **Push do projeto final**
+#### Instalação (Multiplataforma)
+```r
+# Funciona em todos os sistemas
+install.packages("gptstudio")
+library(gptstudio)
 
-### Uso de Claude para Documenta    o (15min)
-- Gerar README.md profissional
-- Revisar c  digo para clareza
-- Sugerir melhorias na narrativa do relat  rio
-- Checar reprodutibilidade
+# Configurar API Key (todos os sistemas)
+# Opção 1: Temporária (essa sessão)
+Sys.setenv(OPENAI_API_KEY = "sua-chave-aqui")
 
-### Apresenta    es R  pidas (25min)
-- 3-5 minutos por pessoa/dupla
-- Principais achados
-- Desafios enfrentados
-- Feedback coletivo
+# Opção 2: Permanente (recomendado)
+usethis::edit_r_environ()  # Abre arquivo para editar
+# Adicionar linha: OPENAI_API_KEY=sua-chave
+# Salvar e reiniciar R
+```
+
+#### Funcionalidades (20min)
+Todas as funções aparecem em: **Addins** (menu superior do RStudio)
+
+- **Comentar código:** Selecione código → Addins → "Comment your code"
+- **Escrever código:** Escreva comentário → Addins → "Write code"
+- **Explicar código:** Selecione trecho → Addins → "Explain code"
+- **Melhorar código:** Selecione → Addins → "Suggest improvements"
+- **Chat interativo:** Addins → "ChatGPT in Source"
+
+**Nota:** Funciona identicamente em Windows, macOS e Linux!
+
+### chattr: Múltiplos LLMs (20min)
+
+#### Instalação e Configuração
+```r
+# Multiplataforma
+install.packages("chattr")
+library(chattr)
+
+# Para ChatGPT (OpenAI)
+Sys.setenv(OPENAI_API_KEY = "sua-chave")
+chattr_use("gpt4")
+
+# Para Claude (Anthropic)
+Sys.setenv(ANTHROPIC_API_KEY = "sua-chave")
+chattr_use("anthropic")
+
+# Configuração permanente
+usethis::edit_r_environ()
+# Adicionar:
+# OPENAI_API_KEY=sua-chave
+# ANTHROPIC_API_KEY=sua-chave
+```
+
+#### Uso Básico
+```r
+# Abrir interface de chat
+chattr_app()
+
+# Perguntas diretas no console
+chattr("Como fazer um boxplot colorido no ggplot2?")
+
+# Pedir código
+chattr("Criar função que calcula desvio padrão")
+
+# Debugging
+chattr("Por que este código não funciona? [colar código]")
+```
+
+### API Direta: Claude via httr2 (15min)
+
+```r
+# Funciona em todos os sistemas
+library(httr2)
+
+ask_claude <- function(prompt, 
+                       api_key = Sys.getenv("ANTHROPIC_API_KEY")) {
+  request("https://api.anthropic.com/v1/messages") |>
+    req_headers(
+      `x-api-key` = api_key,
+      `anthropic-version` = "2023-06-01",
+      `content-type` = "application/json"
+    ) |>
+    req_body_json(list(
+      model = "claude-3-5-sonnet-20241022",
+      max_tokens = 1024,
+      messages = list(list(
+        role = "user",
+        content = prompt
+      ))
+    )) |>
+    req_perform() |>
+    resp_body_json()
+}
+
+# Usar (funciona em qualquer SO)
+resposta <- ask_claude("Explique o que é tidy data")
+cat(resposta$content[[1]]$text)
+```
+
+### Boas Práticas com IA (10min)
+
+#### Considerações Importantes
+- **Segurança:** NUNCA envie dados sensíveis/confidenciais
+- **Validação:** SEMPRE teste código gerado
+- **Aprendizado:** Entenda antes de usar
+- **Custos:** APIs pagas - monitore uso
+
+#### Workflow Recomendado
+1. Aprenda os conceitos básicos primeiro
+2. Use IA para explicações e debugging
+3. Valide e teste todo código gerado
+4. Documente usando IA como assistente
+
+### Prática Final (25min)
+
+#### Exercício Integrado
+1. Configurar gptstudio OU chattr
+2. Usar IA para:
+   - Comentar script anterior
+   - Criar nova função
+   - Otimizar pipeline
+   - Melhorar relatório RMarkdown
+3. Salvar tudo usando `here()`
+4. **Commit final:** `git commit -m "IA integrada - Curso completo"`
+
+### Recursos (5min)
+- **gptstudio:** https://github.com/MichelNivard/gptstudio
+- **chattr:** https://mlverse.github.io/chattr/
+- **OpenAI API:** https://platform.openai.com/
+- **Anthropic API:** https://console.anthropic.com/
 
 ### Encerramento (5min)
-- Recursos para continuar aprendendo
-- Comunidades: R-Ladies, Meetups, Posit Community
-- Cursos recomendados: R for Data Science (r4ds.hadley.nz)
-- Certificado de participa    o
+- Comunidades: R-Ladies, Posit Community
+- Prática contínua
+- Feedback do curso
 
 ---
 
 \newpage
+
+# Troubleshooting por Sistema Operacional
+
+## Windows
+
+### Problema: Git não encontrado
+**Solução:**
+- Reinstalar Git: https://git-scm.com/download/win
+- Marcar opção "Git from the command line and also from 3rd-party software"
+- Reiniciar RStudio
+
+### Problema: Acentos estranhos nos dados
+**Solução:**
+```r
+# Usar encoding correto
+dados <- read_csv(arquivo, locale = locale(encoding = "latin1"))
+```
+
+### Problema: Erro ao instalar pacotes
+**Solução:**
+- Executar RStudio como Administrador
+- Ou instalar em biblioteca de usuário (padrão)
+
+## macOS
+
+### Problema: "xcrun: error" ao usar Git
+**Solução:**
+```bash
+xcode-select --install
+```
+
+### Problema: LaTeX não encontrado para PDF
+**Solução:**
+```r
+install.packages("tinytex")
+tinytex::install_tinytex()
+```
+
+### Problema: Permissões negadas
+**Solução:**
+- Verificar configurações de segurança
+- System Preferences → Security & Privacy
+
+## Linux (Ubuntu/Debian)
+
+### Problema: Erro ao instalar pacotes R
+**Solução:**
+```bash
+# Instalar dependências de desenvolvimento
+sudo apt install build-essential libcurl4-openssl-dev
+sudo apt install libssl-dev libxml2-dev
+sudo apt install libfontconfig1-dev libharfbuzz-dev libfribidi-dev
+```
+
+### Problema: Git não configurado
+**Solução:**
+```bash
+sudo apt update
+sudo apt install git
+git config --global user.name "Seu Nome"
+git config --global user.email "email@exemplo.com"
+```
+
+## Problemas Comuns (Todos os Sistemas)
+
+### "Permission denied" ao fazer push
+**Causa:** Você clonou o repositório original ao invés do seu fork
+
+**Como verificar:**
+```bash
+git remote -v
+# Se aparecer "viniciusjunqueira", você clonou o errado!
+```
+
+**Solução - Opção 1 (Reconfigurar remote):**
+```bash
+# Apontar para SEU fork
+git remote set-url origin https://github.com/SEU-USUARIO/curso-r-github-ia.git
+
+# Verificar
+git remote -v
+# Agora deve aparecer SEU-USUARIO
+
+# Tentar push novamente
+git push origin main
+```
+
+**Solução - Opção 2 (Recomeçar do zero):**
+1. Deletar pasta do projeto
+2. Fazer fork do repositório original (se ainda não fez)
+3. Clonar SEU fork corretamente
+
+### "Não consigo encontrar o botão Fork"
+**Solução:**
+- Certifique-se que está logado no GitHub
+- Acesse: https://github.com/viniciusjunqueira/curso-r-github-ia
+- O botão "Fork" fica no canto superior direito, ao lado de "Star"
+
+### "Already exists" ao criar fork
+**Causa:** Você já tem um fork deste repositório
+
+**Solução:**
+- Vá direto para: `https://github.com/SEU-USUARIO/curso-r-github-ia`
+- Clone este repositório (você já tem o fork!)
+
+### "Não sei meu nome de usuário do GitHub"
+**Solução:**
+1. Acesse: https://github.com
+2. Clique no seu avatar (canto superior direito)
+3. Seu nome de usuário aparece no topo do menu
+4. Ou veja na URL: `https://github.com/SEU-USUARIO`
+
+### "Pacote não disponível"
+```r
+# Tentar espelho diferente
+options(repos = "https://cloud.r-project.org/")
+install.packages("nome_do_pacote")
+```
+
+### "API Key não encontrada"
+```r
+# Verificar se está configurada
+Sys.getenv("OPENAI_API_KEY")
+
+# Se vazio, configurar:
+usethis::edit_r_environ()
+# Adicionar: OPENAI_API_KEY=sua-chave
+# Salvar e reiniciar R: .rs.restartR()
+```
+
+### "Erro de encoding"
+```r
+# Sempre usar UTF-8
+write_csv(dados, here("output", "dados.csv"))
+# readr usa UTF-8 por padrão
+```
+
+---
 
 # Recursos Adicionais
 
-## Materiais Complementares
+## Materiais Multiplataforma
 
-### Livros Online (Gratuitos)
+### Livros Online (Todos os Sistemas)
 - **R for Data Science (2e):** https://r4ds.hadley.nz/
-- **Advanced R:** https://adv-r.hadley.nz/
-- **R Graphics Cookbook:** https://r-graphics.org/
 - **Happy Git with R:** https://happygitwithr.com/
-
-### Cheat Sheets
-- RStudio IDE: https://posit.co/resources/cheatsheets/
-- dplyr, ggplot2, RMarkdown dispon  veis no menu Help     Cheat Sheets
+- **R Graphics Cookbook:** https://r-graphics.org/
 
 ### Comunidades
 - **Posit Community:** https://community.rstudio.com/
 - **Stack Overflow:** tag [r]
-- **R-Ladies:** cap  tulos locais e globais
-- **LinkedIn/Twitter:** #RStats
+- **R-Ladies:** https://rladies.org/
 
-### Datasets para Pr  tica
-- `datasets::` (pacote nativo do R)
+### Datasets para Prática
 - **tidytuesday:** https://github.com/rfordatascience/tidytuesday
-- **Kaggle Datasets:** https://www.kaggle.com/datasets
-- **Brasil.io:** https://brasil.io/datasets/ (dados brasileiros)
-- **IBGE, DataSUS, INEP:** dados p  blicos brasileiros
+- **Brasil.io:** https://brasil.io/datasets/
+- **Kaggle:** https://www.kaggle.com/datasets
 
 ---
 
-## Usando IA de Forma   tica e Eficiente
+## Obtendo API Keys (Todos os Sistemas)
 
-### Boas Pr  ticas
-[OK] **Fa  a:**
-- Use IA para explicar conceitos que n  o entendeu
-- Pe  a sugest  es de otimiza    o de c  digo que voc   j   escreveu
-- Use para debugging (mas sempre entenda o erro primeiro)
-- Solicite revis  o de documenta    o e coment  rios
-- Aprenda com as explica    es fornecidas
+### OpenAI (ChatGPT)
+1. https://platform.openai.com/signup
+2. API Keys → Create new secret key
+3. Copiar e guardar a chave
+4. Configurar no R:
+   ```r
+   usethis::edit_r_environ()
+   # Adicionar: OPENAI_API_KEY=sk-...
+   ```
 
-[X] **Evite:**
-- Copiar c  digo sem entender o que ele faz
-- Usar IA para fazer TODO o trabalho (voc   n  o aprende)
-- Confiar cegamente no c  digo gerado (sempre teste!)
-- Compartilhar dados sens  veis com ferramentas de IA
+### Anthropic (Claude)
+1. https://console.anthropic.com/
+2. Settings → API Keys → Create Key
+3. Configurar:
+   ```r
+   usethis::edit_r_environ()
+   # Adicionar: ANTHROPIC_API_KEY=sk-ant-...
+   ```
 
-### Prompts Eficientes
-
-**Ruim:**
-> "Como fa  o um gr  fico no R?"
-
-**Bom:**
-> "Tenho um data.frame com colunas 'ano', 'pais' e 'pib'. Como criar um gr  fico de linhas no ggplot2 mostrando a evolu    o do PIB de cada pa  s ao longo dos anos, com cada pa  s em uma cor diferente?"
-
-**Excelente:**
-> "Estou aprendendo ggplot2 e tenho este c  digo [cole o c  digo]. Ele gera o gr  fico, mas as legendas est  o sobrepostas e os labels do eixo x est  o ileg  veis. Como posso melhorar a legibilidade sem perder informa    o?"
-
----
-
-## Crit  rios de Avalia    o do Projeto Final
-
-### An  lise de Dados (40%)
-- Limpeza e transforma    o adequadas
-- Uso correto de dplyr/tidyr
-- Tratamento de valores ausentes
-
-### Visualiza    es (30%)
-- Escolha apropriada de gr  ficos
-- Clareza e est  tica
-- Interpreta    o correta
-
-### Reprodutibilidade (20%)
-- C  digo organizado e comentado
-- Estrutura de projeto adequada
-- README.md completo
-- Relat  rio RMarkdown funcional
-
-### GitHub (10%)
-- Commits incrementais
-- Mensagens de commit claras
-- .gitignore apropriado
+### Alternativas Gratuitas
+- **Ollama:** Modelos locais (sem internet!)
+  - Windows: https://ollama.ai/download/windows
+  - macOS: https://ollama.ai/download/mac
+  - Linux: https://ollama.ai/download/linux
+  - Funciona com chattr
 
 ---
 
-## Contato e Suporte P  s-Curso
+## Contato
 
-**Instrutor:** Vin  cius Silva Junqueira  
+**Instrutor:** Vinícius Silva Junqueira  
 **Email:** junqueiravinicius@hotmail.com  
-**GitHub do curso:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**GitHub:** https://github.com/viniciusjunqueira/curso-r-github-ia  
 **Lattes:** http://lattes.cnpq.br/4686677580216927  
 **LinkedIn:** www.linkedin.com/in/junqueiravinicius  
-**Hor  rio de d  vidas:** Agendar via email
-
-**Suporte ap  s o curso:** 
-- D  vidas via Issues no GitHub do curso (resposta em at   48h)
-- Grupo no Slack/Discord (se aplic  vel)
-- Sess  o de follow-up opcional ap  s 2 semanas
 
 ---
 
-# Feedback dos Participantes
-
-Por favor, preencha o formul  rio de avalia    o ao final do curso:
-[Link para formul  rio]
-
-Sua opini  o    fundamental para melhorarmos continuamente!
-
----
-
-**  ltima atualiza    o:** `r Sys.Date()`  
-**Vers  o:** 2.0
+**Última atualização:** `r Sys.Date()`  
+**Versão:** 5.0 - Com instruções completas de Fork

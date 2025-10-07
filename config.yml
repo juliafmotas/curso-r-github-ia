@@ -1,0 +1,145 @@
+curso:
+  titulo: "Curso Intensivo de R - GitHub e IA"
+  duracao: "16 horas"
+  nivel: "Iniciante"
+  idioma: "pt-BR"
+  
+instrutor:
+  nome: "Vinicius Junqueira"
+  github: "viniciusjunqueira"
+  
+estrutura:
+  modulos:
+    - numero: 1
+      titulo: "Introdução ao R e RStudio"
+      duracao: "2h"
+      topicos:
+        - "Instalação do R e RStudio"
+        - "Interface do RStudio"
+        - "Tipos de dados básicos"
+        - "Operadores e expressões"
+      materiais:
+        - "slides/modulo01_introducao.pdf"
+        - "scripts/modulo01_exemplos.R"
+        - "exercicios/modulo01_exercicios.Rmd"
+        
+    - numero: 2
+      titulo: "Manipulação de Dados com Tidyverse"
+      duracao: "4h"
+      topicos:
+        - "Introdução ao tidyverse"
+        - "dplyr: filter, select, mutate, arrange"
+        - "Pipe operator (%>% e |>)"
+        - "tidyr: pivot, separate, unite"
+        - "Importação de dados (readr, readxl)"
+      materiais:
+        - "slides/modulo02_tidyverse.pdf"
+        - "scripts/modulo02_exemplos.R"
+        - "dados/exemplos/"
+        - "exercicios/modulo02_exercicios.Rmd"
+        
+    - numero: 3
+      titulo: "Visualização de Dados com ggplot2"
+      duracao: "4h"
+      topicos:
+        - "Gramática de gráficos"
+        - "Geometrias básicas (pontos, linhas, barras)"
+        - "Facetas e temas"
+        - "Customização avançada"
+        - "Gráficos interativos (plotly)"
+      materiais:
+        - "slides/modulo03_ggplot2.pdf"
+        - "scripts/modulo03_exemplos.R"
+        - "exercicios/modulo03_exercicios.Rmd"
+        
+    - numero: 4
+      titulo: "Controle de Versão com Git e GitHub"
+      duracao: "3h"
+      topicos:
+        - "Conceitos de Git"
+        - "Repositórios, commits, branches"
+        - "GitHub: push, pull, pull requests"
+        - "Colaboração e boas práticas"
+        - "GitHub Actions básico"
+      materiais:
+        - "slides/modulo04_github.pdf"
+        - "tutoriais/git_basico.md"
+        - "exercicios/modulo04_pratica.md"
+        
+    - numero: 5
+      titulo: "IA Aplicada ao R: ChatGPT e Claude"
+      duracao: "3h"
+      topicos:
+        - "Como usar IA para aprender R"
+        - "Prompt engineering para código"
+        - "Debugging com IA"
+        - "Otimização de código"
+        - "Documentação assistida"
+        - "Limitações e cuidados"
+      materiais:
+        - "slides/modulo05_ia.pdf"
+        - "exemplos/prompts_uteis.md"
+        - "exercicios/modulo05_desafios.Rmd"
+
+recursos:
+  pacotes_necessarios:
+    - tidyverse
+    - ggplot2
+    - dplyr
+    - tidyr
+    - readr
+    - rmarkdown
+    - knitr
+    - here
+    - janitor
+    - lubridate
+    - stringr
+    - forcats
+    
+  ferramentas:
+    - nome: "R"
+      versao: "4.3.0+"
+      url: "https://cran.r-project.org/"
+    - nome: "RStudio"
+      versao: "2023.06+"
+      url: "https://posit.co/download/rstudio-desktop/"
+    - nome: "Git"
+      versao: "2.40+"
+      url: "https://git-scm.com/"
+      
+  datasets:
+    - nome: "dados_vendas"
+      arquivo: "dados/vendas_2024.csv"
+      descricao: "Dados de vendas fictícios para exercícios"
+    - nome: "dados_clima"
+      arquivo: "dados/clima_brasil.xlsx"
+      descricao: "Dados climáticos de capitais brasileiras"
+      
+avaliacao:
+  tipo: "Exercícios práticos"
+  criterios:
+    - "Compreensão dos conceitos"
+    - "Qualidade do código"
+    - "Uso de boas práticas"
+    - "Documentação adequada"
+    
+certificacao:
+  disponivel: true
+  requisitos:
+    - "Presença mínima de 75%"
+    - "Conclusão de todos os exercícios"
+    - "Projeto final aprovado"
+    
+links_uteis:
+  - titulo: "R for Data Science"
+    url: "https://r4ds.hadley.nz/"
+  - titulo: "ggplot2 Documentation"
+    url: "https://ggplot2.tidyverse.org/"
+  - titulo: "Git Handbook"
+    url: "https://guides.github.com/introduction/git-handbook/"
+  - titulo: "Claude AI"
+    url: "https://claude.ai/"
+    
+contato:
+  email: "contato@exemplo.com"
+  github_issues: "https://github.com/viniciusjunqueira/curso-r-github-ia/issues"
