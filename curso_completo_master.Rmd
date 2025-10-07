@@ -1,7 +1,7 @@
 ---
-title: "Introdu    o    Programa    o em R com GitHub e IA"
-subtitle: "Curso Completo - Material Did  tico"
-author: "Vin  cius Silva Junqueira"
+title: "Introdução Programação em R com GitHub e IA"
+subtitle: "Curso Completo - Material Didático"
+author: "Vinícius Silva Junqueira"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
@@ -12,9 +12,13 @@ output:
     keep_tex: false
     fig_caption: true
     highlight: tango
+    # >>> ADIÇÃO: insere a capa antes do corpo <<<
+    includes:
+      before_body: capa.tex
 header-includes:
   - \usepackage{fontspec}
   - \usepackage{fancyhdr}
+  - \usepackage{graphicx}
   - \pagestyle{fancy}
   - \fancyhead[R]{Curso R + GitHub + IA}
   - \fancyfoot[C]{\thepage}
@@ -23,6 +27,7 @@ geometry: margin=2.5cm
 urlcolor: blue
 linkcolor: blue
 ---
+
 
 ```{r setup-global, include=FALSE}
 knitr::opts_chunk$set(
@@ -184,11 +189,6 @@ Parab  ns por concluir o curso! Voc   agora possui as habilidades fundamentais p
 **Email:** seu-email@example.com  
 **GitHub:** https://github.com/seu-usuario  
 **LinkedIn:** [seu perfil]
-
-### Suporte P  s-Curso
-- D  vidas via Issues no reposit  rio do curso
-- Sess  o de follow-up ap  s 2 semanas (se aplic  vel)
-- Comunidade de ex-alunos (se aplic  vel)
 
 ---
 

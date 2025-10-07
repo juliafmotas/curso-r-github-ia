@@ -153,21 +153,26 @@ knitr::opts_chunk$set(
 
 ## Pacotes R Necessários
 
-### Instalação no Dia 1 (funciona em todos os sistemas)
+### Instalação no Dia 1 (núcleo do curso)
 ```r
-# Pacotes principais
-install.packages(c("tidyverse", "here", "janitor", "skimr", 
-                   "readxl", "writexl", "rmarkdown", "usethis",
-                   "gitcreds"))
+# Núcleo
+install.packages(c(
+  "tidyverse", "here", "janitor", "skimr",
+  "readxl", "writexl", "rmarkdown", "knitr",
+  "lubridate", "scales", "patchwork", "broom"
+))
+
+# Datasets didáticos
+install.packages("palmerpenguins")
 ```
 
-### Instalação no Dia 4 (integração com IA)
+### Instalação opcional (Dia 4 – IA e APIs)
 ```r
-# Ferramentas de IA
+# Opcionais (não essenciais ao núcleo iniciante)
 install.packages(c("gptstudio", "chattr", "httr2"))
 ```
 
-**Nota:** A instalação de pacotes é idêntica em todos os sistemas operacionais.
+**Nota:** IA e httr2 permanecem como extras, para quem tiver API keys e interesse em explorar.
 
 ---
 
@@ -473,6 +478,7 @@ Antes de terminar o Dia 1, confirme cada item:
 - [ ] **Remote correto:** `git remote -v` mostra MEU usuário (não viniciusjunqueira)
 - [ ] **Primeiro commit feito:** Script `01_fundamentos.R` existe no GitHub
 - [ ] **Push funcionou:** Consigo ver minhas mudanças no meu fork do GitHub
+- [ ] **Pacotes instalados:** tidyverse, here, janitor, skimr, readxl, writexl, rmarkdown, knitr, lubridate, scales, patchwork, broom, palmerpenguins
 
 **Se algum item não estiver ✅ marcado, peça ajuda ao instrutor!**
 
@@ -539,14 +545,13 @@ git push origin main
   - Argumentos e retorno
   - **Exemplo prático:** função para calcular IMC
 
-### Boas Práticas e Debugging (25min)
+### Boas Práticas e Debugging (20min)
 - **Naming conventions:** `snake_case`
 - **Comentários eficientes**
 - **Lendo mensagens de erro**
-- **IA como assistente:** ChatGPT vs Claude
-- Uso ético: sempre entender o código
+- **IA como assistente:** ChatGPT vs Claude (ética: sempre entender o código)
 
-### IA Assistida (10min)
+### IA Assistida (5min)
 - Depurar scripts com erros
 - Usar ChatGPT/Claude para explicar problemas
 - **Commit:** `git commit -m "Lógica, funções e boas práticas - Dia 2"`
@@ -563,7 +568,7 @@ git push origin main
 - Princípios: tidy data, pipe, verbos consistentes
 - Carregar: `library(tidyverse)`
 
-### Verbos Essenciais do dplyr (50min)
+### Verbos Essenciais do dplyr (45min)
 - **`filter()`:** filtrar linhas por condição
 - **`select()`:** selecionar colunas
 - **`mutate()`:** criar/modificar colunas
@@ -572,12 +577,14 @@ git push origin main
 - **`group_by()`:** agrupar para operações
 - **Operador pipe:** `%>%` (tidyverse) ou `|>` (R nativo 4.1+)
 
-**Nota:** Ambos os pipes funcionam em todos os sistemas!
+### Datas com lubridate (10min)
+- Reconhecer datas: `ymd()`, `dmy()`, `mdy()`
+- Extrair componentes: `year()`, `month()`, `wday()`
+- Operar com datas: `today()`, `now()` e intervalos simples
 
-### Exemplo Integrado (25min)
+### Exemplo Integrado (20min)
 - Dataset: dados de saúde pública ou agricultura
-- Pipeline completo com todos os verbos
-- **Prática:** criar pipeline com dados reais
+- Pipeline com todos os verbos; se houver coluna de data, usar `lubridate` para extrair mês/ano
 
 ### Para Casa
 - Praticar pipeline com dataset fornecido
@@ -645,7 +652,7 @@ library(here)
 arquivo <- here("data", "raw", "dados.csv")
 
 # here() constrói o caminho correto para seu sistema!
-# Windows: "C:\Users\...\curso\data\raw\dados.csv"
+# Windows: "C:\\Users\\...\\curso\\data\\raw\\dados.csv"
 # macOS: "/Users/.../curso/data/raw/dados.csv"
 # Linux: "/home/.../curso/data/raw/dados.csv"
 ```
@@ -683,7 +690,43 @@ library(skimr)
 skim(dados)  # Resumo estatístico completo
 ```
 
-**Commit:** `git commit -m "Transformação e I/O - Dia 3"`
+### Pipeline integrado com palmerpenguins (25min)
+```r
+library(palmerpenguins)
+library(dplyr)
+library(ggplot2)
+library(scales)     # para formatação de eixos
+library(patchwork)  # para combinar gráficos
+
+peng <- penguins |> 
+  filter(!is.na(bill_length_mm), !is.na(bill_depth_mm), !is.na(flipper_length_mm)) |>
+  mutate(raz_bico = bill_length_mm / bill_depth_mm)
+
+g1 <- ggplot(peng, aes(x = species, y = flipper_length_mm)) +
+  geom_boxplot() +
+  labs(x = "Espécie", y = "Comprimento da nadadeira (mm)",
+       title = "Distribuição por espécie")
+
+g2 <- ggplot(peng, aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point(alpha = 0.7) +
+  labs(x = "Comprimento do bico (mm)", y = "Profundidade do bico (mm)",
+       title = "Relação entre medidas do bico")
+
+# Combinar lado a lado
+g1 + g2
+```
+
+#### Exportação com here() e formatação com scales (5min)
+```r
+library(here)
+# Exemplo scales: eixos percentuais ou monetários (quando aplicável)
+# scale_y_continuous(labels = percent)
+# scale_y_continuous(labels = dollar())
+
+ggsave(here("output", "figures", "penguins_combined.png"), width = 10, height = 4, dpi = 300)
+```
+
+**Commit:** `git commit -m "Transformação, I/O e pipeline - Dia 3"`
 
 ---
 
@@ -704,16 +747,19 @@ skim(dados)  # Resumo estatístico completo
 - **Boxplot:** `geom_boxplot()` + `geom_jitter()`
 - **Linhas:** `geom_line()` (séries temporais)
 - **Histograma:** `geom_histogram()` + `geom_density()`
+- **Formatação de eixos com scales:** `percent`, `number`, `dollar` (quando fizer sentido)
+- **Combinação de gráficos com patchwork:** `g1 + g2`, `g1 / g2`
 
 ### Personalização e Salvamento (15min)
 ```r
 # Criar gráfico
-p <- ggplot(dados, aes(x = x, y = y)) +
+p <- ggplot(peng, aes(x = bill_length_mm, y = flipper_length_mm, color = species)) +
   geom_point() +
   theme_minimal() +
-  labs(title = "Meu Gráfico",
-       x = "Variável X",
-       y = "Variável Y")
+  labs(title = "Relação entre bico e nadadeira",
+       x = "Comprimento do bico (mm)",
+       y = "Comprimento da nadadeira (mm)") +
+  scale_y_continuous(labels = number)  # formatação amigável do eixo y
 
 # Salvar com caminho portável
 ggsave(here("output", "figures", "grafico.png"), 
@@ -721,15 +767,7 @@ ggsave(here("output", "figures", "grafico.png"),
        width = 8, 
        height = 6, 
        dpi = 300)
-
-# Funciona em Windows, macOS e Linux!
 ```
-
-**Formatos suportados em todos os sistemas:**
-- PNG: melhor para relatórios e web
-- PDF: melhor para publicações científicas
-- JPEG: comprimido, menor qualidade
-- SVG: vetorial, editável
 
 ### Prática (10min)
 - Criar 3 visualizações diferentes
@@ -740,7 +778,7 @@ ggsave(here("output", "figures", "grafico.png"),
 
 \newpage
 
-# Dia 4: 25/11 (Terça) - RMarkdown e Integração IA no RStudio
+# Dia 4: 25/11 (Terça) - RMarkdown e (Opcional) Integração de IA
 
 ## 19h00 - 20h30 | Relatórios Reprodutíveis com RMarkdown
 
@@ -876,7 +914,7 @@ meu-projeto/
 
 ---
 
-## 20h50 - 22h00 | Integração de IA no RStudio
+## 20h50 - 22h00 | (Opcional) Integração de IA no RStudio
 
 ### Visão Geral (10min)
 - Por que integrar IA ao RStudio?
@@ -995,16 +1033,23 @@ cat(resposta$content[[1]]$text)
 3. Valide e teste todo código gerado
 4. Documente usando IA como assistente
 
-### Prática Final (25min)
+### Bônus rápido: resultados tidy com broom (10min)
+```r
+library(broom)
+mod <- lm(bill_length_mm ~ bill_depth_mm + flipper_length_mm, data = penguins)
+tidy(mod)      # tabela tidy de coeficientes
+glance(mod)    # métricas de ajuste (R² etc.)
+augment(mod)   # dados originais + ajustados/resíduos
+```
 
-#### Exercício Integrado
-1. Configurar gptstudio OU chattr
+### Prática Final (25min)
+1. Configurar gptstudio OU chattr  
 2. Usar IA para:
-   - Comentar script anterior
-   - Criar nova função
-   - Otimizar pipeline
-   - Melhorar relatório RMarkdown
-3. Salvar tudo usando `here()`
+   - Comentar script anterior  
+   - Criar nova função  
+   - Otimizar pipeline  
+   - Melhorar relatório RMarkdown  
+3. Salvar tudo usando `here()`  
 4. **Commit final:** `git commit -m "IA integrada - Curso completo"`
 
 ### Recursos (5min)
@@ -1014,8 +1059,8 @@ cat(resposta$content[[1]]$text)
 - **Anthropic API:** https://console.anthropic.com/
 
 ### Encerramento (5min)
-- Comunidades: R-Ladies, Posit Community
-- Prática contínua
+- Comunidades: R-Ladies, Posit Community  
+- Prática contínua  
 - Feedback do curso
 
 ---
@@ -1109,28 +1154,28 @@ git push origin main
 ```
 
 **Solução - Opção 2 (Recomeçar do zero):**
-1. Deletar pasta do projeto
-2. Fazer fork do repositório original (se ainda não fez)
+1. Deletar pasta do projeto  
+2. Fazer fork do repositório original (se ainda não fez)  
 3. Clonar SEU fork corretamente
 
 ### "Não consigo encontrar o botão Fork"
 **Solução:**
-- Certifique-se que está logado no GitHub
-- Acesse: https://github.com/viniciusjunqueira/curso-r-github-ia
+- Certifique-se que está logado no GitHub  
+- Acesse: https://github.com/viniciusjunqueira/curso-r-github-ia  
 - O botão "Fork" fica no canto superior direito, ao lado de "Star"
 
 ### "Already exists" ao criar fork
 **Causa:** Você já tem um fork deste repositório
 
 **Solução:**
-- Vá direto para: `https://github.com/SEU-USUARIO/curso-r-github-ia`
+- Vá direto para: `https://github.com/SEU-USUARIO/curso-r-github-ia`  
 - Clone este repositório (você já tem o fork!)
 
 ### "Não sei meu nome de usuário do GitHub"
 **Solução:**
-1. Acesse: https://github.com
-2. Clique no seu avatar (canto superior direito)
-3. Seu nome de usuário aparece no topo do menu
+1. Acesse: https://github.com  
+2. Clique no seu avatar (canto superior direito)  
+3. Seu nome de usuário aparece no topo do menu  
 4. Ou veja na URL: `https://github.com/SEU-USUARIO`
 
 ### "Pacote não disponível"
@@ -1222,4 +1267,4 @@ write_csv(dados, here("output", "dados.csv"))
 ---
 
 **Última atualização:** `r Sys.Date()`  
-**Versão:** 5.0 - Com instruções completas de Fork
+**Versão:** 5.1 - Núcleo ajustado + IA opcional + pipeline integrado com palmerpenguins
