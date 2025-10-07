@@ -1,0 +1,1101 @@
+<!-- 
+Este arquivo pode ser usado de duas formas:
+1. Compilado individualmente (mantém o YAML)
+2. Como child document (YAML é ignorado)
+-->
+
+---
+title: "Dia 4: I/O de Dados e Visualização"
+subtitle: "Curso: Introdução à Programação em R com GitHub e IA"
+author: "Vinícius Silva Junqueira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+    theme: flatly
+    highlight: tango
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: false
+---
+
+```{r setup-dia4, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5
+)
+```
+
+---
+
+# Objetivos do Dia 4
+
+Ao final desta aula, você será capaz de:
+
+- Ler dados de diversos formatos (CSV, Excel, RDS)
+- Escrever dados em diferentes formatos
+- Organizar projetos com estrutura profissional
+- Usar caminhos relativos com `here()`
+- Entender a gramática de gráficos do ggplot2
+- Criar visualizações profissionais
+- Personalizar gráficos com temas e cores
+- Salvar gráficos em alta qualidade
+- Escolher o gráfico adequado para cada tipo de dado
+
+---
+
+# Revisão Rápida do Dia 3
+
+```{r revisao-dia4}
+library(tidyverse)
+library(here)
+
+# Pipeline tidyverse
+dados <- tibble(
+  nome = c("Ana", "Bruno", "Carla"),
+  nota = c(8, 7, 9),
+  curso = c("Bio", "Eco", "Bio")
+)
+
+resumo <- dados %>%
+  group_by(curso) %>%
+  summarize(media = mean(nota))
+
+resumo
+```
+
+---
+
+# Parte 1: Entrada e Saída de Dados (19h00 - 20h30)
+
+## 1.1 Estrutura de Projetos Profissionais
+
+Uma boa estrutura facilita colaboração e reprodutibilidade.
+
+### Estrutura Recomendada
+
+```
+meu-projeto/
+├── meu-projeto.Rproj      # Arquivo do projeto
+├── README.md              # Descrição do projeto
+├── .gitignore             # Arquivos ignorados pelo Git
+│
+├── data/                  # Dados
+│   ├── raw/               # Dados originais (NUNCA modificar!)
+│   │   ├── dados.csv
+│   │   └── dados.xlsx
+│   └── processed/         # Dados limpos/processados
+│       └── dados_limpos.csv
+│
+├── scripts/               # Scripts R
+│   ├── 01_importar.R
+│   ├── 02_limpar.R
+│   └── 03_analisar.R
+│
+├── output/                # Resultados
+│   ├── figures/           # Gráficos
+│   └── tables/            # Tabelas
+│
+└── docs/                  # Relatórios/documentação
+    └── relatorio.Rmd
+```
+
+### Por que Projetos RStudio?
+
+```{r projetos-beneficios, eval=FALSE}
+# Benefícios:
+# 1. Working directory automático na raiz do projeto
+# 2. Portabilidade (funciona em qualquer computador)
+# 3. Integração com Git
+# 4. Histórico de arquivos abertos
+# 5. Configurações específicas do projeto
+
+# Criar projeto: File > New Project
+```
+
+---
+
+## 1.2 O Pacote here
+
+**`here()`** cria caminhos relativos à raiz do projeto.
+
+```{r here-demo}
+library(here)
+
+# Raiz do projeto
+here()
+
+# Criar caminho
+here("data", "raw", "dados.csv")
+
+# Vantagens sobre setwd():
+# - Portável (funciona em Windows, Mac, Linux)
+# - Seguro (não muda working directory global)
+# - Claro (explícito onde estão os arquivos)
+
+# RUIM (não faça):
+# setwd("C:/Users/Vinicius/Documents/projeto")
+# dados <- read.csv("data/dados.csv")
+
+# BOM:
+# dados <- read_csv(here("data", "raw", "dados.csv"))
+```
+
+---
+
+## 1.3 Leitura de Arquivos CSV
+
+**CSV** (Comma-Separated Values) é o formato mais comum.
+
+### readr::read_csv() vs base::read.csv()
+
+```{r csv-comparacao}
+# readr (tidyverse) - RECOMENDADO
+library(readr)
+
+# Vantagens do readr:
+# - Mais rápido (10x)
+# - Retorna tibble (não data.frame)
+# - Melhor tratamento de tipos
+# - Progress bar para arquivos grandes
+# - Encoding consistente (UTF-8)
+
+# Criar CSV de exemplo
+exemplo <- tibble(
+  id = 1:5,
+  nome = c("Ana", "Bruno", "Carla", "Diego", "Elena"),
+  idade = c(25, 30, 28, 32, 27),
+  salario = c(3000, 4500, 3500, 5000, 3800)
+)
+
+# Salvar temporariamente
+write_csv(exemplo, here("temp_exemplo.csv"))
+
+# Ler com readr (recomendado)
+dados_readr <- read_csv(here("temp_exemplo.csv"))
+dados_readr
+
+# Ler com base R (comparação)
+dados_base <- read.csv(here("temp_exemplo.csv"))
+class(dados_base)  # data.frame
+class(dados_readr) # tibble
+
+# Limpar
+file.remove(here("temp_exemplo.csv"))
+```
+
+### Opções Importantes
+
+```{r csv-opcoes}
+# Criar CSV com problemas comuns
+write_lines(
+  c("# Este é um comentário",
+    "nome,idade,cidade",
+    "Ana,25,São Paulo",
+    "Bruno,,Rio de Janeiro",  # Idade ausente
+    "Carla,28,",               # Cidade ausente
+    "Diego,32,Belo Horizonte"),
+  here("temp_problemas.csv")
+)
+
+# Ler com tratamento
+dados <- read_csv(
+  here("temp_problemas.csv"),
+  comment = "#",           # Ignorar linhas com #
+  na = c("", "NA"),        # O que considerar como NA
+  col_types = cols(        # Especificar tipos
+    nome = col_character(),
+    idade = col_double(),
+    cidade = col_character()
+  )
+)
+
+dados
+
+# Ver problemas durante leitura
+problems(dados)
+
+# Pular linhas
+dados <- read_csv(
+  here("temp_problemas.csv"),
+  skip = 1  # Pular primeira linha
+)
+
+# Ler apenas algumas linhas
+dados <- read_csv(
+  here("temp_problemas.csv"),
+  n_max = 3  # Ler apenas 3 linhas
+)
+
+# Limpar
+file.remove(here("temp_problemas.csv"))
+```
+
+### Outros Delimitadores
+
+```{r outros-delimitadores, eval=FALSE}
+# TSV (tab-separated)
+dados <- read_tsv("dados.tsv")
+
+# Delimitador customizado
+dados <- read_delim("dados.txt", delim = "|")
+
+# Arquivo com vírgula como decimal (padrão brasileiro)
+dados <- read_csv2("dados.csv")  # Usa ; como separador
+```
+
+---
+
+## 1.4 Leitura de Arquivos Excel
+
+```{r excel}
+library(readxl)
+
+# Criar Excel de exemplo
+library(writexl)
+
+dados_excel <- list(
+  Alunos = tibble(
+    nome = c("Ana", "Bruno", "Carla"),
+    nota = c(8.5, 7.0, 9.0)
+  ),
+  Turmas = tibble(
+    turma = c("A", "B", "C"),
+    n_alunos = c(30, 25, 28)
+  )
+)
+
+write_xlsx(dados_excel, here("temp_exemplo.xlsx"))
+
+# Listar sheets
+excel_sheets(here("temp_exemplo.xlsx"))
+
+# Ler sheet específica
+alunos <- read_excel(here("temp_exemplo.xlsx"), sheet = "Alunos")
+alunos
+
+turmas <- read_excel(here("temp_exemplo.xlsx"), sheet = 2)  # Por posição
+turmas
+
+# Ler range específico
+dados <- read_excel(
+  here("temp_exemplo.xlsx"),
+  sheet = "Alunos",
+  range = "A1:B3"  # Células específicas
+)
+
+# Pular linhas
+dados <- read_excel(
+  here("temp_exemplo.xlsx"),
+  sheet = "Alunos",
+  skip = 1  # Pular cabeçalho
+)
+
+# Limpar
+file.remove(here("temp_exemplo.xlsx"))
+```
+
+---
+
+## 1.5 Escrita de Arquivos
+
+### CSV
+
+```{r escrever-csv}
+# Criar dados
+resultados <- tibble(
+  data = Sys.Date(),
+  analise = "Exploratória",
+  n_observacoes = 100,
+  media = 75.5
+)
+
+# Escrever CSV
+write_csv(resultados, here("temp_resultados.csv"))
+
+# Ler de volta
+read_csv(here("temp_resultados.csv"))
+
+# Adicionar a arquivo existente
+novos_resultados <- tibble(
+  data = Sys.Date() + 1,
+  analise = "Confirmatória",
+  n_observacoes = 150,
+  media = 78.2
+)
+
+write_csv(novos_resultados, here("temp_resultados.csv"), append = TRUE)
+
+read_csv(here("temp_resultados.csv"))
+
+# Limpar
+file.remove(here("temp_resultados.csv"))
+```
+
+### Excel
+
+```{r escrever-excel}
+library(writexl)
+
+# Múltiplas sheets
+dados_completos <- list(
+  Resumo = tibble(total = 100, media = 75),
+  Detalhado = tibble(id = 1:5, valor = c(70, 75, 80, 72, 78))
+)
+
+write_xlsx(dados_completos, here("temp_analise.xlsx"))
+
+# Limpar
+file.remove(here("temp_analise.xlsx"))
+```
+
+### RDS (formato R nativo)
+
+```{r rds}
+# RDS preserva TUDO: tipos, classes, atributos
+modelo <- lm(mpg ~ wt, data = mtcars)
+
+# Salvar
+saveRDS(modelo, here("temp_modelo.rds"))
+
+# Carregar
+modelo_carregado <- readRDS(here("temp_modelo.rds"))
+summary(modelo_carregado)
+
+# Vantagens RDS:
+# - Preserva estrutura completa de objetos R
+# - Mais rápido que CSV
+# - Compressão automática
+# - Ideal para resultados intermediários
+
+# Limpar
+file.remove(here("temp_modelo.rds"))
+```
+
+---
+
+## 1.6 Boas Práticas de I/O
+
+```{r io-boas-praticas, eval=FALSE}
+# 1. SEMPRE use here() para caminhos
+dados <- read_csv(here("data", "raw", "dados.csv"))
+
+# 2. NUNCA modifique dados originais
+# Leia de raw/, salve em processed/
+dados_limpos <- dados %>% clean_data()
+write_csv(dados_limpos, here("data", "processed", "dados_limpos.csv"))
+
+# 3. Use nomes descritivos com data
+hoje <- Sys.Date()
+write_csv(resultados, here("output", paste0("resultados_", hoje, ".csv")))
+
+# 4. Documente encoding explicitamente
+dados <- read_csv(here("dados.csv"), locale = locale(encoding = "UTF-8"))
+
+# 5. Valide dados após importar
+dados <- read_csv(here("dados.csv"))
+stopifnot(nrow(dados) > 0)
+stopifnot("idade" %in% names(dados))
+```
+
+---
+
+# INTERVALO (20h30 - 20h50)
+
+Aproveite para:
+- Tomar água/café
+- Organizar sua estrutura de projeto
+- Testar leitura de seus próprios dados
+
+---
+
+# Parte 2: Visualização com ggplot2 (20h50 - 22h00)
+
+## 2.1 Gramática de Gráficos
+
+**ggplot2** implementa uma "gramática de gráficos" - uma abordagem sistemática para criar visualizações.
+
+### Componentes Fundamentais
+
+```{r ggplot-componentes, eval=FALSE}
+# Estrutura básica
+ggplot(data = dados, aes(x = variavel_x, y = variavel_y)) +
+  geom_*() +        # Tipo de gráfico (pontos, linhas, barras)
+  labs() +          # Títulos e labels
+  theme_*()         # Tema visual
+
+# Camadas são adicionadas com +
+```
+
+### Primeiro Gráfico
+
+```{r primeiro-grafico}
+library(ggplot2)
+
+# Dados de exemplo
+dados <- tibble(
+  x = 1:10,
+  y = c(2, 4, 3, 7, 5, 8, 9, 6, 10, 12)
+)
+
+# Gráfico básico
+ggplot(dados, aes(x = x, y = y)) +
+  geom_point()
+
+# Com linha
+ggplot(dados, aes(x = x, y = y)) +
+  geom_point() +
+  geom_line()
+
+# Adicionar títulos
+ggplot(dados, aes(x = x, y = y)) +
+  geom_point() +
+  geom_line() +
+  labs(
+    title = "Meu Primeiro Gráfico",
+    x = "Eixo X",
+    y = "Eixo Y"
+  )
+```
+
+---
+
+## 2.2 Gráfico de Dispersão
+
+**Dispersão** mostra relação entre duas variáveis contínuas.
+
+```{r dispersao}
+# Usar mtcars (dataset nativo)
+glimpse(mtcars)
+
+# Básico
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point()
+
+# Com cor por categoria
+ggplot(mtcars, aes(x = wt, y = mpg, color = factor(cyl))) +
+  geom_point()
+
+# Com tamanho
+ggplot(mtcars, aes(x = wt, y = mpg, size = hp)) +
+  geom_point(alpha = 0.6)  # alpha = transparência
+
+# Com linha de tendência
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm", se = TRUE)  # se = intervalo de confiança
+
+# Customizar
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point(color = "steelblue", size = 3, alpha = 0.7) +
+  geom_smooth(method = "lm", color = "red", fill = "pink") +
+  labs(
+    title = "Relação entre Peso e Consumo",
+    subtitle = "Dataset mtcars",
+    x = "Peso (1000 lbs)",
+    y = "Milhas por Galão (mpg)",
+    caption = "Fonte: Motor Trend (1974)"
+  ) +
+  theme_minimal()
+```
+
+---
+
+## 2.3 Gráfico de Barras
+
+**Barras** comparam valores entre categorias.
+
+```{r barras}
+# Dados de exemplo
+vendas <- tibble(
+  produto = c("A", "B", "C", "D"),
+  vendas = c(120, 95, 150, 80)
+)
+
+# geom_col() - altura especificada
+ggplot(vendas, aes(x = produto, y = vendas)) +
+  geom_col()
+
+# Com cores
+ggplot(vendas, aes(x = produto, y = vendas, fill = produto)) +
+  geom_col() +
+  theme_minimal()
+
+# Barras horizontais
+ggplot(vendas, aes(x = vendas, y = produto)) +
+  geom_col() +
+  labs(title = "Vendas por Produto")
+
+# geom_bar() - conta frequências
+ggplot(mtcars, aes(x = factor(cyl))) +
+  geom_bar() +
+  labs(
+    title = "Distribuição de Cilindros",
+    x = "Número de Cilindros",
+    y = "Frequência"
+  )
+
+# Barras agrupadas
+dados_grouped <- tibble(
+  categoria = rep(c("A", "B"), each = 3),
+  subcategoria = rep(c("X", "Y", "Z"), 2),
+  valor = c(10, 15, 12, 14, 18, 16)
+)
+
+ggplot(dados_grouped, aes(x = categoria, y = valor, fill = subcategoria)) +
+  geom_col(position = "dodge") +  # lado a lado
+  theme_minimal()
+
+# Barras empilhadas
+ggplot(dados_grouped, aes(x = categoria, y = valor, fill = subcategoria)) +
+  geom_col(position = "stack") +
+  theme_minimal()
+```
+
+---
+
+## 2.4 Boxplot
+
+**Boxplot** mostra distribuição e identifica outliers.
+
+```{r boxplot}
+# Básico
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot()
+
+# Com cores
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot() +
+  labs(
+    title = "Consumo por Número de Cilindros",
+    x = "Cilindros",
+    y = "Milhas por Galão",
+    fill = "Cilindros"
+  ) +
+  theme_minimal()
+
+# Com pontos (jitter)
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_boxplot(outlier.shape = NA) +  # Remove outliers do boxplot
+  geom_jitter(alpha = 0.5, width = 0.2) +  # Adiciona pontos
+  theme_minimal()
+
+# Violin plot (alternativa)
+ggplot(mtcars, aes(x = factor(cyl), y = mpg)) +
+  geom_violin(fill = "lightblue") +
+  geom_jitter(alpha = 0.3, width = 0.1) +
+  theme_minimal()
+```
+
+---
+
+## 2.5 Histograma e Densidade
+
+**Histograma** mostra distribuição de variável contínua.
+
+```{r histograma}
+# Histograma básico
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram()
+
+# Customizar bins
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(bins = 10, fill = "steelblue", color = "white") +
+  labs(
+    title = "Distribuição de Consumo",
+    x = "Milhas por Galão",
+    y = "Frequência"
+  ) +
+  theme_minimal()
+
+# Densidade
+ggplot(mtcars, aes(x = mpg)) +
+  geom_density(fill = "steelblue", alpha = 0.5) +
+  theme_minimal()
+
+# Histograma + densidade
+ggplot(mtcars, aes(x = mpg)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 10, 
+                 fill = "lightblue", color = "white") +
+  geom_density(color = "darkblue", linewidth = 1) +
+  theme_minimal()
+
+# Por grupo
+ggplot(mtcars, aes(x = mpg, fill = factor(cyl))) +
+  geom_density(alpha = 0.5) +
+  labs(fill = "Cilindros") +
+  theme_minimal()
+```
+
+---
+
+## 2.6 Gráfico de Linhas
+
+**Linhas** mostram tendências ao longo do tempo.
+
+```{r linhas}
+# Dados temporais
+vendas_tempo <- tibble(
+  mes = 1:12,
+  vendas = c(100, 110, 105, 120, 125, 130, 128, 135, 140, 138, 145, 150)
+)
+
+# Básico
+ggplot(vendas_tempo, aes(x = mes, y = vendas)) +
+  geom_line()
+
+# Com pontos
+ggplot(vendas_tempo, aes(x = mes, y = vendas)) +
+  geom_line(color = "steelblue", linewidth = 1) +
+  geom_point(color = "darkblue", size = 2) +
+  labs(
+    title = "Evolução de Vendas",
+    x = "Mês",
+    y = "Vendas (R$)"
+  ) +
+  theme_minimal()
+
+# Múltiplas linhas
+vendas_produtos <- tibble(
+  mes = rep(1:12, 3),
+  produto = rep(c("A", "B", "C"), each = 12),
+  vendas = c(
+    100 + cumsum(rnorm(12, 2, 3)),
+    90 + cumsum(rnorm(12, 2.5, 3)),
+    110 + cumsum(rnorm(12, 1.5, 3))
+  )
+)
+
+ggplot(vendas_produtos, aes(x = mes, y = vendas, color = produto)) +
+  geom_line(linewidth = 1) +
+  geom_point() +
+  labs(
+    title = "Vendas por Produto ao Longo do Ano",
+    x = "Mês",
+    y = "Vendas",
+    color = "Produto"
+  ) +
+  theme_minimal()
+
+# Com área (ribbon)
+vendas_ic <- vendas_tempo %>%
+  mutate(
+    ic_lower = vendas - 10,
+    ic_upper = vendas + 10
+  )
+
+ggplot(vendas_ic, aes(x = mes, y = vendas)) +
+  geom_ribbon(aes(ymin = ic_lower, ymax = ic_upper), 
+              fill = "lightblue", alpha = 0.5) +
+  geom_line(color = "darkblue", linewidth = 1) +
+  theme_minimal()
+```
+
+---
+
+## 2.7 Facetas
+
+**Facetas** criam múltiplos gráficos para diferentes subgrupos.
+
+```{r facetas}
+# facet_wrap() - uma variável
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  facet_wrap(~cyl) +
+  labs(title = "Consumo vs Peso por Número de Cilindros") +
+  theme_minimal()
+
+# facet_grid() - duas variáveis
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  facet_grid(cyl ~ gear) +
+  theme_minimal()
+
+# Customizar layout
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  facet_wrap(~cyl, ncol = 2) +  # 2 colunas
+  theme_minimal()
+
+# Escalas livres
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  facet_wrap(~cyl, scales = "free") +  # Escalas independentes
+  theme_minimal()
+```
+
+---
+
+## 2.8 Personalização
+
+### Cores
+
+```{r cores}
+# Cores manuais
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("red", "green", "blue")) +
+  theme_minimal()
+
+# Paletas do RColorBrewer
+library(RColorBrewer)
+display.brewer.all()
+
+ggplot(mtcars, aes(x = factor(cyl), y = mpg, fill = factor(cyl))) +
+  geom_boxplot() +
+  scale_fill_brewer(palette = "Set2") +
+  theme_minimal()
+
+# Paletas viridis (color-blind friendly)
+ggplot(mtcars, aes(x = wt, y = mpg, color = hp)) +
+  geom_point(size = 3) +
+  scale_color_viridis_c() +  # _c = contínua, _d = discreta
+  theme_minimal()
+```
+
+### Temas
+
+```{r temas}
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  labs(title = "Consumo vs Peso")
+
+# Temas disponíveis
+p + theme_minimal()
+p + theme_classic()
+p + theme_bw()
+p + theme_dark()
+p + theme_void()
+
+# Customizar tema
+p + theme_minimal() +
+  theme(
+    plot.title = element_text(size = 16, face = "bold"),
+    axis.text = element_text(size = 12),
+    panel.grid.minor = element_blank()
+  )
+```
+
+### Labels e Anotações
+
+```{r labels}
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_text(aes(label = rownames(mtcars)), 
+            hjust = 0, vjust = 0, size = 3) +
+  labs(
+    title = "Consumo vs Peso dos Carros",
+    subtitle = "Dataset mtcars",
+    x = "Peso (1000 lbs)",
+    y = "Milhas por Galão",
+    caption = "Fonte: Motor Trend (1974)"
+  ) +
+  theme_minimal()
+
+# Anotação manual
+ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  annotate("text", x = 4, y = 30, label = "Carros leves\nconsomem mais", 
+           color = "red", size = 5) +
+  annotate("rect", xmin = 1.5, xmax = 2.5, ymin = 25, ymax = 35,
+           alpha = 0.2, fill = "blue") +
+  theme_minimal()
+```
+
+---
+
+## 2.9 Salvando Gráficos
+
+```{r salvar-graficos, eval=FALSE}
+# Criar gráfico
+p <- ggplot(mtcars, aes(x = wt, y = mpg)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Consumo vs Peso") +
+  theme_minimal()
+
+# Salvar com ggsave()
+ggsave(
+  filename = here("output", "figures", "grafico_consumo.png"),
+  plot = p,
+  width = 8,      # Largura em polegadas
+  height = 6,     # Altura em polegadas
+  dpi = 300       # Resolução (300 dpi para publicação)
+)
+
+# Diferentes formatos
+ggsave(here("output", "grafico.png"), p)   # PNG
+ggsave(here("output", "grafico.pdf"), p)   # PDF (vetorial)
+ggsave(here("output", "grafico.svg"), p)   # SVG (vetorial)
+ggsave(here("output", "grafico.jpg"), p)   # JPEG
+
+# Ajustar tamanho
+ggsave(here("output", "grafico_wide.png"), p, 
+       width = 12, height = 4)  # Formato wide
+
+# Salvar último gráfico
+ggplot(mtcars, aes(x = wt, y = mpg)) + geom_point()
+ggsave(here("output", "ultimo_grafico.png"))  # Salva o último
+```
+
+---
+
+# Exercícios Práticos
+
+## Exercício 1: I/O de Dados
+
+```{r ex4-1, eval=FALSE}
+# a) Crie um tibble com dados fictícios (nome, idade, cidade, salário)
+#    de 10 pessoas
+
+
+# b) Salve como CSV em data/processed/
+
+
+# c) Salve como Excel com duas sheets: "Dados" e "Resumo"
+
+
+# d) Salve como RDS
+
+
+# e) Leia cada arquivo de volta e compare
+
+```
+
+## Exercício 2: Visualizações Básicas
+
+```{r ex4-2, eval=FALSE}
+# Use o dataset 'iris' (nativo do R)
+glimpse(iris)
+
+# a) Crie gráfico de dispersão: Sepal.Length vs Sepal.Width
+#    colorido por Species
+
+
+# b) Crie boxplot de Petal.Length por Species
+
+
+# c) Crie histograma de Sepal.Length
+
+
+# d) Salve os 3 gráficos em PNG (alta resolução)
+
+```
+
+## Exercício 3: Gráficos Avançados
+
+```{r ex4-3, eval=FALSE}
+# Use o dataset 'diamonds' (ggplot2)
+glimpse(diamonds)
+
+# a) Crie gráfico de densidade do preço por qualidade do corte (cut)
+
+
+# b) Crie gráfico de barras: média de preço por cor (color)
+
+
+# c) Crie facetas: dispersão price vs carat, uma faceta por clarity
+
+
+# d) Customize com tema, cores e títulos profissionais
+
+```
+
+## Exercício 4: Análise Completa
+
+```{r ex4-4, eval=FALSE}
+# Dataset de vendas (criar fictício)
+set.seed(123)
+vendas <- tibble(
+  data = seq(as.Date("2024-01-01"), by = "day", length.out = 365),
+  produto = sample(c("A", "B", "C"), 365, replace = TRUE),
+  vendas = round(rnorm(365, 1000, 200)),
+  regiao = sample(c("Norte", "Sul", "Leste", "Oeste"), 365, replace = TRUE)
+)
+
+# a) Salve o dataset em CSV
+
+
+# b) Crie gráfico de linha: vendas ao longo do tempo por produto
+
+
+# c) Crie boxplot: vendas por região
+
+
+# d) Crie facetas: densidade de vendas por região
+
+
+# e) Salve os gráficos em uma pasta 'output/figures/'
+
+```
+
+## Exercício 5: Projeto Integrado
+
+```{r ex4-5, eval=FALSE}
+# Projeto completo: análise de desempenho de alunos
+
+# 1. Crie dataset de 50 alunos com:
+#    - nome, curso, nota_p1, nota_p2, frequência, bolsista
+
+
+# 2. Calcule média final e status (aprovado/reprovado)
+
+
+# 3. Salve dados limpos em processed/
+
+
+# 4. Crie 4 visualizações:
+#    - Distribuição de notas
+#    - Média por curso
+#    - Relação entre frequência e nota
+#    - Comparação bolsista vs não-bolsista
+
+
+# 5. Salve todas as visualizações profissionalmente
+
+
+# 6. Use IA (ChatGPT ou Claude) para sugerir melhorias!
+
+```
+
+---
+
+# Galeria de Gráficos
+
+## Quando usar cada tipo?
+
+```{r galeria-quando}
+# DISPERSÃO: relação entre 2 variáveis contínuas
+# Exemplo: altura vs peso, preço vs tamanho
+
+# LINHAS: evolução temporal, tendências
+# Exemplo: vendas mensais, temperatura diária
+
+# BARRAS: comparar categorias
+# Exemplo: vendas por produto, população por país
+
+# BOXPLOT: distribuição, outliers, comparar grupos
+# Exemplo: salário por profissão, notas por turma
+
+# HISTOGRAMA: distribuição de uma variável
+# Exemplo: distribuição de idades, frequência de valores
+
+# DENSIDADE: distribuição suave, comparar grupos
+# Exemplo: distribuição de renda por região
+
+# FACETAS: comparar subgrupos
+# Exemplo: mesma análise para diferentes categorias
+```
+
+---
+
+# Commit no GitHub
+
+Versione seu progresso:
+
+```bash
+git add .
+git commit -m "Dia 4: adiciona I/O e visualização com ggplot2"
+git push
+```
+
+---
+
+# Para Casa
+
+1. **Organizar** seu projeto com estrutura profissional
+2. **Praticar** leitura de seus próprios dados
+3. **Criar** pelo menos 5 visualizações diferentes
+4. **Ler** [R for Data Science - Data Visualization](https://r4ds.hadley.nz/data-visualize.html)
+5. **Explorar** [R Graph Gallery](https://r-graph-gallery.com/) para inspiração
+6. **Usar** IA para melhorar suas visualizações
+
+---
+
+# Recursos Adicionais
+
+## Documentação
+
+- [ggplot2 Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/data-visualization.pdf)
+- [ggplot2 Book](https://ggplot2-book.org/)
+- [R Graph Gallery](https://r-graph-gallery.com/)
+- [Data-to-Viz](https://www.data-to-viz.com/) - Escolher gráfico certo
+
+## Extensões ggplot2
+
+- **ggthemes**: Temas adicionais
+- **patchwork**: Combinar múltiplos gráficos
+- **ggrepel**: Labels sem sobreposição
+- **gganimate**: Gráficos animados
+- **plotly**: Gráficos interativos
+
+```{r extensoes, eval=FALSE}
+# install.packages(c("ggthemes", "patchwork", "ggrepel"))
+library(ggthemes)
+library(patchwork)
+
+# Tema Economist
+ggplot(mtcars, aes(wt, mpg)) + 
+  geom_point() + 
+  theme_economist()
+
+# Combinar gráficos
+p1 <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+p2 <- ggplot(mtcars, aes(hp, mpg)) + geom_point()
+p1 + p2  # Lado a lado
+```
+
+---
+
+# Dúvidas Frequentes
+
+**P: CSV ou Excel?**  
+R: CSV para dados simples, Excel quando precisa de múltiplas sheets ou formatação.
+
+**P: Por que usar here()?**  
+R: Portabilidade! Seu código funciona em qualquer computador sem mudanças.
+
+**P: Qual resolução usar para gráficos?**  
+R: 300 dpi para publicação, 150 dpi para web, 72 dpi para apresentações.
+
+**P: Como escolher cores?**  
+R: Use paletas viridis (color-blind friendly) ou ColorBrewer. Evite vermelho-verde juntos.
+
+**P: Gráfico muito carregado, o que fazer?**  
+R: Simplifique! Menos é mais. Use facetas para separar informação.
+
+---
+
+# Conclusão do Dia 4
+
+Parabéns! Você completou o Dia 4 e agora domina:
+
+- Leitura e escrita de dados (CSV, Excel, RDS)
+- Organização profissional de projetos
+- Caminhos relativos com here()
+- Gramática de gráficos do ggplot2
+- Criação de visualizações profissionais
+- Personalização de gráficos
+- Salvamento em alta qualidade
+- Escolha do gráfico adequado
+
+**Amanhã:** RMarkdown, relatórios reprodutíveis e projeto final!
+
+---
+
+**Última atualização:** `r Sys.Date()`  
+**Contato:** junqueiravinicius@hotmail.com  
+**Repositório:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Lattes:** http://lattes.cnpq.br/4686677580216927

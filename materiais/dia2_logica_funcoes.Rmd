@@ -1,0 +1,1313 @@
+<!-- 
+Este arquivo pode ser usado de duas formas:
+1. Compilado individualmente (mantém o YAML)
+2. Como child document (YAML é ignorado)
+-->
+
+---
+title: "Dia 2: Lógica, Funções e Boas Práticas"
+subtitle: "Curso: Introdução à Programação em R com GitHub e IA"
+author: "Vinícius Silva Junqueira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+    theme: flatly
+    highlight: tango
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: false
+---
+
+```{r setup-dia2, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5
+)
+```
+
+---
+
+# Objetivos do Dia 2
+
+Ao final desta aula, você será capaz de:
+
+- Usar operadores relacionais e lógicos para comparações
+- Criar estruturas condicionais (if, else, ifelse, case_when)
+- Entender quando e como usar loops
+- Criar funções customizadas para automatizar tarefas
+- Aplicar boas práticas de código (naming, comentários, estilo)
+- Fazer debugging sistemático de erros
+- Usar ChatGPT e Claude de forma estratégica
+
+---
+
+# Revisão Rápida do Dia 1
+
+Antes de começar, vamos relembrar os conceitos fundamentais:
+
+```{r revisao}
+# Tipos de dados
+numero <- 42
+texto <- "Hello, R!"
+logico <- TRUE
+vetor <- c(1, 2, 3, 4, 5)
+
+# Data frame
+dados <- data.frame(
+  nome = c("Ana", "Bruno", "Carla"),
+  idade = c(25, 30, 28),
+  nota = c(8.5, 7.0, 9.0)
+)
+
+# Indexação
+dados$nome
+dados[dados$idade > 26, ]
+```
+
+---
+
+# Parte 1: Operadores e Condicionais (19h00 - 20h30)
+
+## 1.1 Operadores Relacionais
+
+Operadores relacionais **comparam valores** e retornam TRUE ou FALSE.
+
+```{r operadores-relacionais}
+# Igualdade
+5 == 5    # TRUE
+5 == 3    # FALSE
+
+# Diferente
+5 != 3    # TRUE
+5 != 5    # FALSE
+
+# Maior/Menor
+10 > 5    # TRUE
+10 < 5    # FALSE
+
+# Maior ou igual / Menor ou igual
+10 >= 10  # TRUE
+10 <= 5   # FALSE
+
+# Comparação de strings (case-sensitive)
+"R" == "R"       # TRUE
+"R" == "r"       # FALSE
+"R" == "Python"  # FALSE
+```
+
+### Aplicações Práticas
+
+```{r rel-pratico}
+# Verificar aprovação
+nota <- 7.5
+nota >= 7  # TRUE - Aprovado!
+
+# Verificar maioridade
+idade <- 17
+idade >= 18  # FALSE - Menor de idade
+
+# Comparar preços
+preco_atual <- 150
+preco_anterior <- 200
+preco_atual < preco_anterior  # TRUE - Está mais barato!
+
+# Vetorizado
+notas <- c(8.5, 6.0, 9.0, 5.5, 7.5)
+notas >= 7  # TRUE FALSE TRUE FALSE TRUE
+```
+
+---
+
+## 1.2 Operadores Lógicos
+
+Operadores lógicos **combinam condições**.
+
+```{r operadores-logicos}
+# E (AND) - & ou &&
+# Ambas condições devem ser TRUE
+TRUE & TRUE    # TRUE
+TRUE & FALSE   # FALSE
+FALSE & FALSE  # FALSE
+
+# OU (OR) - | ou ||
+# Pelo menos uma condição deve ser TRUE
+TRUE | FALSE   # TRUE
+FALSE | FALSE  # FALSE
+
+# NÃO (NOT) - !
+# Inverte o resultado
+!TRUE   # FALSE
+!FALSE  # TRUE
+```
+
+### Diferença entre & e &&
+
+```{r and-vs-andand}
+# & é vetorizado (compara elemento por elemento)
+c(TRUE, FALSE, TRUE) & c(TRUE, TRUE, FALSE)
+
+# && avalia apenas o primeiro elemento (usa com escalares)
+TRUE && TRUE    # TRUE
+FALSE && TRUE   # FALSE
+
+# CUIDADO: && com vetores usa apenas primeiro elemento
+# c(TRUE, FALSE) && c(TRUE, TRUE)  # Evite! Use & para vetores
+
+# Regra: Use & para vetores, && para condições únicas em if
+```
+
+### Aplicações Práticas
+
+```{r log-pratico}
+# Pode dirigir? (maior de idade E tem carteira)
+idade <- 25
+tem_carteira <- TRUE
+idade >= 18 & tem_carteira  # TRUE
+
+# Desconto especial (idoso OU estudante)
+idade <- 70
+estudante <- FALSE
+idade >= 60 | estudante  # TRUE - Tem desconto!
+
+# Aprovado em pelo menos uma prova
+prova1 <- 6.0
+prova2 <- 8.0
+prova1 >= 7 | prova2 >= 7  # TRUE
+
+# Vetorizado
+idades <- c(16, 22, 35, 17, 28)
+tem_carteiras <- c(FALSE, TRUE, TRUE, FALSE, TRUE)
+
+# Quem pode dirigir?
+pode_dirigir <- idades >= 18 & tem_carteiras
+pode_dirigir
+```
+
+---
+
+## 1.3 Ordem de Precedência
+
+Quando múltiplos operadores são usados, há uma ordem de avaliação:
+
+```{r precedencia}
+# 1. Parênteses ()
+# 2. NOT (!)
+# 3. Relacionais (>, <, ==, etc)
+# 4. AND (&)
+# 5. OR (|)
+
+# Exemplo
+idade <- 25
+tem_carteira <- TRUE
+tem_carro <- FALSE
+
+# SEM parênteses (pode confundir)
+idade >= 18 & tem_carteira | tem_carro
+
+# COM parênteses (mais claro)
+(idade >= 18 & tem_carteira) | tem_carro
+
+# Sempre use parênteses quando tiver dúvida!
+```
+
+---
+
+## 1.4 Estruturas Condicionais: if e else
+
+**if** executa código apenas se a condição for TRUE.
+
+### Sintaxe Básica
+
+```{r if-basico}
+# Estrutura simples
+nota <- 8.5
+
+if (nota >= 7) {
+  print("Aprovado!")
+}
+
+# Com else
+nota <- 5.5
+
+if (nota >= 7) {
+  print("Aprovado!")
+} else {
+  print("Reprovado!")
+}
+```
+
+### Múltiplas Condições: else if
+
+```{r else-if}
+nota <- 8.5
+
+if (nota >= 9) {
+  print("Excelente!")
+} else if (nota >= 7) {
+  print("Bom!")
+} else if (nota >= 5) {
+  print("Regular")
+} else {
+  print("Insuficiente")
+}
+```
+
+### Boas Práticas com if/else
+
+```{r if-boas-praticas, eval=FALSE}
+# BOM: Use chaves mesmo para uma linha
+if (x > 0) {
+  print("Positivo")
+}
+
+# RUIM: Sem chaves (menos legível)
+if (x > 0) print("Positivo")
+
+# BOM: Indentação consistente
+if (condicao1) {
+  # código
+  if (condicao2) {
+    # código aninhado
+  }
+}
+
+# BOM: Condições complexas em variáveis
+usuario_valido <- idade >= 18 & tem_cadastro
+if (usuario_valido) {
+  # código
+}
+
+# RUIM: Condição muito longa
+if (idade >= 18 & tem_cadastro & email_verificado & termos_aceitos) {
+  # código
+}
+```
+
+---
+
+## 1.5 ifelse() - Versão Vetorizada
+
+Para aplicar condições em vetores inteiros, use `ifelse()`.
+
+```{r ifelse}
+# Sintaxe: ifelse(teste, se_verdadeiro, se_falso)
+
+# Exemplo simples
+x <- 5
+resultado <- ifelse(x > 0, "Positivo", "Não positivo")
+resultado
+
+# Vetorizado
+notas <- c(8.5, 6.0, 9.0, 5.5, 7.5)
+status <- ifelse(notas >= 7, "Aprovado", "Reprovado")
+status
+
+# Criar coluna em data frame
+alunos <- data.frame(
+  nome = c("Ana", "Bruno", "Carla", "Diego"),
+  nota = c(8.5, 6.0, 9.0, 5.5)
+)
+
+alunos$status <- ifelse(alunos$nota >= 7, "Aprovado", "Reprovado")
+alunos
+
+# ifelse aninhado (evite! Use case_when)
+alunos$conceito <- ifelse(alunos$nota >= 9, "A",
+                   ifelse(alunos$nota >= 7, "B",
+                   ifelse(alunos$nota >= 5, "C", "D")))
+alunos
+```
+
+---
+
+## 1.6 case_when() - Múltiplas Condições
+
+`case_when()` do dplyr é mais elegante para múltiplas condições.
+
+```{r case-when}
+library(tidyverse)
+
+# Sintaxe
+notas <- c(9.5, 7.5, 5.5, 8.0, 6.5, 3.0)
+
+conceito <- case_when(
+  notas >= 9 ~ "A",
+  notas >= 7 ~ "B",
+  notas >= 5 ~ "C",
+  TRUE ~ "D"  # Caso contrário (default)
+)
+conceito
+
+# Em data frame
+alunos <- data.frame(
+  nome = c("Ana", "Bruno", "Carla", "Diego", "Elena"),
+  nota = c(9.5, 7.5, 5.5, 8.0, 6.5)
+)
+
+alunos <- alunos %>%
+  mutate(
+    conceito = case_when(
+      nota >= 9 ~ "A - Excelente",
+      nota >= 7 ~ "B - Bom",
+      nota >= 5 ~ "C - Regular",
+      TRUE ~ "D - Insuficiente"
+    )
+  )
+
+alunos
+
+# Múltiplas variáveis
+alunos <- alunos %>%
+  mutate(
+    situacao = case_when(
+      nota >= 7 & nota < 9 ~ "Aprovado",
+      nota >= 9 ~ "Aprovado com Distinção",
+      nota >= 5 ~ "Recuperação",
+      TRUE ~ "Reprovado"
+    )
+  )
+
+alunos
+```
+
+---
+
+## 1.7 Operador %in%
+
+Verifica se valores estão dentro de um conjunto.
+
+```{r in-operator}
+# Básico
+"Ana" %in% c("Ana", "Bruno", "Carla")  # TRUE
+"João" %in% c("Ana", "Bruno", "Carla")  # FALSE
+
+# Vetorizado
+nomes <- c("Ana", "João", "Bruno", "Maria")
+nomes %in% c("Ana", "Bruno", "Carla")
+
+# Filtrar data frame
+alunos <- data.frame(
+  nome = c("Ana", "Bruno", "Carla", "Diego", "Elena"),
+  nota = c(9.5, 7.5, 5.5, 8.0, 6.5)
+)
+
+# Alunos específicos
+alunos[alunos$nome %in% c("Ana", "Carla"), ]
+
+# Com dplyr
+alunos %>%
+  filter(nome %in% c("Ana", "Carla", "Elena"))
+
+# Negação: NÃO está em
+alunos %>%
+  filter(!nome %in% c("Bruno", "Diego"))
+```
+
+---
+
+# INTERVALO (20h30 - 20h50)
+
+Aproveite para:
+- Tomar água/café
+- Revisar os conceitos
+- Tirar dúvidas no grupo
+
+---
+
+# Parte 2: Loops, Funções e Boas Práticas (20h50 - 22h00)
+
+## 2.1 Loops: for
+
+**Loop for** repete código um número determinado de vezes.
+
+### Sintaxe Básica
+
+```{r for-basico}
+# Estrutura básica
+for (i in 1:5) {
+  print(i)
+}
+
+# Com vetor
+frutas <- c("Maçã", "Banana", "Laranja")
+for (fruta in frutas) {
+  print(paste("Eu gosto de", fruta))
+}
+
+# Índice com seq_along (mais seguro)
+for (i in seq_along(frutas)) {
+  print(paste(i, "-", frutas[i]))
+}
+```
+
+### Acumulando Resultados
+
+```{r for-acumular}
+# Soma
+soma <- 0
+for (i in 1:10) {
+  soma <- soma + i
+}
+soma
+
+# Criar vetor de resultados
+# RUIM: crescer vetor dentro do loop
+resultados <- c()
+for (i in 1:5) {
+  resultados <- c(resultados, i^2)
+}
+
+# BOM: pré-alocar vetor
+resultados <- numeric(5)  # Vetor de zeros
+for (i in 1:5) {
+  resultados[i] <- i^2
+}
+resultados
+```
+
+### Loops Aninhados
+
+```{r for-aninhado}
+# Tabuada
+for (i in 1:3) {
+  for (j in 1:3) {
+    print(paste(i, "x", j, "=", i * j))
+  }
+}
+```
+
+---
+
+## 2.2 Vetorização vs Loops
+
+**R é vetorizado** - prefira operações vetorizadas!
+
+```{r vetorizacao}
+# LENTO: Loop
+x <- 1:1000
+resultado <- numeric(length(x))
+for (i in seq_along(x)) {
+  resultado[i] <- x[i]^2
+}
+
+# RÁPIDO: Vetorizado
+resultado <- x^2
+
+# Benchmark
+library(microbenchmark)
+
+microbenchmark(
+  loop = {
+    resultado <- numeric(1000)
+    for (i in 1:1000) resultado[i] <- i^2
+  },
+  vetorizado = {
+    resultado <- (1:1000)^2
+  },
+  times = 100
+)
+```
+
+### Quando Usar Loops?
+
+Use loops quando:
+- Cada iteração depende da anterior
+- Operação não é vetorizável
+- Código fica mais legível com loop
+
+```{r quando-loop}
+# Fibonacci (cada termo depende dos anteriores)
+fib <- numeric(10)
+fib[1] <- 1
+fib[2] <- 1
+
+for (i in 3:10) {
+  fib[i] <- fib[i-1] + fib[i-2]
+}
+fib
+
+# Simulação com estado
+saldo <- 1000
+for (mes in 1:12) {
+  juros <- saldo * 0.01
+  saldo <- saldo + juros
+  print(paste("Mês", mes, "- Saldo:", round(saldo, 2)))
+}
+```
+
+---
+
+## 2.3 Loops: while e repeat
+
+### while
+
+Executa **enquanto** condição for TRUE.
+
+```{r while}
+# Básico
+contador <- 1
+while (contador <= 5) {
+  print(contador)
+  contador <- contador + 1
+}
+
+# Cuidado: loop infinito!
+# while (TRUE) {
+#   print("Infinito!")
+# }
+
+# Uso prático: convergência
+valor <- 100
+iteracoes <- 0
+
+while (valor > 1) {
+  valor <- valor / 2
+  iteracoes <- iteracoes + 1
+}
+
+print(paste("Convergiu em", iteracoes, "iterações"))
+```
+
+### repeat e break
+
+```{r repeat}
+# repeat com break
+contador <- 1
+
+repeat {
+  print(contador)
+  contador <- contador + 1
+  
+  if (contador > 5) {
+    break  # Sai do loop
+  }
+}
+
+# next: pula iteração
+for (i in 1:5) {
+  if (i == 3) {
+    next  # Pula o 3
+  }
+  print(i)
+}
+```
+
+---
+
+## 2.4 Funções Customizadas
+
+Funções permitem **reutilizar código** e deixá-lo mais organizado.
+
+### Sintaxe Básica
+
+```{r funcoes-basico}
+# Estrutura
+# nome_funcao <- function(argumentos) {
+#   corpo da função
+#   return(resultado)
+# }
+
+# Exemplo simples
+saudar <- function(nome) {
+  mensagem <- paste("Olá,", nome, "!")
+  return(mensagem)
+}
+
+saudar("Ana")
+saudar("Bruno")
+
+# Return implícito (última linha)
+dobro <- function(x) {
+  x * 2
+}
+
+dobro(5)
+```
+
+### Argumentos
+
+```{r funcoes-args}
+# Múltiplos argumentos
+calcular_imc <- function(peso, altura) {
+  imc <- peso / altura^2
+  return(imc)
+}
+
+calcular_imc(70, 1.75)
+calcular_imc(85, 1.80)
+
+# Argumentos opcionais (valores padrão)
+saudar <- function(nome, saudacao = "Olá") {
+  mensagem <- paste(saudacao, nome, "!")
+  return(mensagem)
+}
+
+saudar("Ana")  # Usa padrão
+saudar("Bruno", "Bom dia")  # Sobrescreve
+
+# Argumentos nomeados
+saudar(saudacao = "Boa noite", nome = "Carla")
+```
+
+### Validação de Argumentos
+
+```{r funcoes-validacao}
+# Boa prática: validar entrada
+calcular_imc <- function(peso, altura) {
+  # Validações
+  if (!is.numeric(peso) | !is.numeric(altura)) {
+    stop("Peso e altura devem ser numéricos!")
+  }
+  
+  if (peso <= 0 | altura <= 0) {
+    stop("Peso e altura devem ser positivos!")
+  }
+  
+  # Cálculo
+  imc <- peso / altura^2
+  return(imc)
+}
+
+calcular_imc(70, 1.75)  # OK
+# calcular_imc(-70, 1.75)  # Erro!
+# calcular_imc("70", 1.75)  # Erro!
+```
+
+### Retornando Múltiplos Valores
+
+```{r funcoes-multiplos}
+# Use lista para retornar múltiplos valores
+calcular_imc_completo <- function(peso, altura) {
+  imc <- peso / altura^2
+  
+  # Classificação
+  classificacao <- case_when(
+    imc < 18.5 ~ "Abaixo do peso",
+    imc < 25 ~ "Peso normal",
+    imc < 30 ~ "Sobrepeso",
+    TRUE ~ "Obesidade"
+  )
+  
+  # Retornar lista
+  resultado <- list(
+    imc = round(imc, 2),
+    classificacao = classificacao,
+    peso = peso,
+    altura = altura
+  )
+  
+  return(resultado)
+}
+
+# Usar
+resultado <- calcular_imc_completo(70, 1.75)
+resultado$imc
+resultado$classificacao
+
+# Ou desempacotar
+res <- calcular_imc_completo(85, 1.80)
+print(paste("IMC:", res$imc, "-", res$classificacao))
+```
+
+### Funções Vetorizadas
+
+```{r funcoes-vetorizadas}
+# Função simples (não vetorizada)
+classificar_nota <- function(nota) {
+  if (nota >= 7) {
+    return("Aprovado")
+  } else {
+    return("Reprovado")
+  }
+}
+
+classificar_nota(8)  # OK
+# classificar_nota(c(8, 6, 9))  # Só retorna primeiro!
+
+# Solução 1: Vetorizar manualmente
+classificar_notas_vec <- function(notas) {
+  sapply(notas, function(nota) {
+    if (nota >= 7) "Aprovado" else "Reprovado"
+  })
+}
+
+classificar_notas_vec(c(8, 6, 9))
+
+# Solução 2: Usar ifelse dentro
+classificar_notas_v2 <- function(notas) {
+  ifelse(notas >= 7, "Aprovado", "Reprovado")
+}
+
+classificar_notas_v2(c(8, 6, 9))
+```
+
+---
+
+## 2.5 Boas Práticas de Código
+
+### Naming Conventions
+
+```{r naming-conventions, eval=FALSE}
+# R usa snake_case (recomendado)
+calcular_media_ponderada <- function(x, pesos) { }
+dados_processados <- read_csv("dados.csv")
+numero_de_alunos <- 30
+
+# Evite camelCase (menos comum em R)
+calcularMediaPonderada <- function(x, pesos) { }
+
+# Evite nomes muito curtos
+cm <- function(x) mean(x)  # O que significa?
+
+# Evite nomes muito longos
+funcao_para_calcular_media_ponderada_de_notas <- function(x) { }
+
+# Nomes descritivos
+# BOM
+calcular_media <- function(x) { }
+dados_alunos <- data.frame()
+
+# RUIM
+calc <- function(x) { }
+d <- data.frame()
+```
+
+### Comentários Eficientes
+
+```{r comentarios, eval=FALSE}
+# BOM: Explica o "por quê"
+# Remove outliers para não distorcer a média
+dados_limpos <- dados[dados$valor < quantile(dados$valor, 0.95), ]
+
+# Agrupa por região para análise comparativa
+resultado <- dados %>%
+  group_by(regiao) %>%
+  summarize(media = mean(valor))
+
+# RUIM: Explica o óbvio
+# Calcula a média
+media <- mean(dados$valor)
+
+# Cria um data frame
+df <- data.frame(x = 1:10)
+
+# BOM: Comentário de seção
+# ==============================================================================
+# Análise Exploratória
+# ==============================================================================
+
+# RUIM: Código comentado (delete!)
+# x <- 1:10
+# y <- x^2
+# plot(x, y)
+```
+
+### Estilo de Código
+
+```{r estilo, eval=FALSE}
+# Espaçamento
+# BOM
+resultado <- (x + y) * 2
+if (x > 0) {
+  print("Positivo")
+}
+
+# RUIM
+resultado<-(x+y)*2
+if(x>0){print("Positivo")}
+
+# Indentação (2 espaços padrão R)
+# BOM
+if (condicao1) {
+  # código
+  if (condicao2) {
+    # código aninhado
+  }
+}
+
+# RUIM
+if (condicao1) {
+# código
+if (condicao2) {
+# código
+}
+}
+
+# Comprimento de linha (max 80 caracteres)
+# BOM
+dados %>%
+  filter(idade > 18) %>%
+  select(nome, idade) %>%
+  arrange(desc(idade))
+
+# RUIM
+dados %>% filter(idade > 18) %>% select(nome, idade) %>% arrange(desc(idade))
+
+# Pacotes styler e lintr
+library(styler)
+style_file("meu_script.R")
+
+library(lintr)
+lint("meu_script.R")
+```
+
+---
+
+## 2.6 Debugging
+
+### Lendo Mensagens de Erro
+
+```{r erros-tipos, error=TRUE}
+# Tipos de mensagem
+# 1. ERROR: código não executa
+# x + y  # Error: object 'x' not found
+
+# 2. WARNING: executa mas com aviso
+log(-1)  # Warning: NaNs produced
+
+# 3. MESSAGE: informativo
+library(tidyverse)  # Messages sobre conflitos
+```
+
+### Anatomia de um Erro
+
+```{r anatomia-erro, error=TRUE, eval=FALSE}
+# Exemplo de erro
+dados <- data.frame(x = 1:3, y = 4:6)
+dados$z + 10
+
+# Error: object 'z' not found
+# 
+# Interpretação:
+# - O que: tentou acessar coluna 'z'
+# - Problema: coluna não existe
+# - Solução: verificar nomes com names(dados)
+```
+
+### Estratégias de Debugging
+
+```{r debugging}
+# 1. print() para checkpoints
+minha_funcao <- function(x) {
+  print(paste("Entrada:", x))
+  
+  resultado <- x * 2
+  print(paste("Depois de multiplicar:", resultado))
+  
+  resultado <- resultado + 10
+  print(paste("Depois de somar:", resultado))
+  
+  return(resultado)
+}
+
+minha_funcao(5)
+
+# 2. str() para ver estrutura
+dados <- data.frame(x = 1:3, y = 4:6)
+str(dados)
+
+# 3. class() e typeof()
+x <- 5
+class(x)
+typeof(x)
+
+# 4. traceback() após erro
+# funcao_com_erro <- function() {
+#   outra_funcao()
+# }
+# 
+# outra_funcao <- function() {
+#   stop("Erro!")
+# }
+# 
+# funcao_com_erro()
+# traceback()
+
+# 5. debug() e browser()
+# debug(minha_funcao)
+# minha_funcao(5)
+# undebug(minha_funcao)
+```
+
+### Erros Comuns
+
+```{r erros-comuns, error=TRUE, eval=FALSE}
+# 1. Objeto não existe
+y + 2  # Error: object 'y' not found
+
+# 2. Tipo errado
+"abc" + 2  # Error: non-numeric argument
+
+# 3. Parênteses/aspas não fechados
+print("texto
+# + (espera mais entrada)
+
+# 4. Vírgulas faltando
+c(1 2 3)  # Error
+
+# 5. Indexação fora dos limites
+x <- c(1, 2, 3)
+x[5]  # NA (não erro!)
+
+# 6. Pacote não carregado
+ggplot(data)  # Error: could not find function
+library(ggplot2)  # Solução
+```
+
+---
+
+## 2.7 IA como Assistente
+
+### ChatGPT vs Claude
+
+**Use ChatGPT para:**
+- Debugging rápido
+- Código curto (< 50 linhas)
+- Explicações diretas
+- Sugestões rápidas
+
+**Use Claude para:**
+- Revisão de código longo
+- Explicações conceituais profundas
+- Documentação completa
+- Análise de scripts complexos
+
+### Boas Práticas com IA
+
+```{r ia-praticas, eval=FALSE}
+# PROMPT RUIM
+# "Como calcular IMC?"
+
+# PROMPT BOM
+# "Estou criando uma função em R para calcular IMC que recebe peso e altura.
+#  A função deve:
+#  1. Validar se os valores são numéricos e positivos
+#  2. Calcular IMC = peso / altura^2
+#  3. Retornar IMC arredondado para 2 casas decimais
+#  Pode me ajudar?"
+
+# PROMPT RUIM
+# "Meu código não funciona"
+
+# PROMPT BOM
+# "Tenho este código em R que calcula média de notas:
+# 
+# calcular_media <- function(notas) {
+#   soma <- 0
+#   for (i in notas) {
+#     soma <- soma + i
+#   }
+#   media <- soma / length(nota)
+#   return(media)
+# }
+# 
+# Quando executo calcular_media(c(8, 7, 9)), recebo erro:
+# 'object nota not found'. O que está errado?"
+
+# SEMPRE:
+# 1. Forneça contexto completo
+# 2. Cole código exato (se possível)
+# 3. Cole mensagem de erro completa
+# 4. Explique o que tentou fazer
+# 5. TESTE o código sugerido
+# 6. ENTENDA antes de usar
+```
+
+### Exemplo de Uso de IA
+
+```{r ia-exemplo, eval=FALSE}
+# Você tem:
+calcular_media <- function(notas) {
+  soma <- 0
+  for (i in notas) {
+    soma <- soma + i
+  }
+  media <- soma / length(nota)  # BUG: 'nota' deveria ser 'notas'
+  return(media)
+}
+
+# ChatGPT/Claude identifica:
+# - Typo: 'nota' → 'notas'
+# - Sugere versão vetorizada: mean(notas)
+# - Explica o erro
+
+# Você aprende e corrige:
+calcular_media <- function(notas) {
+  mean(notas)  # Mais simples!
+}
+```
+
+---
+
+# Exercícios Práticos
+
+## Exercício 1: Condicionais
+
+```{r ex2-1, eval=FALSE}
+# a) Crie função que classifica temperatura:
+#    - Abaixo de 15: "Frio"
+#    - 15-25: "Agradável"  
+#    - Acima de 25: "Quente"
+
+classificar_temperatura <- function(temp) {
+  # Seu código aqui
+}
+
+# Teste
+classificar_temperatura(10)   # "Frio"
+classificar_temperatura(20)   # "Agradável"
+classificar_temperatura(30)   # "Quente"
+
+# b) Versão vetorizada
+temperaturas <- c(12, 18, 28, 15, 32)
+# Classifique todas de uma vez
+```
+
+## Exercício 2: Loops
+
+```{r ex2-2, eval=FALSE}
+# a) Calcule o fatorial de 5 usando loop
+#    5! = 5 × 4 × 3 × 2 × 1 = 120
+
+
+# b) Sequência de Fibonacci até o 10º termo
+#    1, 1, 2, 3, 5, 8, 13, 21, 34, 55
+
+
+# c) Conte quantos números de 1 a 100 são divisíveis por 7
+
+```
+
+## Exercício 3: Funções
+
+```{r ex2-3, eval=FALSE}
+# a) Crie função para converter Celsius em Fahrenheit
+#    Fórmula: F = C × 9/5 + 32
+
+celsius_para_fahrenheit <- function(celsius) {
+  # Seu código aqui
+}
+
+# Teste
+celsius_para_fahrenheit(0)    # 32
+celsius_para_fahrenheit(100)  # 212
+
+# b) Crie função que retorna estatísticas de um vetor:
+#    - média, mediana, desvio padrão, mínimo, máximo
+
+estatisticas <- function(x) {
+  # Seu código aqui
+  # Retorne uma lista
+}
+
+# Teste
+valores <- c(23, 45, 19, 34, 28, 52, 31)
+stats <- estatisticas(valores)
+stats$media
+stats$mediana
+```
+
+## Exercício 4: Integração
+
+```{r ex2-4, eval=FALSE}
+# Dataset: pacientes de uma clínica
+pacientes <- data.frame(
+  id = 1:20,
+  idade = c(34, 45, 23, 56, 41, 29, 38, 52, 31, 47,
+            39, 44, 27, 58, 33, 49, 26, 55, 36, 42),
+  peso = c(70, 85, 58, 92, 75, 63, 80, 88, 65, 78,
+           72, 86, 60, 95, 73, 82, 62, 90, 68, 76),
+  altura = c(1.68, 1.75, 1.60, 1.82, 1.70, 1.65, 1.78, 1.80, 1.63, 1.73,
+             1.69, 1.76, 1.61, 1.83, 1.71, 1.77, 1.64, 1.81, 1.67, 1.74),
+  fumante = c(F, T, F, T, T, F, F, T, F, T,
+              F, T, F, T, F, T, F, T, F, T)
+)
+
+# a) Crie função para calcular IMC e classificar
+
+
+# b) Aplique a função a todos os pacientes
+
+
+# c) Quantos pacientes estão em cada categoria de IMC?
+
+
+# d) Qual a média de idade dos fumantes vs não fumantes?
+
+
+# e) Use IA (ChatGPT ou Claude) para otimizar seu código
+```
+
+---
+
+# Prática Guiada: Função Completa
+
+Vamos criar uma função profissional para análise de dados:
+
+```{r pratica-completa}
+#' Análise Descritiva de Variável Numérica
+#'
+#' @param x Vetor numérico
+#' @param nome_var Nome da variável (opcional)
+#' @param remover_na Remove NAs? Padrão TRUE
+#' @return Lista com estatísticas descritivas
+analise_descritiva <- function(x, nome_var = "Variável", remover_na = TRUE) {
+  
+  # Validação
+  if (!is.numeric(x)) {
+    stop("x deve ser numérico!")
+  }
+  
+  # Remover NAs se necessário
+  if (remover_na) {
+    x <- na.omit(x)
+  }
+  
+  # Verificar se há dados
+  if (length(x) == 0) {
+    stop("Vetor vazio após remover NAs!")
+  }
+  
+  # Calcular estatísticas
+  stats <- list(
+    variavel = nome_var,
+    n = length(x),
+    n_na = sum(is.na(x)),
+    media = mean(x, na.rm = TRUE),
+    mediana = median(x, na.rm = TRUE),
+    desvio = sd(x, na.rm = TRUE),
+    minimo = min(x, na.rm = TRUE),
+    maximo = max(x, na.rm = TRUE),
+    q25 = quantile(x, 0.25, na.rm = TRUE),
+    q75 = quantile(x, 0.75, na.rm = TRUE)
+  )
+  
+  # Retornar
+  class(stats) <- "analise_desc"  # Classe customizada
+  return(stats)
+}
+
+# Método print customizado
+print.analise_desc <- function(x) {
+  cat("\n")
+  cat("Análise Descritiva:", x$variavel, "\n")
+  cat(strrep("=", 50), "\n")
+  cat("N:", x$n, "\n")
+  cat("NAs:", x$n_na, "\n")
+  cat("Média:", round(x$media, 2), "\n")
+  cat("Mediana:", round(x$mediana, 2), "\n")
+  cat("Desvio padrão:", round(x$desvio, 2), "\n")
+  cat("Mínimo:", round(x$minimo, 2), "\n")
+  cat("Máximo:", round(x$maximo, 2), "\n")
+  cat("Q25:", round(x$q25, 2), "\n")
+  cat("Q75:", round(x$q75, 2), "\n")
+  cat(strrep("=", 50), "\n\n")
+}
+
+# Usar
+dados <- c(23, 45, 19, 34, NA, 28, 52, 31)
+resultado <- analise_descritiva(dados, "Idade")
+print(resultado)
+```
+
+---
+
+# Commit no GitHub
+
+Vamos versionar nosso progresso:
+
+```bash
+# Via Terminal
+git add .
+git commit -m "Dia 2: adiciona lógica, funções e boas práticas"
+git push
+```
+
+Ou via RStudio:
+1. Aba Git
+2. Stage arquivos
+3. Commit
+4. Push
+
+---
+
+# Para Casa
+
+1. **Refazer** todos os exercícios sem consultar
+2. **Criar** 3 funções úteis para sua área de trabalho
+3. **Praticar** debugging com código propositalmente errado
+4. **Usar** ChatGPT/Claude para explicar conceitos difíceis
+5. **Ler** capítulos 4-5 do [R for Data Science](https://r4ds.hadley.nz/)
+
+---
+
+# Recursos Adicionais
+
+## Documentação
+
+- [Advanced R - Functions](https://adv-r.hadley.nz/functions.html)
+- [R for Data Science - Control Flow](https://r4ds.hadley.nz/)
+- [RStudio Debugging](https://support.posit.co/hc/en-us/articles/205612627)
+
+## Prática
+
+- [Exercism - R Track](https://exercism.org/tracks/r)
+- [Codewars - R](https://www.codewars.com/?language=r)
+
+## Estilo
+
+- [Tidyverse Style Guide](https://style.tidyverse.org/)
+- Pacote `styler` para formatação automática
+- Pacote `lintr` para verificação de estilo
+
+---
+
+# Dúvidas Frequentes
+
+**P: Quando usar for vs apply/map?**  
+R: Use for quando cada iteração depende da anterior. Use apply/map para operações independentes (mais rápido e elegante).
+
+**P: ifelse vs case_when?**  
+R: ifelse para 2 opções, case_when para 3+.
+
+**P: Como escolher entre ChatGPT e Claude?**  
+R: ChatGPT para respostas rápidas, Claude para análises profundas.
+
+**P: Meu código funciona mas é lento. O que fazer?**  
+R: 1) Vetorize operações, 2) Use funções do tidyverse, 3) Profile com `profvis`, 4) Pergunte para IA.
+
+---
+
+# Conclusão do Dia 2
+
+Parabéns! Você completou o Dia 2 e agora sabe:
+
+- Usar operadores lógicos e relacionais
+- Criar estruturas condicionais eficientes
+- Entender quando usar loops
+- Criar funções customizadas
+- Aplicar boas práticas de código
+- Fazer debugging sistemático
+- Usar IA de forma estratégica
+
+**Amanhã:** Manipulação de dados com tidyverse!
+
+---
+
+**Última atualização:** `r Sys.Date()`  
+**Contato:** junqueiravinicius@hotmail.com  
+**Repositório:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Lattes:** http://lattes.cnpq.br/4686677580216927

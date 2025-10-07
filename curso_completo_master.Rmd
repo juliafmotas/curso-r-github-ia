@@ -1,0 +1,196 @@
+---
+title: "Introdu    o    Programa    o em R com GitHub e IA"
+subtitle: "Curso Completo - Material Did  tico"
+author: "Vin  cius Silva Junqueira"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: false
+    fig_caption: true
+    highlight: tango
+header-includes:
+  - \usepackage{fontspec}
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[R]{Curso R + GitHub + IA}
+  - \fancyfoot[C]{\thepage}
+fontsize: 11pt
+geometry: margin=2.5cm
+urlcolor: blue
+linkcolor: blue
+---
+
+```{r setup-global, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 7,
+  fig.height = 4.5,
+  out.width = "80%"
+)
+
+# Carregar pacotes necess  rios
+library(tidyverse)
+library(here)
+library(knitr)
+```
+
+\newpage
+
+# Apresenta    o do Curso
+
+## Informa    es Gerais
+
+**Carga hor  ria total:** 16 horas  
+**Per  odo:** Segunda a sexta-feira  
+**Hor  rio:** 19h00   s 22h00 (intervalo de 20 min   s 20h30)  
+**P  blico-alvo:** Iniciantes de diversas   reas
+
+## Objetivos do Curso
+
+Ao final deste curso, voc   ser   capaz de:
+
+- Realizar an  lises de dados usando R e tidyverse
+- Criar visualiza    es profissionais com ggplot2
+- Versionar c  digo e colaborar usando Git/GitHub
+- Produzir relat  rios reprodut  veis com RMarkdown
+- Utilizar IA (ChatGPT e Claude) de forma estrat  gica
+- Organizar projetos de an  lise de dados
+- Aplicar boas pr  ticas de programa    o
+
+## Estrutura do Curso
+
+### Dia 1: Fundamentos e Ambiente Reprodut  vel
+Setup completo, tipos de dados, vetores, data frames, projetos RStudio
+
+### Dia 2: L  gica e Programa    o
+Operadores, condicionais, loops, fun    es, boas pr  ticas, debugging, IA
+
+### Dia 3: Manipula    o de Dados
+Tidyverse, dplyr, tidyr, tratamento de NAs, janitor, skimr
+
+### Dia 4: I/O e Visualiza    o
+Leitura/escrita de dados, organiza    o de projetos, ggplot2
+
+### Dia 5: Relat  rios e Projeto Final
+RMarkdown, documentos reprodut  veis, projeto final, GitHub
+
+## Pacotes Necess  rios
+
+```{r pacotes-instalacao, eval=FALSE}
+install.packages(c(
+  "tidyverse", "here", "janitor", "skimr",
+  "readxl", "writexl", "rmarkdown",
+  "usethis", "gitcreds"
+))
+```
+
+\newpage
+
+# Parte 1: Fundamentos e Ambiente Reprodut  vel
+
+```{r dia1, child='materiais/dia1_fundamentos.Rmd'}
+```
+
+\newpage
+
+# Parte 2: L  gica e Programa    o
+
+```{r dia2, child='materiais/dia2_logica_funcoes.Rmd'}
+```
+
+\newpage
+
+# Parte 3: Manipula    o de Dados
+
+```{r dia3, child='materiais/dia3_manipulacao.Rmd'}
+```
+
+\newpage
+
+# Parte 4: I/O e Visualiza    o
+
+```{r dia4, child='materiais/dia4_io_visualizacao.Rmd'}
+```
+
+\newpage
+
+# Parte 5: Relat  rios e Projeto Final
+
+```{r dia5, child='materiais/dia5_projeto_final.Rmd'}
+```
+
+\newpage
+
+# Conclus  o e Pr  ximos Passos
+
+## O que voc   aprendeu
+
+Ao longo deste curso, voc   desenvolveu habilidades em:
+
+1. **Fundamentos de R:** tipos de dados, estruturas, manipula    o b  sica
+2. **Programa    o:** l  gica, fun    es, debugging, boas pr  ticas
+3. **Manipula    o de dados:** tidyverse, transforma    es, limpeza
+4. **Visualiza    o:** ggplot2, gr  ficos profissionais, customiza    o
+5. **Reprodutibilidade:** RMarkdown, projetos organizados, Git/GitHub
+6. **IA Assistida:** uso estrat  gico de ChatGPT e Claude
+
+## Recursos para Continuar Aprendendo
+
+### Livros Online (Gratuitos)
+- **R for Data Science (2e):** https://r4ds.hadley.nz/
+- **Advanced R:** https://adv-r.hadley.nz/
+- **R Graphics Cookbook:** https://r-graphics.org/
+- **Happy Git with R:** https://happygitwithr.com/
+
+### Comunidades
+- **Posit Community:** https://community.rstudio.com/
+- **Stack Overflow:** tag [r]
+- **R-Ladies:** cap  tulos locais e globais
+- **Reddit:** r/rstats, r/Rlanguage
+
+### Pr  tica Cont  nua
+- **TidyTuesday:** https://github.com/rfordatascience/tidytuesday
+- **Kaggle:** https://www.kaggle.com/datasets
+- **Data.gov:** https://data.gov/ (dados p  blicos)
+- **Brasil.io:** https://brasil.io/datasets/
+
+### Cursos Avan  ados
+- Posit Academy
+- DataCamp
+- Coursera (Johns Hopkins - Data Science Specialization)
+- edX
+
+## Certificado de Conclus  o
+
+Parab  ns por concluir o curso! Voc   agora possui as habilidades fundamentais para:
+
+- Conduzir an  lises de dados profissionais
+- Criar visualiza    es impactantes
+- Trabalhar de forma reprodut  vel
+- Colaborar usando Git/GitHub
+- Continuar aprendendo autonomamente
+
+## Mantenha Contato
+
+**Instrutor:** Vin  cius Silva Junqueira  
+**Email:** seu-email@example.com  
+**GitHub:** https://github.com/seu-usuario  
+**LinkedIn:** [seu perfil]
+
+### Suporte P  s-Curso
+- D  vidas via Issues no reposit  rio do curso
+- Sess  o de follow-up ap  s 2 semanas (se aplic  vel)
+- Comunidade de ex-alunos (se aplic  vel)
+
+---
+
+**  ltima atualiza    o:** `r Sys.Date()`  
+**Vers  o:** 1.0

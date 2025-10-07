@@ -1,0 +1,1263 @@
+<!-- 
+Este arquivo pode ser usado de duas formas:
+1. Compilado individualmente (mantém o YAML)
+2. Como child document (YAML é ignorado)
+-->
+
+---
+title: "Dia 5: Relatórios Reprodutíveis e Projeto Final"
+subtitle: "Curso: Introdução à Programação em R com GitHub e IA"
+author: "Vinícius Silva Junqueira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+    theme: flatly
+    highlight: tango
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: false
+---
+
+```{r setup-dia5, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5
+)
+```
+
+---
+
+# Objetivos do Dia 5
+
+Ao final desta aula, você será capaz de:
+
+- Criar documentos reprodutíveis com RMarkdown
+- Entender a estrutura YAML, Markdown e chunks
+- Gerar relatórios em HTML, PDF e Word
+- Usar código inline para resultados dinâmicos
+- Organizar projetos finais profissionalmente
+- Criar README.md completo no GitHub
+- Configurar .gitignore adequadamente
+- Entender conceitos básicos de branches
+- Usar IA para documentação e revisão
+- Continuar aprendendo R de forma autônoma
+
+---
+
+# Revisão do Curso
+
+```{r revisao-curso}
+library(tidyverse)
+library(here)
+
+# Dia 1: Fundamentos
+vetor <- c(1, 2, 3, 4, 5)
+media <- mean(vetor)
+
+# Dia 2: Funções
+calcular_imc <- function(peso, altura) {
+  peso / altura^2
+}
+
+# Dia 3: Manipulação
+dados <- tibble(x = 1:5, y = c(2, 4, 3, 5, 4))
+resumo <- dados %>%
+  summarize(media_y = mean(y))
+
+# Dia 4: Visualização
+ggplot(dados, aes(x, y)) +
+  geom_point() +
+  theme_minimal()
+```
+
+---
+
+# Parte 1: RMarkdown e Documentos Reprodutíveis (19h00 - 20h30)
+
+## 1.1 O que é Programação Literária?
+
+**Programação literária** combina código, resultados e narrativa em um único documento.
+
+### Benefícios
+
+- **Reprodutibilidade:** Qualquer pessoa pode recriar sua análise
+- **Transparência:** Código e resultados visíveis
+- **Eficiência:** Atualiza automaticamente quando dados mudam
+- **Comunicação:** Explica o processo de análise
+- **Documentação:** Registro completo do que foi feito
+
+### RMarkdown vs Quarto
+
+```{r rmarkdown-vs-quarto, eval=FALSE}
+# RMarkdown (tradicional)
+# - Foco em R
+# - Maduro e estável
+# - Grande comunidade
+
+# Quarto (novo)
+# - Multi-linguagem (R, Python, Julia)
+# - Mais recursos modernos
+# - Sucessor do RMarkdown
+
+# Neste curso: RMarkdown (mais comum ainda)
+# Princípios são os mesmos!
+```
+
+---
+
+## 1.2 Criando um Documento RMarkdown
+
+### No RStudio
+
+1. **File → New File → R Markdown**
+2. Escolha título, autor, formato
+3. Clique OK
+
+### Estrutura Básica
+
+````markdown
+---
+title: "Meu Relatório"
+author: "Seu Nome"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+# Introdução
+
+Este é um documento RMarkdown.
+
+```{r}
+# Código R aqui
+x <- 1:10
+mean(x)
+```
+
+## Resultados
+
+A média é `r mean(x)`.
+````
+
+---
+
+## 1.3 Componentes de um Documento
+
+### YAML Header
+
+O **YAML** (Yet Another Markup Language) configura o documento:
+
+```yaml
+---
+title: "Análise de Vendas"
+author: "Vinícius Junqueira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    theme: flatly
+    code_folding: hide
+  pdf_document:
+    toc: true
+    latex_engine: xelatex
+---
+```
+
+### Opções Comuns
+
+```yaml
+# HTML
+output:
+  html_document:
+    toc: true              # Índice
+    toc_float: true        # Índice flutuante
+    toc_depth: 3           # Profundidade
+    number_sections: true  # Numerar seções
+    theme: flatly          # Tema visual
+    highlight: tango       # Syntax highlighting
+    code_folding: hide     # Esconder código
+    df_print: paged        # Tabelas paginadas
+
+# PDF
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+    latex_engine: xelatex  # Para Unicode
+    keep_tex: false        # Manter arquivo .tex
+```
+
+---
+
+## 1.4 Markdown Básico
+
+**Markdown** é linguagem simples para formatação de texto.
+
+### Formatação de Texto
+
+```markdown
+# Título Nível 1
+## Título Nível 2
+### Título Nível 3
+
+**Negrito** ou __negrito__
+*Itálico* ou _itálico_
+~~Riscado~~
+
+Texto normal com parágrafo.
+Nova linha precisa de linha em branco.
+
+- Item 1
+- Item 2
+  - Subitem 2.1
+  - Subitem 2.2
+
+1. Primeiro
+2. Segundo
+3. Terceiro
+```
+
+### Links e Imagens
+
+```markdown
+[Texto do link](https://example.com)
+[R for Data Science](https://r4ds.hadley.nz/)
+
+![Texto alternativo](caminho/imagem.png)
+![Logo R](https://www.r-project.org/logo/Rlogo.png)
+```
+
+### Outros Elementos
+
+```markdown
+> Citação em bloco
+> Pode ter múltiplas linhas
+
+---
+
+Linha horizontal
+
+`código inline`
+
+Código em bloco:
+```
+sem highlighting
+```
+
+Tabela:
+| Coluna 1 | Coluna 2 |
+|----------|----------|
+| A        | 1        |
+| B        | 2        |
+```
+
+---
+
+## 1.5 Chunks de Código
+
+**Chunks** são blocos de código R executáveis.
+
+### Sintaxe Básica
+
+````markdown
+```{r nome-do-chunk}
+# Código R aqui
+x <- 1:10
+mean(x)
+```
+````
+
+### Opções de Chunk
+
+````markdown
+```{r opcoes-exemplo-dia5, echo=TRUE, eval=FALSE, warning=FALSE}
+# echo: mostrar código
+# eval: executar código
+# warning: mostrar warnings
+# message: mostrar messages
+# error: continuar se houver erro
+# include: incluir no documento
+
+library(tidyverse)
+data <- read_csv("dados.csv")
+```
+````
+
+### Opções Comuns
+
+```{r opcoes-comuns-demo, eval=FALSE}
+# Executar mas não mostrar código
+# {r, echo=FALSE}
+
+# Mostrar código mas não executar
+# {r, eval=FALSE}
+
+# Não incluir no documento (útil para setup)
+# {r, include=FALSE}
+
+# Tamanho de figuras
+# {r, fig.width=10, fig.height=6}
+
+# Legenda de figura
+# {r, fig.cap="Gráfico de dispersão"}
+
+# Cache (salvar resultado)
+# {r, cache=TRUE}
+```
+
+### Chunk de Setup
+
+````markdown
+```{r setup-exemplo, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 8,
+  fig.height = 5
+)
+
+library(tidyverse)
+library(here)
+```
+````
+
+---
+
+## 1.6 Código Inline
+
+**Código inline** insere resultados no texto.
+
+````markdown
+A média das idades é `r mean(c(25, 30, 28))` anos.
+
+O dataset tem `r nrow(mtcars)` observações.
+
+Hoje é `r Sys.Date()`.
+
+O valor de pi é aproximadamente `r round(pi, 2)`.
+````
+
+Resultado:
+
+A média das idades é `r mean(c(25, 30, 28))` anos.
+
+---
+
+## 1.7 Tabelas
+
+### Tabelas Simples
+
+```{r tabelas-simples}
+# Tabela básica do R
+head(mtcars, 3)
+
+# knitr::kable() - mais bonito
+library(knitr)
+kable(head(mtcars, 3), caption = "Primeiras linhas de mtcars")
+
+# Com alinhamento e formato
+kable(head(mtcars, 3), 
+      align = c("l", "c", "r", "r", "r", "r", "r", "r", "r", "r", "r"),
+      digits = 2)
+```
+
+### Tabelas Avançadas
+
+```{r tabelas-avancadas}
+# gt: Grammar of Tables
+library(gt)
+
+mtcars %>%
+  head(5) %>%
+  gt() %>%
+  tab_header(
+    title = "Motor Trend Car Road Tests",
+    subtitle = "Primeiras 5 observações"
+  ) %>%
+  fmt_number(
+    columns = c(mpg, disp, hp, drat, wt),
+    decimals = 1
+  )
+```
+
+---
+
+## 1.8 Renderizando Documentos
+
+### Via RStudio
+
+- Botão **Knit** (ou Ctrl+Shift+K)
+- Escolhe formato automaticamente do YAML
+
+### Via Código
+
+```{r render-codigo-exemplo, eval=FALSE}
+# HTML (padrão)
+rmarkdown::render("relatorio.Rmd")
+
+# PDF
+rmarkdown::render("relatorio.Rmd", output_format = "pdf_document")
+
+# Word
+rmarkdown::render("relatorio.Rmd", output_format = "word_document")
+
+# Todos os formatos
+rmarkdown::render("relatorio.Rmd", output_format = "all")
+
+# Com parâmetros
+rmarkdown::render("relatorio.Rmd", 
+                  params = list(ano = 2024, regiao = "Sul"))
+```
+
+---
+
+## 1.9 Parâmetros
+
+**Parâmetros** tornam relatórios reutilizáveis.
+
+### Definir Parâmetros
+
+```yaml
+---
+title: "Relatório de Vendas"
+output: html_document
+params:
+  ano: 2024
+  regiao: "Sul"
+  incluir_graficos: true
+---
+```
+
+### Usar Parâmetros
+
+````markdown
+```{r usar-params-exemplo, eval=FALSE}
+# Acessar parâmetros
+ano_selecionado <- params$ano
+regiao_selecionada <- params$regiao
+
+# Usar em análise
+vendas %>%
+  filter(ano == params$ano, regiao == params$regiao) %>%
+  summarize(total = sum(vendas))
+```
+
+Análise para o ano de 2024 na região Sul.
+(Use código inline com params$ano e params$regiao quando tiver parâmetros definidos)
+
+```{r grafico-params, eval=FALSE}
+# Este chunk só executa se incluir_graficos = TRUE
+ggplot(dados, aes(x, y)) + geom_point()
+```
+````
+
+---
+
+# INTERVALO (20h30 - 20h50)
+
+Aproveite para:
+- Tomar água/café
+- Criar seu primeiro RMarkdown
+- Experimentar com diferentes formatos
+
+---
+
+# Parte 2: Projeto Final e GitHub Avançado (20h50 - 22h00)
+
+## 2.1 Template do Projeto Final
+
+### Estrutura
+
+```
+projeto-final/
+├── projeto.Rproj
+├── README.md
+├── relatorio.Rmd
+│
+├── data/
+│   ├── raw/
+│   │   └── dados.csv
+│   └── processed/
+│       └── dados_limpos.csv
+│
+├── scripts/
+│   ├── 01_importar.R
+│   ├── 02_limpar.R
+│   └── 03_analisar.R
+│
+├── output/
+│   ├── figures/
+│   │   ├── fig1_distribuicao.png
+│   │   └── fig2_correlacao.png
+│   └── tables/
+│       └── resumo_estatistico.csv
+│
+└── docs/
+    ├── relatorio.html
+    └── relatorio.pdf
+```
+
+---
+
+## 2.2 Exemplo de Projeto Completo
+
+```{r projeto-exemplo-dia5, eval=FALSE}
+# ============================================================================
+# Projeto Final: Análise de Desempenho de Alunos
+# Autor: Seu Nome
+# Data: 2025-01-XX
+# ============================================================================
+
+# Setup ----
+library(tidyverse)
+library(here)
+library(knitr)
+library(gt)
+
+# 1. Importar dados ----
+dados <- read_csv(here("data", "raw", "alunos.csv"))
+
+# 2. Exploração inicial ----
+glimpse(dados)
+summary(dados)
+
+# Verificar NAs
+dados %>%
+  summarize(across(everything(), ~sum(is.na(.))))
+
+# 3. Limpeza ----
+dados_limpos <- dados %>%
+  # Remover NAs
+  drop_na(nota_final) %>%
+  # Criar variáveis derivadas
+  mutate(
+    media = (nota_p1 + nota_p2) / 2,
+    status = case_when(
+      media >= 7 ~ "Aprovado",
+      media >= 5 ~ "Recuperação",
+      TRUE ~ "Reprovado"
+    ),
+    faixa_freq = case_when(
+      frequencia >= 90 ~ "Alta",
+      frequencia >= 75 ~ "Média",
+      TRUE ~ "Baixa"
+    )
+  ) %>%
+  # Filtrar casos válidos
+  filter(frequencia > 0, nota_p1 > 0, nota_p2 > 0)
+
+# Salvar dados limpos
+write_csv(dados_limpos, here("data", "processed", "alunos_limpos.csv"))
+
+# 4. Análise Exploratória ----
+
+## 4.1 Estatísticas descritivas
+resumo <- dados_limpos %>%
+  summarize(
+    n = n(),
+    media_geral = mean(media),
+    mediana = median(media),
+    dp = sd(media),
+    aprovados = sum(status == "Aprovado"),
+    taxa_aprovacao = mean(status == "Aprovado") * 100
+  )
+
+## 4.2 Por curso
+por_curso <- dados_limpos %>%
+  group_by(curso) %>%
+  summarize(
+    n = n(),
+    media = mean(media),
+    taxa_aprovacao = mean(status == "Aprovado") * 100
+  ) %>%
+  arrange(desc(media))
+
+# Salvar tabela
+write_csv(por_curso, here("output", "tables", "resumo_por_curso.csv"))
+
+# 5. Visualizações ----
+
+## 5.1 Distribuição de notas
+p1 <- ggplot(dados_limpos, aes(x = media)) +
+  geom_histogram(bins = 15, fill = "steelblue", color = "white") +
+  geom_vline(xintercept = 7, linetype = "dashed", color = "red") +
+  labs(
+    title = "Distribuição de Médias Finais",
+    subtitle = "Linha vermelha indica nota mínima para aprovação",
+    x = "Média Final",
+    y = "Frequência"
+  ) +
+  theme_minimal()
+
+ggsave(here("output", "figures", "fig1_distribuicao.png"), 
+       p1, width = 8, height = 5, dpi = 300)
+
+## 5.2 Média por curso
+p2 <- ggplot(por_curso, aes(x = reorder(curso, media), y = media, fill = curso)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Média de Notas por Curso",
+    x = "Curso",
+    y = "Média Final"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+ggsave(here("output", "figures", "fig2_por_curso.png"), 
+       p2, width = 8, height = 5, dpi = 300)
+
+## 5.3 Relação frequência x nota
+p3 <- ggplot(dados_limpos, aes(x = frequencia, y = media, color = status)) +
+  geom_point(alpha = 0.6, size = 2) +
+  geom_smooth(method = "lm", se = FALSE) +
+  labs(
+    title = "Relação entre Frequência e Desempenho",
+    x = "Frequência (%)",
+    y = "Média Final",
+    color = "Status"
+  ) +
+  theme_minimal()
+
+ggsave(here("output", "figures", "fig3_frequencia_nota.png"), 
+       p3, width = 8, height = 5, dpi = 300)
+
+# 6. Conclusões ----
+# - Taxa de aprovação geral: XX%
+# - Curso com melhor desempenho: XXX
+# - Correlação positiva entre frequência e nota
+```
+
+---
+
+## 2.3 README.md Profissional
+
+Exemplo de README.md completo:
+
+```markdown
+# Análise de Desempenho de Alunos
+
+Projeto final do curso "Introdução à Programação em R com GitHub e IA".
+
+## Descrição
+
+Análise exploratória do desempenho acadêmico de estudantes, investigando
+a relação entre frequência, notas e taxa de aprovação por curso.
+
+## Estrutura do Projeto
+
+```
+projeto-final/
+├── data/           # Dados brutos e processados
+├── scripts/        # Scripts R de análise
+├── output/         # Resultados (figuras e tabelas)
+└── docs/           # Relatórios finais
+```
+
+## Dados
+
+- **Fonte:** Dataset fictício criado para fins educacionais
+- **Observações:** 100 alunos
+- **Variáveis:** nome, curso, nota_p1, nota_p2, frequência, bolsista
+
+## Metodologia
+
+1. Importação e validação dos dados
+2. Limpeza e tratamento de valores ausentes
+3. Criação de variáveis derivadas (média, status)
+4. Análise exploratória por curso
+5. Visualizações e interpretação
+
+## Principais Resultados
+
+- Taxa de aprovação geral: 78%
+- Curso com melhor desempenho: Biologia (média 8.2)
+- Correlação positiva entre frequência e nota (r = 0.65)
+
+## Visualizações
+
+![Distribuição de Notas](output/figures/fig1_distribuicao.png)
+
+## Como Reproduzir
+
+```r
+# 1. Clone o repositório
+git clone https://github.com/usuario/projeto-final.git
+
+# 2. Instale dependências
+install.packages(c("tidyverse", "here", "knitr"))
+
+# 3. Execute a análise
+source("scripts/01_importar.R")
+source("scripts/02_limpar.R")
+source("scripts/03_analisar.R")
+
+# 4. Gere o relatório
+rmarkdown::render("relatorio.Rmd")
+```
+
+## Requisitos
+
+- R >= 4.0
+- RStudio (recomendado)
+- Pacotes: tidyverse, here, knitr
+
+## Autor
+
+**Vinícius Silva Junqueira**  
+Email: junqueiravinicius@hotmail.com  
+Lattes: http://lattes.cnpq.br/4686677580216927  
+LinkedIn: www.linkedin.com/in/junqueiravinicius
+
+## Licença
+
+MIT License
+```
+
+---
+
+## 2.4 .gitignore Adequado
+
+Arquivo `.gitignore` para projetos R:
+
+```gitignore
+# R e RStudio
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj.user
+
+# Arquivos temporários do knitr
+*_cache/
+*_files/
+/*.html
+/*.pdf
+/*.tex
+
+# Dados sensíveis ou muito grandes (descomente se necessário)
+# data/raw/*.csv
+# data/raw/*.xlsx
+
+# Output temporário
+output/temp/
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# LaTeX
+*.log
+*.aux
+*.out
+```
+
+---
+
+## 2.5 Git e GitHub Avançado
+
+### Commits Significativos
+
+```bash
+# RUIM
+git commit -m "update"
+git commit -m "fix"
+
+# BOM
+git commit -m "Adiciona análise exploratória de frequência"
+git commit -m "Corrige cálculo de média ponderada"
+git commit -m "Atualiza visualizações com tema consistente"
+```
+
+### Branches Básicas
+
+```bash
+# Criar branch para nova feature
+git checkout -b analise-correlacao
+
+# Fazer mudanças e commits
+git add scripts/04_correlacao.R
+git commit -m "Adiciona análise de correlação"
+
+# Voltar para main
+git checkout main
+
+# Merge (integrar mudanças)
+git merge analise-correlacao
+
+# Deletar branch
+git branch -d analise-correlacao
+```
+
+### Tags (Versões)
+
+```bash
+# Criar tag
+git tag -a v1.0 -m "Versão final do projeto"
+
+# Push com tags
+git push origin main --tags
+
+# Listar tags
+git tag
+```
+
+---
+
+## 2.6 Usando IA para Documentação
+
+### Prompts Eficientes
+
+```r
+# Para ChatGPT/Claude:
+
+# "Revise este README.md e sugira melhorias:
+# [cole seu README]"
+
+# "Crie um README profissional para este projeto de análise de dados.
+# O projeto analisa [descreva]. Principais resultados: [liste]."
+
+# "Escreva comentários para este código de forma clara:
+# [cole código]"
+
+# "Gere uma descrição de commit apropriada para estas mudanças:
+# - Adicionei análise de correlação
+# - Criei 3 novas visualizações
+# - Corrigi bug no cálculo de média"
+```
+
+---
+
+# Exercícios Práticos
+
+## Exercício 1: Primeiro RMarkdown
+
+```{r ex5-1, eval=FALSE}
+# a) Crie novo RMarkdown: File > New File > R Markdown
+
+
+# b) Modifique o YAML:
+#    - Adicione seu nome
+#    - Mude para theme: flatly
+#    - Adicione toc: true
+
+
+# c) Adicione novo chunk com análise de mtcars
+
+
+# d) Use código inline para mostrar número de observações
+
+
+# e) Gere HTML e visualize
+
+```
+
+## Exercício 2: Relatório com Dados Reais
+
+```{r ex5-2, eval=FALSE}
+# Crie relatório RMarkdown que:
+
+# a) Carrega dataset (use iris ou mtcars)
+
+
+# b) Mostra resumo estatístico em tabela formatada (kable)
+
+
+# c) Cria 3 visualizações diferentes
+
+
+# d) Interpreta resultados com texto entre os chunks
+
+
+# e) Gera PDF e HTML
+
+```
+
+## Exercício 3: Projeto Organizado
+
+```{r ex5-3, eval=FALSE}
+# Organize um projeto completo:
+
+# a) Crie estrutura de pastas (data/, scripts/, output/)
+
+
+# b) Coloque dados em data/raw/
+
+
+# c) Crie script de limpeza em scripts/
+
+
+# d) Crie script de visualização em scripts/
+
+
+# e) Gere relatório final em docs/
+
+```
+
+## Exercício 4: README Profissional
+
+```{r ex5-4, eval=FALSE}
+# Para seu projeto:
+
+# a) Crie README.md com:
+#    - Título e descrição
+#    - Estrutura de arquivos
+#    - Como reproduzir
+#    - Principais resultados
+#    - Suas informações de contato
+
+
+# b) Adicione badge de licença
+
+
+# c) Inclua pelo menos uma visualização
+
+
+# d) Use IA para melhorar o texto
+
+```
+
+## Exercício 5: Projeto Final Completo
+
+```{r ex5-5, eval=FALSE}
+# Projeto final integrado:
+
+# 1. Escolha tema (use seus dados ou dataset público)
+
+
+# 2. Crie estrutura profissional de projeto
+
+
+# 3. Faça análise exploratória completa
+
+
+# 4. Crie pelo menos 5 visualizações
+
+
+# 5. Escreva relatório RMarkdown com:
+#    - Introdução
+#    - Metodologia
+#    - Resultados
+#    - Conclusões
+
+
+# 6. Configure README.md e .gitignore
+
+
+# 7. Faça commits organizados
+
+
+# 8. Push para GitHub
+
+
+# 9. Use IA para revisar e melhorar
+
+
+# 10. Compartilhe o link!
+
+```
+
+---
+
+# Apresentações dos Projetos
+
+## Formato (3-5 minutos cada)
+
+1. **Contexto:** Qual pergunta você tentou responder?
+2. **Dados:** Que dados usou?
+3. **Análise:** O que fez?
+4. **Resultados:** O que descobriu?
+5. **Aprendizados:** O que foi mais desafiador?
+
+## Dicas para Apresentar
+
+- Mostre visualizações principais
+- Explique insights interessantes
+- Mencione dificuldades superadas
+- Compartilhe link do GitHub
+- Aceite feedback construtivo
+
+---
+
+# Recursos para Continuar Aprendendo
+
+## Livros Online (Gratuitos)
+
+- [R for Data Science (2e)](https://r4ds.hadley.nz/) - Essencial
+- [Advanced R](https://adv-r.hadley.nz/) - Nível avançado
+- [R Graphics Cookbook](https://r-graphics.org/) - Visualizações
+- [R Markdown Cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/)
+- [Happy Git with R](https://happygitwithr.com/)
+
+## Comunidades
+
+- [Posit Community](https://community.rstudio.com/)
+- [Stack Overflow [r]](https://stackoverflow.com/questions/tagged/r)
+- [R-Ladies](https://rladies.org/) - Capítulos em várias cidades
+- [Reddit r/rstats](https://reddit.com/r/rstats)
+- [RWeekly](https://rweekly.org/) - Newsletter semanal
+
+## Prática Contínua
+
+- [TidyTuesday](https://github.com/rfordatascience/tidytuesday) - Desafios semanais
+- [Kaggle](https://www.kaggle.com/) - Competições e datasets
+- [DataCamp](https://www.datacamp.com/) - Cursos interativos (pago)
+- [Coursera](https://www.coursera.org/) - Especializações em R
+
+## Datasets Públicos
+
+- [data.gov](https://data.gov/) - Dados governamentais (EUA)
+- [Brasil.io](https://brasil.io/) - Dados públicos brasileiros
+- [IBGE](https://www.ibge.gov.br/) - Instituto Brasileiro de Geografia
+- [DataSUS](https://datasus.saude.gov.br/) - Dados de saúde
+- [UCI Machine Learning](https://archive.ics.uci.edu/ml/) - Datasets variados
+
+## Cheat Sheets
+
+- RStudio: Help → Cheat Sheets
+- [Posit Cheat Sheets](https://posit.co/resources/cheatsheets/)
+
+## Canais YouTube (em Português)
+
+- Curso-R
+- Fernanda Peres
+- Análise Macro
+
+---
+
+# Certificado de Conclusão
+
+## Você completou o curso!
+
+**Conteúdo dominado:**
+
+- **Dia 1:** R, RStudio, Git, fundamentos de programação
+- **Dia 2:** Lógica, funções, boas práticas, debugging
+- **Dia 3:** Manipulação de dados com tidyverse
+- **Dia 4:** I/O de dados e visualização com ggplot2
+- **Dia 5:** RMarkdown e projetos reprodutíveis
+
+## Próximos Passos
+
+1. **Pratique regularmente** - 15 min/dia é melhor que 2h/semana
+2. **Participe de comunidades** - Tire dúvidas, ajude outros
+3. **Trabalhe em projetos reais** - Use seus próprios dados
+4. **Contribua no GitHub** - Mostre seu portfólio
+5. **Continue aprendendo** - R é uma jornada sem fim!
+
+---
+
+# Feedback do Curso
+
+Por favor, dedique alguns minutos para avaliar o curso:
+
+**O que funcionou bem?**
+- Conteúdo claro e organizado?
+- Exercícios adequados?
+- Ritmo apropriado?
+- Material de apoio suficiente?
+
+**O que pode melhorar?**
+- Tópicos que faltaram?
+- Partes confusas?
+- Mais/menos exercícios?
+- Sugestões gerais?
+
+## Onde Deixar Feedback
+
+- Issues no GitHub do curso
+- Email: junqueiravinicius@hotmail.com
+- Formulário online: [link se disponível]
+
+Seu feedback é essencial para melhorar o curso!
+
+---
+
+# Agradecimentos
+
+## Obrigado por Participar!
+
+Espero que este curso tenha sido útil e inspirador. Lembre-se:
+
+- **Erros são normais** - São parte do aprendizado
+- **Google é seu amigo** - Ninguém sabe tudo de cor
+- **Comunidade ajuda** - Não hesite em pedir ajuda
+- **Prática é fundamental** - Continue codando!
+- **IA é ferramenta** - Use com sabedoria
+
+## Mantenha Contato
+
+- **Email:** junqueiravinicius@hotmail.com
+- **GitHub:** github.com/viniciusjunqueira
+- **Lattes:** lattes.cnpq.br/4686677580216927
+- **LinkedIn:** linkedin.com/in/junqueiravinicius
+
+## Grupo de Ex-Alunos
+
+[Se aplicável] Entre no grupo para:
+- Tirar dúvidas
+- Compartilhar projetos
+- Networking
+- Vagas e oportunidades
+
+---
+
+# Commit Final
+
+Versione seu projeto final:
+
+```bash
+git add .
+git commit -m "Projeto final: análise completa e relatório"
+git push
+
+# Criar release
+git tag -a v1.0 -m "Versão final do curso"
+git push origin v1.0
+```
+
+---
+
+# Para Casa (Forever!)
+
+1. **Revise** todo o material do curso
+2. **Complete** seu projeto final se não terminou
+3. **Compartilhe** no GitHub
+4. **Junte-se** a comunidades R
+5. **Pratique** com TidyTuesday
+6. **Leia** R for Data Science
+7. **Aplique** R em seu trabalho/pesquisa
+8. **Ensine** outros - melhor forma de aprender!
+
+---
+
+# Recursos Finais
+
+## Template de Projeto
+
+```
+meu-projeto-r/
+├── README.md
+├── LICENSE
+├── .gitignore
+├── meu-projeto.Rproj
+├── data/
+│   ├── raw/
+│   └── processed/
+├── scripts/
+│   ├── 01_import.R
+│   ├── 02_clean.R
+│   ├── 03_analyze.R
+│   └── 04_visualize.R
+├── output/
+│   ├── figures/
+│   └── tables/
+├── docs/
+│   └── relatorio.Rmd
+└── tests/
+    └── test_functions.R
+```
+
+## Script de Setup Automático
+
+```{r setup-projeto-exemplo, eval=FALSE}
+# Função para criar estrutura de projeto
+criar_projeto <- function(nome) {
+  # Criar pastas
+  dir.create(nome)
+  setwd(nome)
+  
+  pastas <- c("data/raw", "data/processed", "scripts", 
+              "output/figures", "output/tables", "docs", "tests")
+  
+  for (pasta in pastas) {
+    dir.create(pasta, recursive = TRUE)
+  }
+  
+  # Criar arquivos
+  file.create("README.md")
+  file.create(".gitignore")
+  
+  # .gitignore básico
+  writeLines(c(
+    ".Rhistory",
+    ".RData",
+    ".Rproj.user/",
+    "*.html",
+    "output/temp/"
+  ), ".gitignore")
+  
+  # README template
+  writeLines(c(
+    paste("#", nome),
+    "",
+    "## Descrição",
+    "",
+    "## Como usar",
+    "",
+    "## Autor"
+  ), "README.md")
+  
+  message("Projeto criado com sucesso!")
+}
+
+# Usar
+criar_projeto("meu-projeto-incrivel")
+```
+
+---
+
+# Conclusão
+
+## Parabéns por Completar o Curso!
+
+Você agora tem as ferramentas fundamentais para:
+
+- Analisar dados de forma reprodutível
+- Criar visualizações profissionais
+- Colaborar usando Git/GitHub
+- Documentar análises com RMarkdown
+- Usar IA produtivamente
+- Continuar aprendendo autonomamente
+
+## A Jornada Continua
+
+R é uma linguagem em constante evolução. Continue:
+
+- Explorando novos pacotes
+- Aprendendo novas técnicas
+- Compartilhando conhecimento
+- Construindo seu portfólio
+- Contribuindo para a comunidade
+
+## Boa Sorte!
+
+Sucesso em suas análises e projetos futuros!
+
+Nos vemos na comunidade R!
+
+---
+
+**Última atualização:** `r Sys.Date()`  
+**Contato:** junqueiravinicius@hotmail.com  
+**Repositório:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Lattes:** http://lattes.cnpq.br/4686677580216927
+
+---
+
+# FIM DO CURSO
+
+Obrigado por sua dedicação e participação!

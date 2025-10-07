@@ -1,0 +1,1062 @@
+<!-- 
+Este arquivo pode ser usado de duas formas:
+1. Compilado individualmente (mantém o YAML)
+2. Como child document (YAML é ignorado)
+-->
+
+---
+title: "Dia 3: Manipulação de Dados com Tidyverse"
+subtitle: "Curso: Introdução à Programação em R com GitHub e IA"
+author: "Vinícius Silva Junqueira"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 3
+    code_folding: show
+    theme: flatly
+    highlight: tango
+    df_print: paged
+  pdf_document:
+    toc: true
+    toc_depth: 3
+    number_sections: true
+    latex_engine: xelatex
+    keep_tex: false
+---
+
+```{r setup-dia3, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5
+)
+```
+
+---
+
+# Objetivos do Dia 3
+
+Ao final desta aula, você será capaz de:
+
+- Entender a filosofia tidyverse e princípios de "tidy data"
+- Usar os verbos essenciais do dplyr (filter, select, mutate, etc.)
+- Transformar dados entre formatos wide e long (tidyr)
+- Tratar valores ausentes de forma adequada
+- Usar ferramentas modernas (janitor, skimr)
+- Criar pipelines complexos de manipulação
+- Otimizar código com ajuda de IA (Claude)
+
+---
+
+# Revisão Rápida do Dia 2
+
+```{r revisao-dia3}
+# Condicionais
+idade <- 25
+status <- ifelse(idade >= 18, "Maior", "Menor")
+
+# Funções
+calcular_media <- function(x) {
+  mean(x, na.rm = TRUE)
+}
+
+notas <- c(8, 7, 9, 6)
+calcular_media(notas)
+```
+
+---
+
+# Parte 1: Tidyverse e dplyr (19h00 - 20h30)
+
+## 1.1 O que é Tidyverse?
+
+**Tidyverse** é uma coleção de pacotes R para ciência de dados que compartilham uma filosofia comum.
+
+```{r carregar-tidyverse}
+# Carregar tidyverse (carrega vários pacotes de uma vez)
+library(tidyverse)
+
+# Pacotes principais carregados:
+# - ggplot2: visualização
+# - dplyr: manipulação de dados
+# - tidyr: organização de dados
+# - readr: leitura de dados
+# - purrr: programação funcional
+# - tibble: data frames modernos
+# - stringr: manipulação de strings
+# - forcats: manipulação de fatores
+```
+
+### Filosofia Tidyverse
+
+Princípios fundamentais:
+
+1. **Reutilizar estruturas de dados existentes**
+2. **Compor funções simples usando o pipe**
+3. **Abraçar programação funcional**
+4. **Projetado para humanos**
+
+---
+
+## 1.2 Tidy Data (Dados Arrumados)
+
+**Três regras para dados tidy:**
+
+1. Cada **variável** é uma coluna
+2. Cada **observação** é uma linha
+3. Cada **valor** é uma célula
+
+```{r tidy-data-exemplo}
+# DADOS TIDY (arrumados)
+tidy_data <- tibble(
+  pais = c("Brasil", "Brasil", "Argentina", "Argentina"),
+  ano = c(2020, 2021, 2020, 2021),
+  pib = c(1.5, 1.6, 0.4, 0.5)
+)
+tidy_data
+
+# DADOS UNTIDY (bagunçados - formato wide)
+untidy_data <- tibble(
+  pais = c("Brasil", "Argentina"),
+  pib_2020 = c(1.5, 0.4),
+  pib_2021 = c(1.6, 0.5)
+)
+untidy_data
+
+# Dados tidy facilitam análise!
+tidy_data %>%
+  group_by(pais) %>%
+  summarize(media_pib = mean(pib))
+```
+
+---
+
+## 1.3 O Operador Pipe: %>%
+
+O **pipe** (`%>%`) passa o resultado de uma função como primeiro argumento da próxima.
+
+```{r pipe-intro}
+# SEM pipe (aninhado - difícil de ler)
+round(mean(c(1, 2, 3, NA), na.rm = TRUE), 2)
+
+# COM pipe (sequencial - fácil de ler)
+c(1, 2, 3, NA) %>%
+  mean(na.rm = TRUE) %>%
+  round(2)
+
+# Equivalente a:
+# x <- c(1, 2, 3, NA)
+# x <- mean(x, na.rm = TRUE)
+# x <- round(x, 2)
+
+# Atalho: Ctrl + Shift + M (Windows/Linux) ou Cmd + Shift + M (Mac)
+```
+
+### Native Pipe (|>)
+
+R 4.1+ tem pipe nativo:
+
+```{r native-pipe}
+# Pipe nativo |> (funciona igual)
+c(1, 2, 3, NA) |>
+  mean(na.rm = TRUE) |>
+  round(2)
+
+# Use o que preferir! Neste curso usamos %>% (mais comum)
+```
+
+---
+
+## 1.4 Dataset de Exemplo
+
+Vamos criar um dataset para praticar:
+
+```{r dataset-exemplo}
+# Dados de alunos (fictício)
+alunos <- tibble(
+  id = 1:10,
+  nome = c("Ana Silva", "Bruno Costa", "Carla Dias", "Diego Mendes",
+           "Elena Rocha", "Felipe Santos", "Gabi Oliveira", "Hugo Alves",
+           "Iris Ferreira", "João Lima"),
+  idade = c(23, 25, 22, 24, 23, 26, 21, 25, 24, 22),
+  curso = c("Biologia", "Economia", "Biologia", "Economia", "Medicina",
+            "Medicina", "Biologia", "Economia", "Medicina", "Economia"),
+  nota_p1 = c(8.5, 7.0, 9.0, 6.5, 8.0, 9.5, 7.5, 8.0, 9.0, 6.0),
+  nota_p2 = c(7.5, 8.0, 8.5, 7.0, 9.0, 9.0, 8.0, 7.5, 8.5, 7.5),
+  frequencia = c(95, 87, 100, 78, 92, 98, 85, 90, 96, 82),
+  bolsista = c(FALSE, TRUE, FALSE, TRUE, FALSE, FALSE, TRUE, FALSE, FALSE, TRUE)
+)
+
+alunos
+```
+
+---
+
+## 1.5 filter() - Filtrar Linhas
+
+**`filter()`** seleciona linhas baseado em condições.
+
+```{r filter-basico}
+# Filtrar alunos com nota_p1 maior que 8
+alunos %>%
+  filter(nota_p1 > 8)
+
+# Filtrar curso de Biologia
+alunos %>%
+  filter(curso == "Biologia")
+
+# Múltiplas condições com &
+alunos %>%
+  filter(nota_p1 > 8 & frequencia >= 90)
+
+# OU com |
+alunos %>%
+  filter(nota_p1 > 9 | nota_p2 > 9)
+
+# Usando %in%
+alunos %>%
+  filter(curso %in% c("Biologia", "Medicina"))
+
+# Negação com !
+alunos %>%
+  filter(!bolsista)  # Não bolsistas
+
+# Filtrar por string
+alunos %>%
+  filter(str_detect(nome, "Silva"))  # Nomes com "Silva"
+```
+
+---
+
+## 1.6 select() - Selecionar Colunas
+
+**`select()`** escolhe quais colunas manter.
+
+```{r select-basico}
+# Selecionar colunas específicas
+alunos %>%
+  select(nome, curso, nota_p1)
+
+# Remover colunas com -
+alunos %>%
+  select(-id, -frequencia)
+
+# Selecionar intervalo
+alunos %>%
+  select(nome:curso)  # De nome até curso
+
+# Funções auxiliares
+alunos %>%
+  select(starts_with("nota"))  # Começa com "nota"
+
+alunos %>%
+  select(ends_with("a"))  # Termina com "a"
+
+alunos %>%
+  select(contains("curso"))  # Contém "curso"
+
+# Reordenar colunas
+alunos %>%
+  select(nome, curso, everything())  # Nome e curso primeiro
+
+# Renomear ao selecionar
+alunos %>%
+  select(estudante = nome, disciplina = curso)
+```
+
+---
+
+## 1.7 mutate() - Criar/Modificar Colunas
+
+**`mutate()`** cria novas colunas ou modifica existentes.
+
+```{r mutate-basico}
+# Criar nova coluna
+alunos %>%
+  mutate(media = (nota_p1 + nota_p2) / 2)
+
+# Múltiplas colunas
+alunos %>%
+  mutate(
+    media = (nota_p1 + nota_p2) / 2,
+    aprovado = media >= 7,
+    conceito = case_when(
+      media >= 9 ~ "A",
+      media >= 7 ~ "B",
+      media >= 5 ~ "C",
+      TRUE ~ "D"
+    )
+  )
+
+# Modificar coluna existente
+alunos %>%
+  mutate(idade = idade + 1)  # Aniversário!
+
+# Usar coluna recém-criada
+alunos %>%
+  mutate(
+    media = (nota_p1 + nota_p2) / 2,
+    media_ajustada = media * 1.1,  # Usa 'media' criada acima
+    passou = media_ajustada >= 7
+  )
+
+# Operações vetorizadas
+alunos %>%
+  mutate(
+    nota_p1_pct = nota_p1 / 10 * 100,  # Converter para percentual
+    nome_upper = str_to_upper(nome),    # MAIÚSCULAS
+    sobrenome = str_extract(nome, "\\w+$")  # Extrair sobrenome
+  )
+```
+
+---
+
+## 1.8 arrange() - Ordenar Linhas
+
+**`arrange()`** ordena linhas baseado em colunas.
+
+```{r arrange-basico}
+# Ordem crescente
+alunos %>%
+  arrange(nota_p1)
+
+# Ordem decrescente com desc()
+alunos %>%
+  arrange(desc(nota_p1))
+
+# Múltiplas colunas (desempate)
+alunos %>%
+  arrange(curso, desc(nota_p1))
+
+# Ordenar com NA
+dados_com_na <- tibble(
+  x = c(5, 2, NA, 1, 3),
+  y = c("a", "b", "c", "d", "e")
+)
+
+dados_com_na %>%
+  arrange(x)  # NAs vão para o final por padrão
+```
+
+---
+
+## 1.9 summarize() - Resumir Dados
+
+**`summarize()`** (ou `summarise()`) reduz dados a um resumo.
+
+```{r summarize-basico}
+# Resumo único
+alunos %>%
+  summarize(
+    media_geral = mean(nota_p1),
+    nota_maxima = max(nota_p1),
+    nota_minima = min(nota_p1),
+    desvio_padrao = sd(nota_p1),
+    n_alunos = n()  # Contar linhas
+  )
+
+# Múltiplas estatísticas
+alunos %>%
+  summarize(
+    across(c(nota_p1, nota_p2), 
+           list(media = mean, dp = sd), 
+           .names = "{.col}_{.fn}")
+  )
+
+# Com na.rm
+alunos_com_na <- alunos
+alunos_com_na$nota_p1[1] <- NA
+
+alunos_com_na %>%
+  summarize(
+    media_sem_na = mean(nota_p1, na.rm = TRUE),
+    media_com_na = mean(nota_p1)  # Retorna NA
+  )
+```
+
+---
+
+## 1.10 group_by() - Agrupar Dados
+
+**`group_by()`** agrupa dados para operações por grupo.
+
+```{r group-by-basico}
+# Agrupar por curso
+alunos %>%
+  group_by(curso) %>%
+  summarize(
+    n = n(),
+    media_p1 = mean(nota_p1),
+    media_p2 = mean(nota_p2)
+  )
+
+# Múltiplos grupos
+alunos %>%
+  group_by(curso, bolsista) %>%
+  summarize(
+    n = n(),
+    media_p1 = mean(nota_p1),
+    .groups = "drop"  # Remove agrupamento após resumir
+  )
+
+# Mutate com group_by
+alunos %>%
+  group_by(curso) %>%
+  mutate(
+    media_curso = mean(nota_p1),
+    diff_da_media = nota_p1 - media_curso
+  ) %>%
+  ungroup()  # SEMPRE desagrupar após usar!
+
+# count() é atalho para group_by + summarize + n()
+alunos %>%
+  count(curso)
+
+alunos %>%
+  count(curso, bolsista)
+```
+
+---
+
+# INTERVALO (20h30 - 20h50)
+
+Aproveite para:
+- Tomar água/café
+- Revisar os verbos do dplyr
+- Experimentar com os dados
+
+---
+
+# Parte 2: Tidyr, Limpeza e Ferramentas Modernas (20h50 - 22h00)
+
+## 2.1 Pipeline Completo
+
+Combinando todos os verbos:
+
+```{r pipeline-completo}
+# Análise completa com pipeline
+resultado <- alunos %>%
+  # 1. Filtrar dados relevantes
+  filter(frequencia >= 75) %>%
+  
+  # 2. Criar colunas derivadas
+  mutate(
+    media = (nota_p1 + nota_p2) / 2,
+    status = case_when(
+      media >= 7 & frequencia >= 75 ~ "Aprovado",
+      media >= 5 & frequencia >= 75 ~ "Recuperação",
+      TRUE ~ "Reprovado"
+    )
+  ) %>%
+  
+  # 3. Selecionar colunas importantes
+  select(nome, curso, media, status, bolsista) %>%
+  
+  # 4. Agrupar e resumir
+  group_by(curso, status) %>%
+  summarize(
+    n = n(),
+    media_curso = mean(media),
+    pct_bolsistas = mean(bolsista) * 100,
+    .groups = "drop"
+  ) %>%
+  
+  # 5. Ordenar resultado
+  arrange(curso, desc(media_curso))
+
+resultado
+```
+
+---
+
+## 2.2 tidyr: pivot_longer() e pivot_wider()
+
+**tidyr** transforma dados entre formatos wide e long.
+
+### pivot_longer() - Wide para Long
+
+```{r pivot-longer}
+# Dados wide (uma coluna por ano)
+pib_wide <- tibble(
+  pais = c("Brasil", "Argentina", "Chile"),
+  pib_2020 = c(1.5, 0.4, 0.3),
+  pib_2021 = c(1.6, 0.5, 0.35),
+  pib_2022 = c(1.7, 0.45, 0.32)
+)
+
+pib_wide
+
+# Transformar para long (tidy)
+pib_long <- pib_wide %>%
+  pivot_longer(
+    cols = starts_with("pib"),      # Colunas a transformar
+    names_to = "ano",                # Nome da nova coluna de nomes
+    values_to = "pib"                # Nome da nova coluna de valores
+  )
+
+pib_long
+
+# Limpar coluna 'ano'
+pib_long <- pib_long %>%
+  mutate(ano = str_remove(ano, "pib_") %>% as.numeric())
+
+pib_long
+
+# Agora fica fácil analisar
+pib_long %>%
+  group_by(pais) %>%
+  summarize(crescimento = last(pib) - first(pib))
+```
+
+### pivot_wider() - Long para Wide
+
+```{r pivot-wider}
+# Reverter para wide
+pib_long %>%
+  pivot_wider(
+    names_from = ano,
+    values_from = pib,
+    names_prefix = "pib_"
+  )
+
+# Exemplo: dados de vendas
+vendas_long <- tibble(
+  mes = rep(c("Jan", "Fev", "Mar"), each = 3),
+  produto = rep(c("A", "B", "C"), 3),
+  vendas = c(100, 150, 200, 120, 160, 210, 110, 155, 205)
+)
+
+vendas_long
+
+# Transformar: produtos em colunas
+vendas_wide <- vendas_long %>%
+  pivot_wider(
+    names_from = produto,
+    values_from = vendas
+  )
+
+vendas_wide
+```
+
+---
+
+## 2.3 Valores Ausentes (NA)
+
+### Identificar NAs
+
+```{r na-identificar}
+# Criar dados com NA
+alunos_na <- alunos
+alunos_na$nota_p2[c(2, 5, 8)] <- NA
+alunos_na$frequencia[c(3, 7)] <- NA
+
+alunos_na
+
+# Identificar NAs
+alunos_na %>%
+  summarize(
+    nas_nota_p2 = sum(is.na(nota_p2)),
+    nas_freq = sum(is.na(frequencia)),
+    total_nas = sum(is.na(.))  # Total de NAs em todo o dataset
+  )
+
+# Ver quais linhas têm NA
+alunos_na %>%
+  filter(is.na(nota_p2) | is.na(frequencia))
+
+# Contar NAs por coluna
+alunos_na %>%
+  summarize(across(everything(), ~sum(is.na(.))))
+```
+
+### Remover NAs
+
+```{r na-remover}
+# Remover linhas com QUALQUER NA
+alunos_na %>%
+  drop_na()  # tidyr
+
+alunos_na %>%
+  na.omit()  # base R
+
+# Remover linhas com NA em colunas específicas
+alunos_na %>%
+  drop_na(nota_p2)
+
+alunos_na %>%
+  drop_na(nota_p2, frequencia)
+
+# Filtrar sem NAs
+alunos_na %>%
+  filter(!is.na(nota_p2))
+```
+
+### Substituir NAs
+
+```{r na-substituir}
+# Substituir por valor fixo
+alunos_na %>%
+  mutate(
+    nota_p2 = replace_na(nota_p2, 0),
+    frequencia = replace_na(frequencia, 0)
+  )
+
+# Substituir por média
+alunos_na %>%
+  mutate(
+    nota_p2 = ifelse(is.na(nota_p2), mean(nota_p2, na.rm = TRUE), nota_p2)
+  )
+
+# Substituir por valor anterior/posterior (fill)
+dados_sequencia <- tibble(
+  mes = 1:6,
+  vendas = c(100, NA, NA, 150, NA, 200)
+)
+
+dados_sequencia %>%
+  fill(vendas, .direction = "down")  # Preenche para baixo
+
+dados_sequencia %>%
+  fill(vendas, .direction = "up")  # Preenche para cima
+```
+
+---
+
+## 2.4 janitor: Limpeza de Dados
+
+**janitor** facilita limpeza de dados bagunçados.
+
+```{r janitor}
+library(janitor)
+
+# Dados com nomes ruins
+dados_sujos <- tibble(
+  `Nome Completo` = c("Ana", "Bruno"),
+  `Idade (anos)` = c(25, 30),
+  `Nota Final!!!` = c(8.5, 7.0),
+  `E-mail` = c("ana@email.com", "bruno@email.com")
+)
+
+dados_sujos
+
+# Limpar nomes automaticamente
+dados_limpos <- dados_sujos %>%
+  clean_names()
+
+dados_limpos
+names(dados_limpos)
+
+# Tabela de frequência melhorada
+alunos %>%
+  tabyl(curso)
+
+# Com percentuais
+alunos %>%
+  tabyl(curso) %>%
+  adorn_pct_formatting()
+
+# Tabulação cruzada
+alunos %>%
+  tabyl(curso, bolsista) %>%
+  adorn_percentages("row") %>%
+  adorn_pct_formatting() %>%
+  adorn_ns()  # Adiciona contagens
+
+# Remover linhas/colunas vazias
+dados_com_vazios <- tibble(
+  x = c(1, 2, NA, 4),
+  y = c(NA, NA, NA, NA),
+  z = c(5, 6, 7, 8)
+)
+
+dados_com_vazios %>%
+  remove_empty(c("rows", "cols"))
+```
+
+---
+
+## 2.5 skimr: Exploração Rápida
+
+**skimr** gera sumários estatísticos completos.
+
+```{r skimr}
+library(skimr)
+
+# Resumo completo do dataset
+alunos %>%
+  skim()
+
+# Por grupo
+alunos %>%
+  group_by(curso) %>%
+  skim()
+
+# Apenas variáveis numéricas
+alunos %>%
+  skim() %>%
+  filter(skim_type == "numeric")
+
+# Customizar output
+alunos %>%
+  skim() %>%
+  select(skim_variable, n_missing, numeric.mean, numeric.sd)
+```
+
+---
+
+## 2.6 Joins: Combinando Datasets
+
+Combinar dados de múltiplas tabelas:
+
+```{r joins}
+# Tabela de alunos (simplificada)
+alunos_info <- tibble(
+  id = 1:5,
+  nome = c("Ana", "Bruno", "Carla", "Diego", "Elena"),
+  curso = c("Bio", "Eco", "Bio", "Eco", "Med")
+)
+
+# Tabela de notas
+notas <- tibble(
+  aluno_id = c(1, 2, 3, 4, 6),  # Note: 6 não existe em alunos_info
+  disciplina = c("Mat", "Mat", "Fis", "Fis", "Qui"),
+  nota = c(8.5, 7.0, 9.0, 6.5, 8.0)
+)
+
+# INNER JOIN - apenas correspondências
+alunos_info %>%
+  inner_join(notas, by = c("id" = "aluno_id"))
+
+# LEFT JOIN - mantém todos da esquerda
+alunos_info %>%
+  left_join(notas, by = c("id" = "aluno_id"))
+
+# RIGHT JOIN - mantém todos da direita
+alunos_info %>%
+  right_join(notas, by = c("id" = "aluno_id"))
+
+# FULL JOIN - mantém todos
+alunos_info %>%
+  full_join(notas, by = c("id" = "aluno_id"))
+
+# ANTI JOIN - linhas sem correspondência
+alunos_info %>%
+  anti_join(notas, by = c("id" = "aluno_id"))  # Ana e Elena não têm notas
+```
+
+---
+
+## 2.7 Usando Claude para Otimizar Pipelines
+
+**Claude** é excelente para revisar e otimizar código tidyverse.
+
+### Exemplo de Prompt para Claude:
+
+```r
+# Código original (funcional mas verboso)
+resultado <- alunos %>%
+  filter(frequencia >= 75) %>%
+  mutate(media = (nota_p1 + nota_p2) / 2) %>%
+  mutate(passou = ifelse(media >= 7, "Sim", "Não")) %>%
+  select(nome, media, passou) %>%
+  arrange(desc(media))
+
+# Pergunte ao Claude:
+# "Este pipeline do dplyr está correto mas posso melhorá-lo?
+#  Há formas mais eficientes ou elegantes de fazer o mesmo?"
+
+# Claude pode sugerir:
+# - Combinar mutates
+# - Usar case_when em vez de ifelse
+# - Adicionar validações
+# - Melhorar legibilidade
+```
+
+---
+
+# Exercícios Práticos
+
+## Exercício 1: Verbos Básicos
+
+```{r ex3-1, eval=FALSE}
+# Use o dataset 'alunos' criado anteriormente
+
+# a) Filtre alunos de Biologia com nota_p1 >= 8
+
+
+# b) Selecione apenas nome, curso e nota_p1
+
+
+# c) Crie coluna 'media' e outra 'aprovado' (media >= 7)
+
+
+# d) Ordene por media (decrescente)
+
+
+# e) Agrupe por curso e calcule média geral
+
+```
+
+## Exercício 2: Pipeline Integrado
+
+```{r ex3-2, eval=FALSE}
+# Crie um pipeline que:
+# 1. Filtra alunos com frequência >= 80
+# 2. Calcula média das duas provas
+# 3. Classifica: "Excelente" (>=9), "Bom" (>=7), "Regular" (<7)
+# 4. Agrupa por classificação e conta quantos há em cada
+# 5. Calcula percentual de cada grupo
+
+```
+
+## Exercício 3: Tidyr
+
+```{r ex3-3, eval=FALSE}
+# Dados de temperatura (wide)
+temp_wide <- tibble(
+  cidade = c("São Paulo", "Rio", "BH"),
+  jan = c(25, 28, 24),
+  fev = c(26, 29, 25),
+  mar = c(24, 27, 23)
+)
+
+# a) Transforme para formato long
+
+
+# b) Calcule a temperatura média por cidade
+
+
+# c) Qual cidade teve maior variação de temperatura?
+
+
+# d) Volte para formato wide
+
+```
+
+## Exercício 4: Limpeza e Análise
+
+```{r ex3-4, eval=FALSE}
+# Dataset com problemas
+dados_problematicos <- tibble(
+  `Nome Completo` = c("Ana Silva", "Bruno Costa", NA, "Carla Dias"),
+  `Idade (anos)` = c(25, NA, 28, 22),
+  `Renda Mensal` = c(3000, 4500, NA, 3500),
+  `Estado Civil` = c("Solteira", "casado", "SOLTEIRA", "Casada")
+)
+
+# a) Limpe os nomes das colunas
+
+
+# b) Padronize 'Estado Civil' (todas minúsculas, primeira letra maiúscula)
+
+
+# c) Substitua NAs em 'Renda Mensal' pela mediana
+
+
+# d) Remova linhas onde 'Nome Completo' é NA
+
+
+# e) Crie resumo estatístico com skimr
+
+```
+
+## Exercício 5: Análise Realista
+
+```{r ex3-5, eval=FALSE}
+# Dados de vendas (simulado)
+set.seed(123)
+vendas <- tibble(
+  data = rep(seq(as.Date("2024-01-01"), by = "month", length.out = 6), each = 3),
+  produto = rep(c("A", "B", "C"), 6),
+  vendas = round(rnorm(18, mean = 1000, sd = 200)),
+  regiao = sample(c("Norte", "Sul", "Leste", "Oeste"), 18, replace = TRUE)
+)
+
+# a) Calcule vendas totais por produto
+
+
+# b) Qual região teve maior média de vendas?
+
+
+# c) Qual produto teve maior crescimento (primeiro vs último mês)?
+
+
+# d) Crie tabela cruzada: região x produto (vendas médias)
+
+
+# e) Use Claude para otimizar seu código!
+
+```
+
+---
+
+# Prática Guiada: Análise Completa
+
+Análise exploratória completa com tidyverse:
+
+```{r pratica-guiada-dia3}
+# Simular dados mais complexos
+set.seed(42)
+n <- 100
+
+dados_completos <- tibble(
+  id = 1:n,
+  idade = sample(18:65, n, replace = TRUE),
+  sexo = sample(c("M", "F"), n, replace = TRUE),
+  estado = sample(c("SP", "RJ", "MG", "RS"), n, replace = TRUE),
+  renda = round(rnorm(n, 5000, 2000)),
+  escolaridade = sample(c("Fundamental", "Médio", "Superior"), n, 
+                       replace = TRUE, prob = c(0.2, 0.4, 0.4)),
+  satisfacao = sample(1:10, n, replace = TRUE)
+) %>%
+  # Criar algumas relações realistas
+  mutate(
+    renda = case_when(
+      escolaridade == "Superior" ~ renda * 1.5,
+      escolaridade == "Médio" ~ renda * 1.2,
+      TRUE ~ renda
+    ),
+    renda = pmax(renda, 1500)  # Renda mínima
+  )
+
+# Pipeline de análise
+analise <- dados_completos %>%
+  # Limpeza
+  filter(renda > 0, !is.na(satisfacao)) %>%
+  
+  # Engenharia de features
+  mutate(
+    faixa_etaria = case_when(
+      idade < 25 ~ "18-24",
+      idade < 35 ~ "25-34",
+      idade < 50 ~ "35-49",
+      TRUE ~ "50+"
+    ),
+    faixa_renda = case_when(
+      renda < 3000 ~ "Baixa",
+      renda < 7000 ~ "Média",
+      TRUE ~ "Alta"
+    )
+  ) %>%
+  
+  # Análise por grupos
+  group_by(faixa_etaria, escolaridade) %>%
+  summarize(
+    n = n(),
+    renda_media = mean(renda),
+    renda_mediana = median(renda),
+    satisfacao_media = mean(satisfacao),
+    pct_mulheres = mean(sexo == "F") * 100,
+    .groups = "drop"
+  ) %>%
+  
+  # Filtrar grupos pequenos
+  filter(n >= 5) %>%
+  
+  # Ordenar
+  arrange(faixa_etaria, desc(renda_media))
+
+analise
+
+# Visualização rápida do resultado
+analise %>%
+  ggplot(aes(x = faixa_etaria, y = renda_media, fill = escolaridade)) +
+  geom_col(position = "dodge") +
+  theme_minimal() +
+  labs(
+    title = "Renda Média por Faixa Etária e Escolaridade",
+    x = "Faixa Etária",
+    y = "Renda Média (R$)",
+    fill = "Escolaridade"
+  )
+```
+
+---
+
+# Commit no GitHub
+
+Versione seu progresso:
+
+```bash
+git add .
+git commit -m "Dia 3: adiciona manipulação com tidyverse"
+git push
+```
+
+---
+
+# Para Casa
+
+1. **Refazer** todos os exercícios sem consultar
+2. **Praticar** com seus próprios dados
+3. **Ler** [R for Data Science - Data Transformation](https://r4ds.hadley.nz/data-transform.html)
+4. **Usar** Claude para revisar e otimizar seus pipelines
+5. **Explorar** mais funções do dplyr: `slice()`, `distinct()`, `separate()`, `unite()`
+
+---
+
+# Recursos Adicionais
+
+## Documentação
+
+- [dplyr Cheat Sheet](https://github.com/rstudio/cheatsheets/blob/main/data-transformation.pdf)
+- [tidyr Vignette](https://tidyr.tidyverse.org/)
+- [janitor Documentation](https://sfirke.github.io/janitor/)
+- [skimr Documentation](https://docs.ropensci.org/skimr/)
+
+## Prática
+
+- [TidyTuesday](https://github.com/rfordatascience/tidytuesday) - Datasets semanais
+- [dplyr Exercises](https://www.r-exercises.com/tag/dplyr/)
+
+## Vídeos
+
+- [Data Wrangling with dplyr](https://www.youtube.com/results?search_query=dplyr+tutorial)
+
+---
+
+# Dúvidas Frequentes
+
+**P: Quando usar %>% vs |>?**  
+R: Ambos funcionam igual na maioria dos casos. Use o que preferir. %>% é mais comum por enquanto.
+
+**P: Por que meu group_by não funciona?**  
+R: Esqueceu de `ungroup()` depois? Grupos persistem até remover!
+
+**P: pivot_longer ou pivot_wider?**  
+R: longer = wide→long (mais linhas). wider = long→wide (mais colunas).
+
+**P: Como escolher entre filter e slice?**  
+R: filter = condição lógica. slice = por posição (linha 1, 2, 3...).
+
+**P: Meu pipeline está muito longo, é ruim?**  
+R: Não! Pipelines longos são OK se cada passo for claro. Quebre em etapas se necessário.
+
+---
+
+# Conclusão do Dia 3
+
+Parabéns! Você completou o Dia 3 e agora domina:
+
+- Filosofia tidyverse e tidy data
+- Todos os verbos essenciais do dplyr
+- Transformação de dados com tidyr
+- Tratamento de valores ausentes
+- Ferramentas modernas (janitor, skimr)
+- Criação de pipelines complexos
+- Otimização com ajuda de IA
+
+**Amanhã:** Leitura/escrita de dados e visualização com ggplot2!
+
+---
+
+**Última atualização:** `r Sys.Date()`  
+**Contato:** junqueiravinicius@hotmail.com  
+**Repositório:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Lattes:** http://lattes.cnpq.br/4686677580216927

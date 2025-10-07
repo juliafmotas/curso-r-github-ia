@@ -1,0 +1,70 @@
+\contentsline {section}{OBJETIVO: Objetivos do Dia 1}{2}{section*.2}%
+\contentsline {section}{MATERIAL: Parte 1: Ambientação e Setup (19h00 - 20h30)}{3}{section*.3}%
+\contentsline {subsection}{1.1 Por que R, GitHub e IA?}{3}{section*.4}%
+\contentsline {subsubsection}{Por que R?}{3}{section*.5}%
+\contentsline {subsubsection}{Por que GitHub?}{3}{section*.6}%
+\contentsline {subsubsection}{Por que IA (ChatGPT e Claude)?}{3}{section*.7}%
+\contentsline {subsection}{1.2 Verificação das Instalações}{3}{section*.8}%
+\contentsline {subsubsection}{Verificar R}{3}{section*.9}%
+\contentsline {subsubsection}{Verificar RStudio}{4}{section*.10}%
+\contentsline {subsubsection}{Verificar Git}{4}{section*.11}%
+\contentsline {subsection}{1.3 Instalação de Pacotes Essenciais}{4}{section*.12}%
+\contentsline {subsubsection}{Carregar pacotes}{4}{section*.13}%
+\contentsline {subsection}{1.4 Configuração do GitHub}{4}{section*.14}%
+\contentsline {subsubsection}{Criar Conta no GitHub}{4}{section*.15}%
+\contentsline {subsubsection}{Configurar Git Local}{4}{section*.16}%
+\contentsline {subsubsection}{Criar Personal Access Token (PAT)}{5}{section*.17}%
+\contentsline {subsubsection}{Salvar Token Localmente}{5}{section*.18}%
+\contentsline {subsection}{1.5 Clonando o Repositório do Curso}{5}{section*.19}%
+\contentsline {subsubsection}{Via RStudio (Recomendado)}{5}{section*.20}%
+\contentsline {subsubsection}{Via Terminal}{5}{section*.21}%
+\contentsline {subsection}{1.6 Estrutura do Projeto}{5}{section*.22}%
+\contentsline {subsubsection}{Por que usar Projetos RStudio?}{6}{section*.23}%
+\contentsline {subsection}{1.7 O Pacote \texttt {here}}{6}{section*.24}%
+\contentsline {section}{INTERVALO: INTERVALO (20h30 - 20h50)}{7}{section*.25}%
+\contentsline {section}{GRAFICO: Parte 2: Fundamentos do R (20h50 - 22h00)}{7}{section*.26}%
+\contentsline {subsection}{2.1 R como Calculadora}{7}{section*.27}%
+\contentsline {subsection}{2.2 Objetos e Atribuição}{7}{section*.28}%
+\contentsline {subsubsection}{Regras para Nomes de Objetos}{8}{section*.29}%
+\contentsline {subsection}{2.3 Tipos de Dados Fundamentais}{8}{section*.30}%
+\contentsline {subsubsection}{Numeric (N meros)}{8}{section*.31}%
+\contentsline {subsubsection}{Character (Texto/String)}{9}{section*.32}%
+\contentsline {subsubsection}{Logical (L gico)}{9}{section*.33}%
+\contentsline {subsubsection}{Factor (Fator/Categ rico)}{9}{section*.34}%
+\contentsline {subsubsection}{Convers o entre Tipos}{10}{section*.35}%
+\contentsline {subsection}{2.4 Vetores}{10}{section*.36}%
+\contentsline {subsubsection}{Criando Vetores}{10}{section*.37}%
+\contentsline {subsubsection}{Propriedades de Vetores}{11}{section*.38}%
+\contentsline {subsubsection}{Opera es Vetorizadas}{12}{section*.39}%
+\contentsline {subsection}{2.5 Indexa o de Vetores}{12}{section*.40}%
+\contentsline {subsubsection}{Por Posi o}{12}{section*.41}%
+\contentsline {subsubsection}{Por Condi o L gica}{13}{section*.42}%
+\contentsline {subsubsection}{Por Nome}{13}{section*.43}%
+\contentsline {subsection}{2.6 Valores Ausentes (NA)}{14}{section*.44}%
+\contentsline {subsection}{2.7 Listas}{15}{section*.45}%
+\contentsline {subsection}{2.8 Data Frames}{15}{section*.46}%
+\contentsline {subsubsection}{Acessar Colunas}{17}{section*.47}%
+\contentsline {subsubsection}{Acessar Linhas}{17}{section*.48}%
+\contentsline {subsubsection}{Acessar C lulas Espec ficas}{18}{section*.49}%
+\contentsline {subsubsection}{Adicionar Colunas}{18}{section*.50}%
+\contentsline {subsection}{2.9 Fun es teis de Explora o}{18}{section*.51}%
+\contentsline {section}{EXERCICIO: Exerc cios Pr ticos}{20}{section*.52}%
+\contentsline {subsection}{Exerc cio 1: Calculadora e Objetos}{20}{section*.53}%
+\contentsline {subsection}{Exerc cio 2: Vetores}{20}{section*.54}%
+\contentsline {subsection}{Exerc cio 3: Data Frames}{20}{section*.55}%
+\contentsline {subsection}{Exerc cio 4: An lise Real}{20}{section*.56}%
+\contentsline {section}{OBJETIVO: Pr tica Guiada: Primeiro Script}{21}{section*.57}%
+\contentsline {subsection}{Passo 1: Criar Script}{21}{section*.58}%
+\contentsline {subsection}{Passo 2: Escrever C digo}{21}{section*.59}%
+\contentsline {subsection}{Passo 3: Executar}{22}{section*.60}%
+\contentsline {section}{GITHUB: Primeiro Commit no GitHub}{22}{section*.61}%
+\contentsline {subsection}{Via RStudio (Recomendado)}{22}{section*.62}%
+\contentsline {subsection}{Via Terminal}{22}{section*.63}%
+\contentsline {subsection}{Verificar}{23}{section*.64}%
+\contentsline {section}{MATERIAL: Para Casa}{23}{section*.65}%
+\contentsline {section}{Recursos Adicionais}{23}{section*.66}%
+\contentsline {subsection}{Documenta o}{23}{section*.67}%
+\contentsline {subsection}{Pr tica}{23}{section*.68}%
+\contentsline {subsection}{Comunidades}{23}{section*.69}%
+\contentsline {section}{D vidas Frequentes}{23}{section*.70}%
+\contentsline {section}{CURSO: Conclus o do Dia 1}{24}{section*.71}%

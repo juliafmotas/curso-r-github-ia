@@ -1,0 +1,562 @@
+---
+title: "Introdução Programação em R com GitHub, ChatGPT e Claude"
+# subtitle: "An  lise de Dados Moderna para Iniciantes de Diversas   reas"
+author: "Vinícius Silva Junqueira"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    number_sections: true
+fontsize: 11pt
+geometry: margin=2.5cm
+header-includes:
+  - \usepackage{fancyhdr}
+  - \pagestyle{fancy}
+  - \fancyhead[R]{Curso R + GitHub + IA}
+---
+
+\newpage
+
+# Informa    es Gerais do Curso
+
+**Carga hor  ria total:** 16 horas  
+**Per  odo:** Segunda a sexta-feira  
+**Hor  rio:** 19h00   s 22h00 (com intervalo de 20 minutos   s 20h30)  
+**Tempo l  quido por dia:** 2h40 de conte  do efetivo  
+**P  blico-alvo:** Iniciantes de diversas   reas (sa  de, economia, biologia, ci  ncias sociais, gest  o)  
+**Material:** Reposit  rio GitHub com datasets, scripts e exerc  cios  
+**Reposit  rio:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Pr  -requisito:** Computador com R, RStudio e Git instalados
+
+---
+
+## Estrutura Pedag  gica
+
+- **Teoria + Pr  tica:** Cada conceito    seguido de exerc  cio pr  tico
+- **Aprendizado Incremental:** Commits no GitHub ao final de cada dia
+- **Casos Multidisciplinares:** Exemplos de sa  de, economia, biodiversidade e marketing
+- **IA como Ferramenta:** Uso estrat  gico de ChatGPT e Claude para aprendizado e produtividade
+- **Projeto Final:** An  lise completa com dados reais e relat  rio reprodut  vel
+
+---
+
+## Materiais Necess  rios
+
+### Instala    o Pr  via (Obrigat  rio)
+- R (vers  o 4.3+): https://cran.r-project.org/
+- RStudio (vers  o 2023.09+): https://posit.co/download/rstudio-desktop/
+- Git: https://git-scm.com/downloads
+- Conta no GitHub: https://github.com/
+
+### Pacotes R (instalados no Dia 1)
+```r
+install.packages(c("tidyverse", "here", "janitor", "skimr", 
+                   "readxl", "writexl", "rmarkdown"))
+```
+
+---
+
+\newpage
+
+# Segunda-feira     Dia 1: Fundamentos e Ambiente Reprodut  vel
+
+## 19h00     20h30 | Ambienta    o e Setup Completo
+
+### Apresenta    o do Curso (20min)
+- Objetivos e metodologia
+- Por que R, GitHub e IA?
+- Panorama das   reas de aplica    o
+- Apresenta    o dos participantes e expectativas
+
+### Configura    o do Ambiente (50min)
+- Verifica    o das instala    es (R, RStudio, Git)
+- **Cria    o de conta GitHub** (se ainda n  o tiver)
+- **Configura    o Git local:**
+  - `git config --global user.name "Seu Nome"`
+  - `git config --global user.email "seu@email.com"`
+- **Autentica    o GitHub:**
+  - Cria    o de Personal Access Token (PAT)
+  - Configura    o com `gitcreds::gitcreds_set()`
+  - Alternativa: GitHub Desktop (interface gr  fica)
+
+### Clonagem do Reposit  rio do Curso (20min)
+- Clone via RStudio ou linha de comando
+- Estrutura de pastas: `data/`, `scripts/`, `output/`, `docs/`
+- **Cria    o do primeiro Projeto RStudio (.Rproj)**
+- Import  ncia do working directory e `here::here()`
+
+---
+
+## 20h30     20h50 | INTERVALO
+
+---
+
+## 20h50     22h00 | Fundamentos do R
+
+### Objetos e Estruturas de Dados (40min)
+- Vetores: num  rico, l  gico, string
+- Listas e data.frames
+- Fatores: vari  veis categ  ricas
+- Fun    es b  sicas: `c()`, `length()`, `class()`, `typeof()`
+
+### Explora    o Inicial de Dados (30min)
+- `str()`, `head()`, `tail()`, `names()`
+- `dplyr::glimpse()` (vis  o moderna)
+- `summary()` para estat  sticas descritivas
+- **Indexa    o:** por posi    o `[1]`, por nome `$coluna`, por condi    o
+
+### Pr  tica Guiada (20min)
+- Criar vetores e data.frames
+- Manipular objetos b  sicos
+- **Primeiro script:** salvar como `01_fundamentos.R`
+- **Primeiro commit:** "Fundamentos do R - Dia 1"
+
+## Para Casa
+- Revisar conceitos no material do reposit  rio
+- Experimentar com seus pr  prios dados (se tiver)
+
+---
+
+\newpage
+
+# Ter  a-feira     Dia 2: L  gica, Fun    es e Boas Pr  ticas
+
+## 19h00     20h30 | Programa    o em R
+
+### Operadores e Condicionais (35min)
+- **Operadores l  gicos:** `&`, `|`, `!`, `%in%`
+- **Operadores relacionais:** `==`, `!=`, `>`, `<`, `>=`, `<=`
+- **Condicionais:**
+  - `if` e `else` (estrutura completa)
+  - `ifelse()` vetorizado
+  - `dplyr::case_when()` para m  ltiplas condi    es
+
+### Loops e Itera    o (25min)
+- Loop `for`: sintaxe e casos de uso
+- Vetoriza    o vs. loops (efici  ncia)
+- Breve men    o a `while` e `repeat`
+- Fam  lia `apply()` (conceitual)
+
+### Fun    es Customizadas (30min)
+- Sintaxe: `function(argumentos) { corpo }`
+- Argumentos obrigat  rios e opcionais
+- Valor de retorno: `return()` vs.   ltima linha
+- Documenta    o interna com coment  rios
+- **Exemplo pr  tico:** fun    o para calcular IMC por categoria
+
+---
+
+## 20h30     20h50 | INTERVALO
+
+---
+
+## 20h50     22h00 | Boas Pr  ticas e IA Assistida
+
+### Boas Pr  ticas de C  digo (25min)
+- **Naming conventions:** `snake_case` para objetos e fun    es
+- **Coment  rios eficientes:** o qu   vs. por qu  
+- **Organiza    o:** uma opera    o por linha
+- **Estilo:** espa  amento, indenta    o
+- Pacotes   teis: `styler::style_file()`, `lintr`
+
+### Debugging e Gest  o de Erros (25min)
+- **Lendo mensagens de erro:** anatomy of an error
+- **Estrat  gias de debugging:**
+  - `print()` para check points
+  - `traceback()` para rastrear erros
+  - `debug()` e `undebug()`
+  - Breakpoints no RStudio
+- **Tipos comuns de erro:** syntax, object not found, type mismatch
+
+### IA como Assistente de C  digo (20min)
+- **ChatGPT vs Claude:** quando usar cada um
+  - ChatGPT: debugging r  pido, sugest  es de c  digo
+  - Claude: revis  o detalhada, explica    es conceituais, documenta    o
+- **Boas pr  ticas:**
+  - Fornecer contexto adequado
+  - Verificar e testar c  digo gerado
+  - Aprender com as sugest  es (n  o apenas copiar)
+  -   tica: sempre entender o c  digo que voc   usa
+
+### Pr  tica: Depura    o Assistida (20min)
+- Corrigir scripts com erros intencionais
+- Usar ChatGPT/Claude para explicar problemas
+- Criar fun    o complexa com assist  ncia de IA
+- **Commit:** "L  gica, fun    es e debugging - Dia 2"
+
+---
+
+\newpage
+
+# Quarta-feira     Dia 3: Manipula    o Moderna de Dados
+
+## 19h00     20h30 | Tidyverse e dplyr
+
+### Filosofia Tidyverse (15min)
+- Princ  pios: tidy data, pipe, verbos consistentes
+- Carregar o tidyverse: `library(tidyverse)`
+- Estrutura de dados tidy: uma observa    o por linha
+
+### Verbos Essenciais do dplyr (45min)
+- **`filter()`:** filtrar linhas por condi    o
+- **`select()`:** selecionar colunas
+- **`mutate()`:** criar/modificar colunas
+- **`arrange()`:** ordenar linhas
+- **`summarize()`:** resumir dados
+- **`group_by()`:** agrupar para opera    es
+- **Operador pipe:** `%>%` ou `|>` (native pipe)
+
+### Exemplo Integrado (30min)
+- Dataset: dados de sa  de p  blica (ex: vacina    o por estado)
+- Pipeline completo com todos os verbos
+- **Casos multidisciplinares:**
+  - Sa  de: taxa de vacina    o por regi  o
+  - Economia: PIB per capita por pa  s
+  - Biologia: abund  ncia de esp  cies por bioma
+
+---
+
+## 20h30     20h50 | INTERVALO
+
+---
+
+## 20h50     22h00 | Transforma    o e Limpeza
+
+### Tidyr para Reshape (30min)
+- **`pivot_longer()`:** wide     long
+- **`pivot_wider()`:** long     wide
+- Casos de uso: dados de painel, s  ries temporais
+- **`separate()`** e **`unite()`:** manipular strings em colunas
+
+### Tratamento de Valores Ausentes (20min)
+- Identificar: `is.na()`, `anyNA()`, `sum(is.na())`
+- Remover: `na.omit()`, `drop_na()`, `complete.cases()`
+- Imputar: `replace_na()`, `fill()`
+- Decis  es: quando remover vs. imputar
+
+### Ferramentas Modernas de Explora    o (20min)
+- **`janitor::clean_names()`:** padronizar nomes de colunas
+- **`janitor::tabyl()`:** tabelas de frequ  ncia
+- **`skimr::skim()`:** sum  rio estat  stico completo
+- **`dplyr::count()`** e **`add_count()`**
+
+### Pr  tica com Claude (20min)
+- Criar pipeline complexo
+- Usar Claude para:
+  - Otimizar c  digo
+  - Sugerir alternativas
+  - Explicar cada etapa
+  - Documentar o pipeline
+- **Commit:** "Manipula    o e limpeza com tidyverse - Dia 3"
+
+### Exerc  cio Para Casa
+- Pipeline de an  lise com dataset de sua   rea
+- Documentar cada etapa com coment  rios
+
+---
+
+\newpage
+
+# Quinta-feira     Dia 4: I/O de Dados e Visualiza    o
+
+## 19h00     20h30 | Entrada e Sa  da de Dados
+
+### Leitura de Arquivos (40min)
+- **CSV:** `readr::read_csv()` vs. `read.csv()`
+  - Vantagens do readr: velocidade, consist  ncia, encoding
+  - Par  metros: `col_types`, `na`, `skip`, `locale`
+- **Excel:** `readxl::read_excel()`
+  - Especificar sheets: `sheet = "nome"` ou `sheet = 2`
+  - Ranges: `range = "A1:D50"`
+- **Outros formatos:** `.rds`, `.txt`, `.tsv`
+- **Encoding:** lidar com acentua    o (UTF-8)
+
+### Escrita de Arquivos (20min)
+- **CSV:** `readr::write_csv()`
+- **Excel:** `writexl::write_xlsx()`
+- **RDS:** `saveRDS()` e `readRDS()` (formato R nativo)
+- Boas pr  ticas: datas no nome de arquivo, versionamento
+
+### Organiza    o de Projetos (30min)
+- **Estrutura recomendada:**
+  ```
+  meu-projeto/
+            meu-projeto.Rproj
+            README.md
+            data/
+                  raw/          # dados originais (nunca modificar!)
+                  processed/    # dados limpos
+            scripts/
+                  01_import.R
+                  02_clean.R
+                  03_analyze.R
+            output/
+                  figures/
+                  tables/
+            docs/             # relat  rios
+  ```
+- **`here::here()` para caminhos relativos**
+  - Portabilidade entre sistemas
+  - Exemplo: `read_csv(here("data", "raw", "dados.csv"))`
+- **Projetos RStudio:** sempre usar!
+
+---
+
+## 20h30     20h50 | INTERVALO
+
+---
+
+## 20h50     22h00 | Visualiza    o com ggplot2
+
+### Gram  tica de Gr  ficos (20min)
+- Filosofia: camadas sequenciais
+- Estrutura b  sica: `ggplot(data, aes()) + geom_*()`
+- **Aesthetics:** `x`, `y`, `color`, `fill`, `size`, `alpha`
+- **Geometries:** pontos, linhas, barras, boxplots
+
+### Tipos de Gr  ficos (50min)
+- **Dispers  o:** `geom_point()` + `geom_smooth()`
+  - Caso: rela    o entre vari  veis cont  nuas
+- **Barras:** `geom_col()` vs. `geom_bar()`
+  - Caso: compara    o entre categorias
+- **Boxplot:** `geom_boxplot()` + `geom_jitter()`
+  - Caso: distribui    o e outliers
+- **Linhas:** `geom_line()` + `geom_ribbon()`
+  - Caso: s  ries temporais
+- **Histograma:** `geom_histogram()` + `geom_density()`
+  - Caso: distribui    o de frequ  ncias
+
+### Personaliza    o (20min)
+- **Temas:** `theme_minimal()`, `theme_bw()`, `theme_classic()`
+- **T  tulos e labels:** `labs(title, x, y, caption)`
+- **Cores:** `scale_color_brewer()`, `scale_fill_viridis_d()`
+- **Facetas:** `facet_wrap()`, `facet_grid()`
+- **Salvamento:** `ggsave("figura.png", width = 8, height = 6, dpi = 300)`
+
+### Pr  tica com IA (10min)
+- Usar ChatGPT/Claude para:
+  - Sugerir tipo de gr  fico adequado aos dados
+  - Melhorar est  tica
+  - Corrigir erros de sintaxe
+- **Commit:** "I/O e visualiza    o - Dia 4"
+
+---
+
+\newpage
+
+# Sexta-feira     Dia 5: Relat  rios Reprodut  veis e Projeto Final
+
+## 19h00     20h30 | RMarkdown/Quarto
+
+### Introdu    o    Programa    o Liter  ria (20min)
+- **Conceito:** c  digo + narrativa + resultados
+- **Reprodutibilidade:** garantir que an  lise possa ser replicada
+- RMarkdown vs. Quarto (breve compara    o)
+- Cria    o de novo documento: File     New File     R Markdown
+
+### Estrutura de Documentos (40min)
+- **YAML header:**
+  ```yaml
+  ---
+  title: "Minha An  lise"
+  author: "Seu Nome"
+  date: "`r Sys.Date()`"
+  output: html_document
+  ---
+  ```
+- **Markdown b  sico:**
+  - Headers: `#`, `##`, `###`
+  - Listas: `-` ou `1.`
+  -   nfase: `*it  lico*`, `**negrito**`
+  - Links: `[texto](url)`
+- **Chunks de c  digo:**
+  ````markdown
+  ```{r nome-do-chunk, echo=TRUE, warning=FALSE}
+  # seu c  digo aqui
+  ```
+  ````
+- **Op    es   teis:** `echo`, `eval`, `warning`, `message`, `fig.width`, `fig.height`
+
+### Renderiza    o (20min)
+- Knit para HTML, PDF (requer LaTeX), Word
+- Inline code: usar acento grave + r + c  digo entre acentos graves
+- Tabelas formatadas: `knitr::kable()`, `gt::gt()`
+- **Pr  tica:** criar relat  rio simples com an  lise do Dia 3
+
+---
+
+## 20h30     20h50 | INTERVALO
+
+---
+
+## 20h50     22h00 | Projeto Final e GitHub
+
+### Desenvolvimento do Projeto (40min)
+- **Escolha do dataset:**
+  - Op    o 1: Dataset fornecido (dados p  blicos interessantes)
+  - Op    o 2: Dados pr  prios da   rea do aluno
+- **Roteiro do projeto:**
+  1. Importar e explorar dados (`skimr::skim()`)
+  2. Limpar e transformar (`dplyr` + `tidyr`)
+  3. Criar 3-4 visualiza    es relevantes
+  4. Gerar insights e interpreta    es
+  5. Compilar em relat  rio RMarkdown
+
+- **Trabalho individual ou em duplas**
+- Suporte do instrutor e uso estrat  gico de IA
+
+### GitHub: Versionamento Final (25min)
+- **Conceitos essenciais:**
+  - `git add .`     staging
+  - `git commit -m "mensagem"`     snapshot
+  - `git push`     enviar para GitHub
+- **Arquivo `.gitignore`:**
+  - Ignorar arquivos grandes, tempor  rios, sens  veis
+  - Exemplo:
+    ```
+    .Rproj.user
+    .Rhistory
+    .RData
+    *.html
+    data/raw/*  # se dados forem muito grandes
+    ```
+- **README.md:**
+  - Descri    o do projeto
+  - Estrutura de arquivos
+  - Como reproduzir a an  lise
+  - Depend  ncias (pacotes necess  rios)
+- **Push do projeto final**
+
+### Uso de Claude para Documenta    o (15min)
+- Gerar README.md profissional
+- Revisar c  digo para clareza
+- Sugerir melhorias na narrativa do relat  rio
+- Checar reprodutibilidade
+
+### Apresenta    es R  pidas (25min)
+- 3-5 minutos por pessoa/dupla
+- Principais achados
+- Desafios enfrentados
+- Feedback coletivo
+
+### Encerramento (5min)
+- Recursos para continuar aprendendo
+- Comunidades: R-Ladies, Meetups, Posit Community
+- Cursos recomendados: R for Data Science (r4ds.hadley.nz)
+- Certificado de participa    o
+
+---
+
+\newpage
+
+# Recursos Adicionais
+
+## Materiais Complementares
+
+### Livros Online (Gratuitos)
+- **R for Data Science (2e):** https://r4ds.hadley.nz/
+- **Advanced R:** https://adv-r.hadley.nz/
+- **R Graphics Cookbook:** https://r-graphics.org/
+- **Happy Git with R:** https://happygitwithr.com/
+
+### Cheat Sheets
+- RStudio IDE: https://posit.co/resources/cheatsheets/
+- dplyr, ggplot2, RMarkdown dispon  veis no menu Help     Cheat Sheets
+
+### Comunidades
+- **Posit Community:** https://community.rstudio.com/
+- **Stack Overflow:** tag [r]
+- **R-Ladies:** cap  tulos locais e globais
+- **LinkedIn/Twitter:** #RStats
+
+### Datasets para Pr  tica
+- `datasets::` (pacote nativo do R)
+- **tidytuesday:** https://github.com/rfordatascience/tidytuesday
+- **Kaggle Datasets:** https://www.kaggle.com/datasets
+- **Brasil.io:** https://brasil.io/datasets/ (dados brasileiros)
+- **IBGE, DataSUS, INEP:** dados p  blicos brasileiros
+
+---
+
+## Usando IA de Forma   tica e Eficiente
+
+### Boas Pr  ticas
+[OK] **Fa  a:**
+- Use IA para explicar conceitos que n  o entendeu
+- Pe  a sugest  es de otimiza    o de c  digo que voc   j   escreveu
+- Use para debugging (mas sempre entenda o erro primeiro)
+- Solicite revis  o de documenta    o e coment  rios
+- Aprenda com as explica    es fornecidas
+
+[X] **Evite:**
+- Copiar c  digo sem entender o que ele faz
+- Usar IA para fazer TODO o trabalho (voc   n  o aprende)
+- Confiar cegamente no c  digo gerado (sempre teste!)
+- Compartilhar dados sens  veis com ferramentas de IA
+
+### Prompts Eficientes
+
+**Ruim:**
+> "Como fa  o um gr  fico no R?"
+
+**Bom:**
+> "Tenho um data.frame com colunas 'ano', 'pais' e 'pib'. Como criar um gr  fico de linhas no ggplot2 mostrando a evolu    o do PIB de cada pa  s ao longo dos anos, com cada pa  s em uma cor diferente?"
+
+**Excelente:**
+> "Estou aprendendo ggplot2 e tenho este c  digo [cole o c  digo]. Ele gera o gr  fico, mas as legendas est  o sobrepostas e os labels do eixo x est  o ileg  veis. Como posso melhorar a legibilidade sem perder informa    o?"
+
+---
+
+## Crit  rios de Avalia    o do Projeto Final
+
+### An  lise de Dados (40%)
+- Limpeza e transforma    o adequadas
+- Uso correto de dplyr/tidyr
+- Tratamento de valores ausentes
+
+### Visualiza    es (30%)
+- Escolha apropriada de gr  ficos
+- Clareza e est  tica
+- Interpreta    o correta
+
+### Reprodutibilidade (20%)
+- C  digo organizado e comentado
+- Estrutura de projeto adequada
+- README.md completo
+- Relat  rio RMarkdown funcional
+
+### GitHub (10%)
+- Commits incrementais
+- Mensagens de commit claras
+- .gitignore apropriado
+
+---
+
+## Contato e Suporte P  s-Curso
+
+**Instrutor:** Vin  cius Silva Junqueira  
+**Email:** junqueiravinicius@hotmail.com  
+**GitHub do curso:** https://github.com/viniciusjunqueira/curso-r-github-ia  
+**Lattes:** http://lattes.cnpq.br/4686677580216927  
+**LinkedIn:** www.linkedin.com/in/junqueiravinicius  
+**Hor  rio de d  vidas:** Agendar via email
+
+**Suporte ap  s o curso:** 
+- D  vidas via Issues no GitHub do curso (resposta em at   48h)
+- Grupo no Slack/Discord (se aplic  vel)
+- Sess  o de follow-up opcional ap  s 2 semanas
+
+---
+
+# Feedback dos Participantes
+
+Por favor, preencha o formul  rio de avalia    o ao final do curso:
+[Link para formul  rio]
+
+Sua opini  o    fundamental para melhorarmos continuamente!
+
+---
+
+**  ltima atualiza    o:** `r Sys.Date()`  
+**Vers  o:** 2.0
