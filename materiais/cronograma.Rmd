@@ -1,18 +1,18 @@
 ---
 title: "Cronograma"
-subtitle: "Introdução à Programação em R com GitHub, ChatGPT e Claude"
+subtitle: "Introdução à Programação em R com GitHub e IA"
 author: "Vinícius Silva Junqueira"
 date: "`r Sys.Date()`"
 output:
-  html_document:
-    toc: true
-    toc_depth: '2'
-    df_print: paged
   pdf_document:
     latex_engine: xelatex
     toc: true
     toc_depth: 2
     number_sections: true
+  html_document:
+    toc: true
+    toc_depth: '2'
+    df_print: paged
 lang: "pt-BR"
 fontsize: 11pt
 geometry: margin=2.5cm
@@ -226,81 +226,18 @@ Nomes convencionados:
 - OPENAI_API_KEY para ChatGPT (OpenAI)
 - ANTHROPIC_API_KEY para Claude (Anthropic)
 
-Exemplo de ~/.Renviron:
-```r
-OPENAI_API_KEY=coloque_sua_chave_aqui
-ANTHROPIC_API_KEY=coloque_sua_chave_aqui
-```
-
-Teste rápido no R:
-```r
-Sys.getenv("OPENAI_API_KEY")
-Sys.getenv("ANTHROPIC_API_KEY")
-```
-
-Instalação de pacotes:
-```r
-install.packages(c("gptstudio", "chattr", "httr2", "jsonlite"))
-```
-
 ## 20h15 - 20h30 | Intervalo
 
 ## 20h30 - 21h00 | RStudio + gptstudio (ChatGPT)
 
 Abertura dos Addins do gptstudio no RStudio (chat pane e code assistant).  
 Uso no editor: seleção de código e prompt de revisão.  
-Exemplos típicos: explicar erro, refatorar função, gerar testes unitários simples.  
-Script de exemplo (via API manual com httr2):
-```r
-library(httr2); library(jsonlite)
-
-endpoint <- "https://api.openai.com/v1/chat/completions"
-prompt <- "Explique o que este código faz e sugira melhorias:\n\nx <- 1:10; mean(x)"
-body <- list(
-  model = "gpt-4o-mini",
-  messages = list(list(role="user", content=prompt))
-)
-
-req <- request(endpoint) |>
-  req_method("POST") |>
-  req_headers(Authorization = paste("Bearer", Sys.getenv("OPENAI_API_KEY"))) |>
-  req_body_json(body)
-
-resp <- req_perform(req)
-json <- resp_body_json(resp)
-cat(json$choices[[1]]$message$content)
-```
+Exemplos típicos: explicar erro, refatorar função, gerar testes unitários simples.
 
 ## 21h00 - 21h30 | RStudio + chattr (Claude)
 
 Fluxo básico com chattr::chat_claude().  
 Exemplos práticos: explicar um traceback, sugerir validação de argumentos, gerar esqueleto de RMarkdown.  
-Script de exemplo (API manual com httr2):
-```r
-library(httr2); library(jsonlite)
-
-endpoint <- "https://api.anthropic.com/v1/messages"
-prompt <- "Revise a função abaixo e a torne mais robusta a NAs.\n\nsoma_media <- function(x){ sum(x)/length(x) }"
-
-body <- list(
-  model = "claude-3-5-sonnet-latest",
-  max_tokens = 300,
-  messages = list(list(role="user", content=prompt))
-)
-
-req <- request(endpoint) |>
-  req_method("POST") |>
-  req_headers(
-    Authorization = paste("Bearer", Sys.getenv("ANTHROPIC_API_KEY")),
-    "anthropic-version" = "2023-06-01",
-    "content-type" = "application/json"
-  ) |>
-  req_body_json(body)
-
-resp <- req_perform(req)
-json <- resp_body_json(resp)
-cat(json$content[[1]]$text)
-```
 
 ## 21h30 - 22h00 | Exercício guiado de integração
 
@@ -320,12 +257,6 @@ Checklist final:
 - addins do gptstudio funcionando
 - chamada mínima via httr2 para cada API
 - commit e push no fork
-
-```bash
-git add scripts/04_*.R docs/relatorio_ia.Rmd
-git commit -m "Integração ChatGPT e Claude no RStudio (Dia 4)"
-git push origin main
-```
 
 \newpage
 

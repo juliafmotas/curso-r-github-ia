@@ -2,7 +2,7 @@
 
 library(qpdf)
 
-# setwd('./materiais/')
+setwd('./materiais/')
 
 pdf_combine(
   input = c("capa.pdf"
