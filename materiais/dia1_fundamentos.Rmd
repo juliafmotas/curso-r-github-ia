@@ -13,6 +13,8 @@ lang: pt-BR
 fontsize: 11pt
 geometry: margin=2.5cm
 header-includes:
+  - \usepackage{tcolorbox}
+  - \newenvironment{resumo}{\begin{tcolorbox}[colframe=black,colback=gray!10,title=Em resumo]}{\end{tcolorbox}}
   - \usepackage{fancyhdr}
   - \pagestyle{fancy}
   - \fancyhead[L]{\small Vinícius Silva Junqueira}
@@ -21,6 +23,7 @@ header-includes:
   - \fancyfoot[R]{\small junqueiravinicius@hotmail.com}
   - \renewcommand{\headrulewidth}{0.4pt}
   - \renewcommand{\footrulewidth}{0.4pt}
+
 ---
 
 ```{r setup, include=FALSE}
@@ -31,7 +34,7 @@ header-includes:
 
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = FALSE,       # Deixe FALSE para exibir o código em sala
+  eval = TRUE,       # Deixe FALSE para exibir o código em sala
   warning = FALSE,
   message = FALSE,
   error = FALSE,
@@ -181,7 +184,7 @@ A inteligência artificial revolucionou o aprendizado de programação. **Não �
 > - Preparar ambiente reprodutível com projetos `.Rproj` e `here()`
 
 ## Verificações rápidas
-```{r}
+```{r, eval=FALSE}
 R.version.string           # Versão do R
 RStudio.Version()$version  # Versão do RStudio
 system("git --version")    # Confirma Git disponível
@@ -205,7 +208,7 @@ Um Personal Access Token (PAT) é como uma "senha especial" que permite ao RStud
 **Passo a passo para criar e configurar o PAT:**
 
 ### Instalar pacotes necessários
-```{r}
+```{r, eval=FALSE}
 install.packages("usethis")
 install.packages("gitcreds")
 ```
@@ -238,7 +241,7 @@ Este comando abrirá seu navegador automaticamente na página de criação de to
    - Cole em um lugar seguro temporariamente (bloco de notas)
 
 ###  Salvar o token no RStudio
-```{r}
+```{r, eval=FALSE}
 gitcreds::gitcreds_set()
 ```
 
@@ -258,7 +261,7 @@ Você verá uma mensagem de confirmação:
 ```
 
 #### Verificar se funcionou
-```{r}
+```{r, eval=FALSE}
 usethis::git_sitrep()
 ```
 
@@ -316,7 +319,9 @@ curso-r-github-ia/
 
 ```{r}
 # Caminhos: sempre prefira here::here()
-install.packages("here")
+if (!requireNamespace("here", quietly = TRUE)) {
+  install.packages("here")
+}
 library(here)
 caminho <- here("data", "raw", "dados.csv")
 caminho
@@ -346,9 +351,12 @@ Você cria objetos usando o operador de atribuição `<-` (preferido) ou `=`.
 x_num <- 3.14
 x_log <- TRUE
 x_chr <- "Olá, R!"
-class(x_num); typeof(x_num)
-class(x_log); typeof(x_log)
-class(x_chr); typeof(x_chr)
+class(x_num)
+typeof(x_num)
+class(x_log)
+typeof(x_log)
+class(x_chr)
+typeof(x_chr)
 
 # Aritmética
 10 + 2  # somatório
@@ -360,22 +368,18 @@ class(x_chr); typeof(x_chr)
 # Infinito positivo. Significa que o valor tende ao infinito positivo.
 a <- 1 / 0
 a
-# Resultado: Inf
 
 # Infinito negativo. Significa que o valor tende ao infinito negativo.
 b <- -1 / 0
 b
-# Resultado: -Inf
 
 # Not a Number (NaN). Indica uma operação indefinida matematicamente.
 c <- 0 / 0
 c
-# Resultado: NaN
 
 # Valor ausente (NA). Representa um valor desconhecido ou faltante.
 d <- c(2, 4, NA, 8)
 d
-# Resultado: 2  4  NA  8
 
 # -------------------------------------------------------------
 # Testando os tipos de valores
@@ -423,15 +427,10 @@ sel <- v > 25; sel; v[sel]
 
 ```{r}
 names(v) <- letters[1:5]
-
 # Mostrando o vetor com nomes
 v
-#   a   b   c   d   e 
-#  10  20  30  40  50
-
 # Acessando um elemento pelo nome
 v["c"]
-# 30
 ```
 **Type coercion**. Em R, um vetor é uma estrutura homogênea, ou seja, todos os seus elementos precisam ser do mesmo tipo. Quando você cria um vetor com elementos de tipos diferentes, o R automaticamente converte (ou “coage”) todos os valores para um tipo comum que consiga representar todos eles. Esse processo é chamado de coerção de tipos (type coercion).
 
@@ -448,23 +447,48 @@ O tipo character tem sempre prioridade, porque é o único que pode representar 
 
 ```{r}
 x <- c(1, "a")
-# "1" "a"
+x
 
 class(x)
-# "character"
 ```
 
 ## Listas e data.frames
 
-**Listas: estruturas flexíveis**
+### Listas: estruturas flexíveis
 
-Uma **lista** é uma estrutura que pode conter elementos de **diferentes tipos** - ao contrário dos vetores. Listas são extremamente versáteis e podem armazenar números, textos, vetores, outras listas e até data.frames!
+Uma **lista** é uma estrutura que pode conter elementos de **diferentes tipos** — ao contrário dos vetores, que são homogêneos.  
+Listas são extremamente versáteis e podem armazenar **números, textos, vetores, outras listas** e até **data.frames**!
 
-**Uso típico de listas:**
+#### Uso típico de listas:
 - Armazenar resultados complexos de análises
 - Combinar diferentes tipos de informação
 - Retornar múltiplos valores de uma função
 
+---
+
+### Exemplo 1 – Criando uma lista simples
+
+```{r}
+# Criando uma lista com diferentes tipos de objetos
+info <- list(
+  nome = "Ana",
+  idade = 25,
+  notas = c(8.5, 9.0, 7.5),
+  aprovado = TRUE
+)
+
+# Visualizando a lista completa
+info
+```
+A função `str()` (de *structure*) exibe um resumo compacto da estrutura de qualquer objeto em R.  
+É muito útil para entender rapidamente o conteúdo de listas e data.frames, mostrando:
+- O tipo de cada elemento (numérico, lógico, texto, etc.)
+- O tamanho dos vetores internos
+- Uma prévia dos valores armazenados
+
+```{r}
+str(info)
+```
 **Data.frames: a estrutura tabular**
 
 Um **data.frame** é a estrutura mais importante para análise de dados em R. É similar a uma planilha do Excel ou uma tabela de banco de dados: tem linhas (observações) e colunas (variáveis).
@@ -488,13 +512,50 @@ alunos <- data.frame(
   ativo = c(TRUE, TRUE, FALSE, TRUE),
   stringsAsFactors = FALSE
 )
-str(alunos); nrow(alunos); ncol(alunos); names(alunos)
-head(alunos, 2); tail(alunos, 2)
+str(alunos)
+nrow(alunos)
+ncol(alunos)
+names(alunos)
+head(alunos, 2)
+tail(alunos, 2)
 
 # Acesso e novas colunas
 alunos$nome
 alunos$aprov <- ifelse(alunos$nota >= 7, "Aprovado", "Recuperação")
 ```
+
+### Diferença entre lista e data.frame
+
+| Aspecto | **Lista (`list`)** | **Data.frame** |
+|----------|--------------------|----------------|
+| Estrutura | Coleção genérica de objetos | Lista especial com vetores de mesmo comprimento |
+| Tipos de elementos | Pode misturar tipos livremente | Cada coluna pode ter tipo diferente, mas mesmo tamanho |
+| Acesso | Por nome, índice ou `$` | Por nome de coluna ou índice de coluna |
+| Tamanho dos elementos | Pode variar | Todos têm o mesmo número de linhas |
+| Uso típico | Armazenar resultados complexos | Manipular dados tabulares |
+
+---
+
+### Conversão entre listas e data.frames
+
+```{r}
+# Converter data.frame em lista
+as.list(alunos)
+
+# Converter lista em data.frame
+nova_lista <- list(
+id = 1:3,
+nome = c("Eva", "Fábio", "Gabi"),
+nota = c(9.0, 8.7, 7.5)
+)
+
+as.data.frame(nova_lista)
+```
+
+**Resumo:**
+
+- Todo `data.frame` é uma **lista**, mas nem toda lista é um `data.frame`.
+- Um `data.frame` é basicamente uma **lista disciplinada**, ideal para armazenar dados organizados em linhas e colunas.
 
 ## Fatores
 
@@ -503,17 +564,20 @@ alunos$aprov <- ifelse(alunos$nota >= 7, "Aprovado", "Recuperação")
 **Fatores** são a forma do R representar **variáveis categóricas** (também chamadas de qualitativas). São usados para dados que podem assumir um número limitado de valores distintos, chamados de "níveis" (levels).
 
 **Quando usar fatores:**
+
 - Variáveis categóricas: sexo (M/F), região (Norte/Sul/Leste/Oeste), tratamento (Controle/Teste)
 - Variáveis ordinais: nível de escolaridade, grau de satisfação (Baixo/Médio/Alto)
 - Respostas de questionários com opções fixas
 
 **Vantagens dos fatores:**
+
 - Economizam memória (armazenam códigos internos, não strings repetidas)
 - Permitem ordenação lógica (ex: Baixo < Médio < Alto)
 - Facilitam análises estatísticas e gráficos
 - Controlam quais valores são válidos
 
 **Tipos de fatores:**
+
 - **Nominais** (sem ordem): cores, categorias
 - **Ordinais** (com ordem): níveis de satisfação, graus acadêmicos
 
@@ -532,19 +596,60 @@ summary(conceito)
 > Vamos usar um dataset real (`palmerpenguins`) para praticar **inspeção e resumo** com diferentes funções, incluindo `dplyr::glimpse()`.
 
 ```{r}
-install.packages("palmerpenguins")
+if (!requireNamespace("palmerpenguins", quietly = TRUE)) {
+  install.packages("palmerpenguins")
+}
 library(palmerpenguins)
 library(dplyr)
-
-# Visão geral do dataset
-str(penguins)              # estrutura detalhada
-dplyr::glimpse(penguins)   # visão compacta e moderna (tidyverse style)
 
 # Informações básicas
 names(penguins)            # nomes das colunas
 nrow(penguins)             # número de linhas
 ncol(penguins)             # número de colunas
 dim(penguins)              # dimensões (linhas x colunas)
+class(penguins)
+```
+
+**Tibble vs data.frame**
+
+O objeto `penguins` do pacote `palmerpenguins` não é um `data.frame` tradicional: ele é uma **tibble**.
+
+Uma tibble é uma versão mais moderna e segura de um data.frame, usada no tidyverse.
+
+Principais diferenças:
+
+- Impressão:
+  - `data.frame` imprime tudo (todas as linhas e todas as colunas, às vezes vira uma parede de texto).
+  - `tibble` imprime só as primeiras linhas e corta na largura da tela, mostrando também o tipo de cada coluna.
+
+- Tipos na impressão:
+  - tibbles sempre mostram o tipo de dado de cada coluna (`<dbl>`, `<int>`, `<chr>`, `<fct>`, etc.).
+  - data.frames não mostram isso.
+
+- Subsetting:
+  - Em um `data.frame`, `df[, "coluna"]` pode virar vetor.
+  - Em uma tibble, `tb[ , "coluna"]` ainda é tibble (mais previsível).
+  - Para vetor puro, usa-se `tb[["coluna"]]` ou `tb$coluna`.
+
+- Nomes estranhos:
+  - tibbles aceitam nomes de colunas não sintáticos (por exemplo `"2024 (%)"`), e você acessa com crase: `tb$`2024 (%)``.
+  - data.frames costumam tentar corrigir/alterar o nome automaticamente.
+
+- Nunca converte string automaticamente para `factor`.
+  - `data.frame(...)` antigamente convertia texto em fator (dependia de `stringsAsFactors`).
+  - tibbles NÃO fazem conversão automática de texto para fator. Texto fica texto.
+
+\begin{resumo}
+- Toda tibble é um data.frame, mas com comportamento pensado para análise de dados moderna.
+
+- Para quem vai usar tidyverse (`dplyr`, `ggplot2`, etc.): tibble é o formato padrão.
+\end{resumo}
+
+
+```{r}
+# Visão geral do dataset
+str(penguins)              # estrutura detalhada
+dplyr::glimpse(penguins)   # visão compacta e moderna (tidyverse style)
 
 # Primeiras e últimas observações
 head(penguins)             # 6 primeiras linhas
