@@ -1,6 +1,6 @@
 ---
 title: "Dia 2"
-subtitle: "Introdução Programação em R com GitHub, ChatGPT e Claude"
+subtitle: "Lógica, Funções e Introdução ao Tidyverse"
 author: "Vinícius Silva Junqueira"
 date: "`r Sys.Date()`"
 output: 
@@ -31,7 +31,7 @@ header-includes:
 
 knitr::opts_chunk$set(
   echo = TRUE,
-  eval = FALSE,       # Deixe FALSE para exibir o código em sala
+  eval = TRUE,       # Deixe FALSE para exibir o código em sala
   warning = FALSE,
   message = FALSE,
   error = FALSE,
@@ -43,6 +43,8 @@ knitr::opts_chunk$set(
 # library(lubridate)
 # library(palmerpenguins)
 ```
+
+\newpage
 
 # Lógica, Funções e Introdução ao Tidyverse
 
@@ -57,13 +59,13 @@ knitr::opts_chunk$set(
 
 ---
 
-## 1. Operadores e Condicionais (≈ 30 min)
+# Operadores e Condicionais (30 min)
 
-### O que são operadores?
+## O que são operadores?
 
 **Operadores** são símbolos especiais que realizam operações entre valores. Eles são fundamentais para tomar decisões no código e controlar o fluxo de execução.
 
-### 1.1 Operadores lógicos e relacionais
+## Operadores lógicos e relacionais
 
 **Operadores relacionais** comparam dois valores e retornam `TRUE` ou `FALSE`:
 
@@ -81,6 +83,238 @@ knitr::opts_chunk$set(
 - `!` : NÃO (NOT) - inverte o valor lógico
 - `xor()` : OU EXCLUSIVO - apenas uma condição pode ser verdadeira
 
+```{r}
+# ============================================
+# OPERADORES RELACIONAIS EM MELHORAMENTO
+# ============================================
+
+# Avaliação de um reprodutor
+dep_leite <- 850  # DEP (Diferença Esperada na Progênie) para leite em kg
+acuracia <- 0.85  # Acurácia da avaliação genética
+idade_meses <- 36
+
+# Verificações básicas
+dep_leite > 500        # TRUE - DEP positiva e alta?
+acuracia >= 0.70       # TRUE - avaliação confiável?
+idade_meses <= 48      # TRUE - ainda jovem?
+dep_leite == 850       # TRUE - exatamente 850 kg?
+acuracia != 1.0        # TRUE - não tem acurácia perfeita
+
+# Avaliando múltiplos animais
+deps_peso <- c(15, 22, 8, 30, 18)  # DEPs para peso ao desmame (kg)
+deps_peso >= 20        # FALSE FALSE FALSE TRUE FALSE
+sum(deps_peso >= 20)   # 2 animais atingem o critério
+
+
+# ============================================
+# OPERADORES LÓGICOS - SELEÇÃO DE ANIMAIS
+# ============================================
+
+# Critérios para touro elite
+dep_leite <- 950
+dep_gordura <- 35
+dep_proteina <- 28
+confiabilidade <- 0.88
+consanguinidade <- 0.03
+
+# Touro elite: DEP leite > 800 E gordura > 30 E proteína > 25
+touro_elite <- dep_leite > 800 & dep_gordura > 30 & dep_proteina > 25
+print(touro_elite)  # TRUE
+
+# Touro elite CONFIÁVEL: critérios acima E confiabilidade alta E baixa consanguinidade
+touro_elite_confiavel <- touro_elite & confiabilidade >= 0.80 & consanguinidade < 0.05
+print(touro_elite_confiavel)  # TRUE
+
+
+# Critérios para descarte de fêmea
+idade_anos <- 8
+producao_ultima_lactacao <- 4500  # kg de leite
+intervalo_partos <- 450  # dias
+problemas_reprodutivos <- TRUE
+
+# Descartar se: idade > 7 OU produção < 5000 OU problemas reprodutivos
+descartar <- idade_anos > 7 | producao_ultima_lactacao < 5000 | problemas_reprodutivos
+print(descartar)  # TRUE (atende múltiplos critérios)
+
+
+# Seleção para inseminação artificial
+fertilidade_campo <- 0.65
+libido <- "alta"
+saude_andrológica <- TRUE
+dep_habilidade_materna <- 5
+
+# Apto para IA se: fertilidade > 0.60 E libido adequada E saúde OK
+apto_ia <- fertilidade_campo > 0.60 & 
+           (libido == "alta" | libido == "média") & 
+           saude_andrológica
+print(apto_ia)  # TRUE
+
+
+# XOR - Apenas uma característica excepcional
+dep_crescimento_excepcional <- TRUE  # DEP > 30 kg
+dep_qualidade_carcaca_excepcional <- FALSE  # DEP carne < 2
+
+# Animal especializado (apenas uma característica excepcional)
+especializado <- xor(dep_crescimento_excepcional, dep_qualidade_carcaca_excepcional)
+print(especializado)  # TRUE - é especializado em crescimento
+
+
+# Negação (NOT)
+tem_defeito_genetico <- FALSE
+!tem_defeito_genetico  # TRUE - não tem defeito, pode reproduzir
+
+
+# ============================================
+# EXEMPLO PRÁTICO: DATABASE DE REBANHO
+# ============================================
+
+# Plantel de vacas leiteiras
+rebanho <- data.frame(
+  animal_id = c("V001", "V002", "V003", "V004", "V005"),
+  dep_leite = c(850, 650, 920, 550, 780),
+  dep_gordura = c(32, 28, 38, 25, 30),
+  acuracia = c(0.85, 0.75, 0.90, 0.60, 0.80),
+  idade_anos = c(4, 6, 3, 8, 5),
+  consanguinidade = c(0.02, 0.06, 0.01, 0.08, 0.03),
+  n_partos = c(2, 4, 1, 6, 3)
+)
+
+print(rebanho)
+
+
+# 1. VACAS SUPERIORES para mães de touros
+# Critérios: DEP leite > 800, DEP gordura > 30, acurácia > 0.80
+maes_touros <- rebanho$dep_leite > 800 & 
+               rebanho$dep_gordura > 30 & 
+               rebanho$acuracia > 0.80
+
+print("Candidatas a mães de touros:")
+print(rebanho[maes_touros, ])
+
+
+# 2. VACAS EM RISCO de descarte
+# Critérios: idade > 7 OU consanguinidade > 0.07 OU DEP leite < 600
+risco_descarte <- rebanho$idade_anos > 7 | 
+                  rebanho$consanguinidade > 0.07 | 
+                  rebanho$dep_leite < 600
+
+print("\nAnimais em risco de descarte:")
+print(rebanho[risco_descarte, ])
+
+
+# 3. VACAS JOVENS COM ALTO POTENCIAL
+# Critérios: idade <= 4 E DEP leite > 750 E acurácia > 0.75
+jovens_potencial <- rebanho$idade_anos <= 4 & 
+                    rebanho$dep_leite > 750 & 
+                    rebanho$acuracia > 0.75
+
+print("\nVacas jovens de alto potencial:")
+print(rebanho[jovens_potencial, ])
+
+
+# 4. CONTROLE DE CONSANGUINIDADE
+# Animais NÃO consanguíneos (para acasalamentos)
+nao_consanguineos <- rebanho$consanguinidade < 0.05
+print("\nAnimais não consanguíneos:")
+print(rebanho[nao_consanguineos, c("animal_id", "consanguinidade")])
+
+
+# ============================================
+# EXEMPLO: DECISÕES DE ACASALAMENTO
+# ============================================
+
+# Características do touro
+touro_dep_leite <- 900
+touro_dep_gordura <- 35
+touro_consanguinidade <- 0.02
+
+# Características da vaca
+vaca_dep_leite <- 700
+vaca_dep_gordura <- 28
+vaca_consanguinidade <- 0.03
+
+# Compatibilidade genética
+# Ambos devem ter DEPs positivas E consanguinidade combinada < 0.06
+deps_complementares <- touro_dep_leite > 600 & vaca_dep_leite > 600 &
+                       touro_dep_gordura > 25 & vaca_dep_gordura > 25
+
+consanguinidade_aceitavel <- (touro_consanguinidade + vaca_consanguinidade) < 0.06
+
+acasalamento_recomendado <- deps_complementares & consanguinidade_aceitavel
+print(paste("Acasalamento recomendado?", acasalamento_recomendado))  # TRUE
+
+
+# ============================================
+# ÍNDICE DE SELEÇÃO COMPOSTO
+# ============================================
+
+# Cálculo de índice para gado de corte
+dep_peso_desmame <- 25  # kg
+dep_ganho_pos_desmame <- 18  # kg
+dep_aol <- 2.5  # área de olho de lombo (cm²)
+dep_eg <- -1.2  # espessura de gordura (mm) - negativo é bom!
+
+# Pesos econômicos (exemplo)
+peso_pd <- 2.0
+peso_gpd <- 1.5
+peso_aol <- 3.0
+peso_eg <- -1.0
+
+# Cálculo do índice
+indice <- (dep_peso_desmame * peso_pd) + 
+          (dep_ganho_pos_desmame * peso_gpd) + 
+          (dep_aol * peso_aol) + 
+          (dep_eg * peso_eg)
+
+print(paste("Índice de seleção:", round(indice, 2)))
+
+# Animal é TOP 10% se índice > 80
+top_10_pct <- indice > 80
+print(paste("Animal top 10%?", top_10_pct))
+
+
+# ============================================
+# EXERCÍCIO PRÁTICO
+# ============================================
+
+# Você tem 5 touros para classificar:
+touros <- data.frame(
+  id = c("T001", "T002", "T003", "T004", "T005"),
+  dep_leite = c(920, 780, 650, 850, 1050),
+  dep_proteina = c(30, 25, 22, 28, 35),
+  acuracia = c(0.88, 0.72, 0.65, 0.85, 0.92),
+  filhas_avaliadas = c(85, 45, 30, 70, 120),
+  consanguinidade = c(0.02, 0.05, 0.08, 0.03, 0.01)
+)
+
+# DESAFIO 1: Selecione touros ELITE
+# Critérios: DEP leite > 900, proteína > 28, acurácia > 0.85, consanguinidade < 0.04
+touros_elite <- touros$dep_leite > 900 & 
+                touros$dep_proteina > 28 & 
+                touros$acuracia > 0.85 & 
+                touros$consanguinidade < 0.04
+
+print("TOUROS ELITE:")
+print(touros[touros_elite, ])
+
+
+# DESAFIO 2: Touros com avaliação CONFIÁVEL
+# Critérios: acurácia > 0.80 OU filhas avaliadas >= 80
+touros_confiaveis <- touros$acuracia > 0.80 | touros$filhas_avaliadas >= 80
+
+print("\nTOUROS COM AVALIAÇÃO CONFIÁVEL:")
+print(touros[touros_confiaveis, ])
+
+
+# DESAFIO 3: Touros para DESCARTE
+# Critérios: consanguinidade > 0.06 OU (DEP leite < 700 E acurácia < 0.70)
+touros_descarte <- touros$consanguinidade > 0.06 | 
+                   (touros$dep_leite < 700 & touros$acuracia < 0.70)
+
+print("\nTOUROS PARA DESCARTE:")
+print(touros[touros_descarte, ])
+```
+
 **Operador especial:**
 - `%in%` : verifica se um valor está presente em um vetor
 
@@ -97,12 +331,12 @@ xor(TRUE, FALSE) # TRUE (apenas um é TRUE)
 5 > 2; 1 < 0   # TRUE; FALSE
 2 >= 2; 3 <= 10 # TRUE; TRUE
 
-# %in% (teste de pertinência)
+# %in% (avalia se está contido)
 2 %in% c(1, 2, 3)                        # TRUE
 "Adelie" %in% c("Chinstrap", "Gentoo")   # FALSE
 ```
 
-### 1.2 Condicionais: tomando decisões no código
+## Condicionais: tomando decisões no código
 
 **Condicionais** permitem que seu código tome decisões baseadas em condições. São como perguntas "se... então... senão...".
 
@@ -118,61 +352,721 @@ xor(TRUE, FALSE) # TRUE (apenas um é TRUE)
    - Ideal para criar novas colunas em data.frames
 
 3. **`case_when()`** - Para **múltiplas condições** complexas
+   - Função do pacote `dplyr` (requer library(dplyr))
    - Avalia várias regras em sequência
    - Para na primeira regra verdadeira
    - Mais legível que `ifelse()` aninhados
+   - Integra-se perfeitamente com o pipe %>% e mutate()
+
 
 ```{r}
-# if/else (escalar - um valor por vez)
-x <- 18
-if (x >= 18) {
-  status <- "maior_de_idade"
+# ============================================
+# 1. IF/ELSE - DECISÕES ÚNICAS
+# ============================================
+
+# Exemplo 1: Classificar um reprodutor
+dep_leite <- 920
+acuracia <- 0.88
+
+if (dep_leite > 800 & acuracia >= 0.80) {
+  categoria <- "Elite"
+  print(paste("Touro classificado como:", categoria))
+  print("Recomendado para IA em todo o rebanho")
 } else {
-  status <- "menor_de_idade"
+  categoria <- "Padrão"
+  print(paste("Touro classificado como:", categoria))
+  print("Uso restrito no rebanho")
 }
-status
 
-# ifelse() (vetorizado - múltiplos valores)
-notas <- c(5.9, 7.5, 9.2, 6.0)
-resultado <- ifelse(notas >= 7, "Aprovado", "Recuperação")
-resultado
 
-# case_when() (múltiplas regras em ordem)
-library(dplyr)
-faixa <- case_when(
-  notas >= 9             ~ "Excelente",
-  notas >= 7 & notas < 9 ~ "Bom",
-  notas >= 5 & notas < 7 ~ "Regular",
-  TRUE                   ~ "Insuficiente"  # TRUE = "caso contrário"
+# Exemplo 2: Decisão de acasalamento com múltiplas opções
+consanguinidade_combinada <- 0.07
+
+if (consanguinidade_combinada < 0.05) {
+  print("✓ Acasalamento RECOMENDADO - baixo risco")
+} else if (consanguinidade_combinada >= 0.05 & consanguinidade_combinada < 0.10) {
+  print("⚠ Acasalamento com CAUTELA - risco moderado")
+} else {
+  print("✗ Acasalamento NÃO RECOMENDADO - alto risco")
+}
+
+
+# Exemplo 3: Função para avaliar touros
+avaliar_touro <- function(dep_leite, dep_gordura, acuracia) {
+  
+  if (acuracia < 0.60) {
+    return("Avaliação não confiável - aguardar mais filhas")
+  }
+  
+  if (dep_leite > 900 & dep_gordura > 35 & acuracia >= 0.85) {
+    return("ELITE - Top 1%")
+  } else if (dep_leite > 700 & dep_gordura > 28 & acuracia >= 0.75) {
+    return("SUPERIOR - Top 10%")
+  } else if (dep_leite > 500 & dep_gordura > 22) {
+    return("BOM - Acima da média")
+  } else {
+    return("REGULAR - Abaixo da média")
+  }
+}
+
+# Testando a função
+print(avaliar_touro(920, 38, 0.88))  # ELITE
+print(avaliar_touro(750, 30, 0.80))  # SUPERIOR
+print(avaliar_touro(450, 20, 0.55))  # Avaliação não confiável
+
+
+# ============================================
+# 2. IFELSE() - VETORIZADO PARA MÚLTIPLOS VALORES
+# ============================================
+
+# Exemplo 1: Classificar múltiplas DEPs
+deps_peso <- c(25, 18, 32, 15, 28, 22, 8, 30)
+
+# Classificar cada DEP
+classificacao <- ifelse(deps_peso >= 25, "Superior", "Padrão")
+print(classificacao)
+# "Superior" "Padrão" "Superior" "Padrão" "Superior" "Padrão" "Padrão" "Superior"
+
+
+# Exemplo 2: Criar coluna de classificação em dataframe
+rebanho <- data.frame(
+  animal_id = c("V001", "V002", "V003", "V004", "V005"),
+  dep_leite = c(850, 650, 920, 550, 780),
+  acuracia = c(0.85, 0.75, 0.90, 0.60, 0.80)
 )
-faixa
+
+# Adicionar classificação genética
+rebanho$categoria_genetica <- ifelse(
+  rebanho$dep_leite > 800, 
+  "Elite", 
+  "Padrão"
+)
+
+print(rebanho)
+
+
+# Exemplo 3: ifelse aninhado (cuidado - pode ficar confuso!)
+rebanho$status <- ifelse(
+  rebanho$dep_leite > 850,
+  "Excelente",
+  ifelse(
+    rebanho$dep_leite > 700,
+    "Bom",
+    "Regular"
+  )
+)
+
+print(rebanho[, c("animal_id", "dep_leite", "status")])
+
+
+# Exemplo 4: Decisão de seleção
+rebanho$selecionar <- ifelse(
+  rebanho$dep_leite > 750 & rebanho$acuracia >= 0.75,
+  "SIM",
+  "NÃO"
+)
+
+print(rebanho[, c("animal_id", "dep_leite", "acuracia", "selecionar")])
+
+
+# ============================================
+# 3. CASE_WHEN() - MÚLTIPLAS CONDIÇÕES COMPLEXAS
+# ============================================
+
+library(dplyr)
+
+# Exemplo 1: Sistema de classificação completo
+touros <- data.frame(
+  id = c("T001", "T002", "T003", "T004", "T005", "T006"),
+  dep_leite = c(950, 780, 650, 850, 450, 1100),
+  dep_gordura = c(38, 30, 25, 32, 20, 42),
+  dep_proteina = c(32, 28, 22, 30, 18, 38),
+  acuracia = c(0.90, 0.78, 0.65, 0.85, 0.55, 0.92),
+  consanguinidade = c(0.02, 0.05, 0.08, 0.03, 0.10, 0.01)
+)
+
+# Classificação com case_when (MUITO MAIS LEGÍVEL!)
+touros <- touros %>%
+  mutate(
+    classificacao = case_when(
+      # Primeiro verifica problemas
+      acuracia < 0.60 ~ "Não confiável - aguardar",
+      consanguinidade > 0.08 ~ "Descarte - alta consanguinidade",
+      
+      # Depois classifica por mérito genético
+      dep_leite > 1000 & dep_gordura > 40 & dep_proteina > 35 ~ "Elite AAA",
+      dep_leite > 900 & dep_gordura > 35 & dep_proteina > 30 ~ "Elite AA",
+      dep_leite > 800 & dep_gordura > 30 & dep_proteina > 28 ~ "Elite A",
+      dep_leite > 700 & dep_gordura > 25 ~ "Superior",
+      dep_leite > 600 ~ "Bom",
+      
+      # Caso contrário
+      TRUE ~ "Regular"
+    )
+  )
+
+print(touros[, c("id", "dep_leite", "classificacao")])
+
+
+# Exemplo 2: Recomendação de uso do touro
+touros <- touros %>%
+  mutate(
+    recomendacao = case_when(
+      classificacao %in% c("Elite AAA", "Elite AA") ~ "IA comercial + FIV",
+      classificacao == "Elite A" ~ "IA comercial",
+      classificacao == "Superior" ~ "IA no próprio rebanho",
+      classificacao == "Bom" ~ "Monta natural",
+      classificacao == "Regular" ~ "Não usar",
+      TRUE ~ "Avaliar novamente"
+    )
+  )
+
+print(touros[, c("id", "classificacao", "recomendacao")])
+
+
+# Exemplo 3: Índice de seleção com múltiplos critérios
+vacas <- data.frame(
+  id = paste0("V", sprintf("%03d", 1:10)),
+  dep_leite = c(850, 750, 920, 650, 780, 500, 880, 720, 950, 600),
+  dep_gordura = c(32, 28, 38, 24, 30, 20, 34, 26, 40, 22),
+  dep_proteina = c(28, 25, 32, 20, 27, 18, 30, 24, 35, 21),
+  fertilidade = c(0.65, 0.58, 0.70, 0.45, 0.62, 0.40, 0.68, 0.55, 0.72, 0.48),
+  idade = c(4, 6, 3, 8, 5, 9, 4, 7, 3, 8)
+)
+
+# Decisão complexa de seleção
+vacas <- vacas %>%
+  mutate(
+    decisao = case_when(
+      # Descarte por idade ou fertilidade
+      idade > 8 ~ "Descarte - idade avançada",
+      fertilidade < 0.50 ~ "Descarte - baixa fertilidade",
+      
+      # Mães de touros (melhor genética)
+      dep_leite > 900 & dep_gordura > 35 & dep_proteina > 30 & 
+        fertilidade > 0.65 ~ "Mãe de touro - FIV",
+      
+      # Doadoras de embrião
+      dep_leite > 800 & dep_gordura > 30 & dep_proteina > 27 & 
+        fertilidade > 0.60 & idade <= 6 ~ "Doadora - TE",
+      
+      # Matrizes superiores
+      dep_leite > 750 & dep_gordura > 28 & fertilidade > 0.58 ~ "Matriz elite",
+      
+      # Matrizes padrão
+      dep_leite > 600 & dep_gordura > 22 ~ "Matriz padrão",
+      
+      # Outros casos
+      TRUE ~ "Avaliar individualmente"
+    )
+  )
+
+print(vacas[, c("id", "dep_leite", "fertilidade", "idade", "decisao")])
+
+
+# ============================================
+# EXEMPLO 4: CÁLCULO DE ÍNDICE ECONÔMICO
+# ============================================
+
+# Gado de corte - múltiplas características
+bovinos_corte <- data.frame(
+  id = paste0("B", 1:8),
+  dep_peso_desmame = c(25, 18, 32, 15, 28, 22, 8, 30),
+  dep_ganho_pos = c(20, 15, 25, 12, 22, 18, 10, 28),
+  dep_aol = c(3.2, 2.1, 3.8, 1.5, 3.0, 2.5, 1.2, 4.0),  # área olho lombo
+  dep_eg = c(-1.5, -0.8, -2.0, 0.5, -1.2, -0.5, 1.0, -2.5),  # esp. gordura
+  temperamento = c("Ótimo", "Bom", "Ótimo", "Regular", "Bom", "Regular", "Ruim", "Ótimo")
+)
+
+# Calcular índice e classificar
+bovinos_corte <- bovinos_corte %>%
+  mutate(
+    # Índice composto (pesos econômicos simplificados)
+    indice = (dep_peso_desmame * 2) + 
+             (dep_ganho_pos * 1.5) + 
+             (dep_aol * 5) - 
+             (dep_eg * 2),  # gordura negativa é boa
+    
+    # Classificação final
+    categoria = case_when(
+      temperamento == "Ruim" ~ "Descarte - temperamento",
+      indice > 100 ~ "Elite - Top 1%",
+      indice > 80 ~ "Superior - Top 10%",
+      indice > 60 ~ "Bom - Top 25%",
+      indice > 40 ~ "Médio",
+      TRUE ~ "Abaixo da média"
+    )
+  )
+
+print(bovinos_corte[, c("id", "indice", "temperamento", "categoria")])
+
+
+# ============================================
+# COMPARAÇÃO: ifelse() vs case_when()
+# ============================================
+
+# DIFÍCIL DE LER com ifelse aninhado:
+vacas$classe_ruim <- ifelse(
+  vacas$dep_leite > 900,
+  "Elite",
+  ifelse(
+    vacas$dep_leite > 800,
+    "Superior",
+    ifelse(
+      vacas$dep_leite > 700,
+      "Boa",
+      ifelse(
+        vacas$dep_leite > 600,
+        "Regular",
+        "Ruim"
+      )
+    )
+  )
+)
+
+# FÁCIL DE LER com case_when:
+vacas <- vacas %>%
+  mutate(
+    classe_boa = case_when(
+      dep_leite > 900 ~ "Elite",
+      dep_leite > 800 ~ "Superior",
+      dep_leite > 700 ~ "Boa",
+      dep_leite > 600 ~ "Regular",
+      TRUE ~ "Ruim"
+    )
+  )
+
+
+# ============================================
+# EXERCÍCIO PRÁTICO
+# ============================================
+
+# Base de dados completa
+plantel <- data.frame(
+  animal = paste0("A", sprintf("%03d", 1:15)),
+  dep_leite = c(950, 780, 650, 850, 450, 920, 720, 550, 880, 600, 1050, 700, 820, 580, 960),
+  dep_gordura = c(38, 30, 25, 32, 20, 36, 28, 22, 34, 24, 42, 26, 33, 21, 39),
+  acuracia = c(0.90, 0.78, 0.65, 0.85, 0.55, 0.88, 0.72, 0.60, 0.82, 0.68, 0.92, 0.70, 0.80, 0.58, 0.89),
+  idade = c(4, 6, 8, 5, 9, 3, 7, 8, 4, 9, 3, 6, 5, 10, 4),
+  n_partos = c(2, 4, 6, 3, 7, 1, 5, 6, 2, 7, 1, 4, 3, 8, 2),
+  consanguinidade = c(0.02, 0.05, 0.08, 0.03, 0.10, 0.01, 0.06, 0.09, 0.03, 0.12, 0.01, 0.05, 0.04, 0.11, 0.02)
+)
+
+# Criar sistema completo de classificação e decisão
+plantel <- plantel %>%
+  mutate(
+    # 1. Confiabilidade da avaliação
+    confiabilidade = case_when(
+      acuracia >= 0.85 ~ "Alta",
+      acuracia >= 0.70 ~ "Média",
+      TRUE ~ "Baixa"
+    ),
+    
+    # 2. Mérito genético
+    merito = case_when(
+      dep_leite > 900 & dep_gordura > 35 ~ "Excepcional",
+      dep_leite > 800 & dep_gordura > 30 ~ "Superior",
+      dep_leite > 700 & dep_gordura > 25 ~ "Bom",
+      dep_leite > 600 ~ "Regular",
+      TRUE ~ "Inferior"
+    ),
+    
+    # 3. Status reprodutivo
+    status_reprodutivo = case_when(
+      idade > 9 | n_partos > 7 ~ "Final de vida produtiva",
+      idade >= 7 | n_partos >= 5 ~ "Madura",
+      idade <= 4 & n_partos <= 2 ~ "Jovem",
+      TRUE ~ "Adulta"
+    ),
+    
+    # 4. Decisão final de manejo
+    decisao_final = case_when(
+      # Problemas graves
+      consanguinidade > 0.10 ~ "DESCARTE - alta consanguinidade",
+      idade > 9 & dep_leite < 700 ~ "DESCARTE - idade e baixa produção",
+      confiabilidade == "Baixa" & merito %in% c("Regular", "Inferior") ~ 
+        "AVALIAR NOVAMENTE - dados insuficientes",
+      
+      # Animais elite
+      merito == "Excepcional" & confiabilidade == "Alta" & idade <= 6 ~ 
+        "MÃE DE TOURO - programa FIV",
+      merito %in% c("Excepcional", "Superior") & confiabilidade %in% c("Alta", "Média") ~ 
+        "DOADORA - programa TE",
+      
+      # Animais bons
+      merito %in% c("Superior", "Bom") & consanguinidade < 0.05 ~ 
+        "MATRIZ ELITE - manter no rebanho",
+      merito == "Bom" ~ "MATRIZ PADRÃO - manter",
+      
+      # Outros
+      merito == "Regular" & idade < 6 ~ "MONITORAR - dar mais oportunidade",
+      TRUE ~ "AVALIAR CASO A CASO"
+    )
+  )
+
+# Visualizar resultado
+print(plantel[, c("animal", "merito", "confiabilidade", "decisao_final")])
+
+# Resumo por decisão
+table(plantel$decisao_final)
 ```
 
 > **Dica didática**: use `ifelse()` quando quiser **vetorizar**; `case_when()` quando houver **várias regras**.
 
 ---
 
-## 2. Loops, Vetorização e Funções (≈ 25 min)
+# Loops, Vetorização e Funções (25 min)
 
-### 2.1 Loops vs. operações vetorizadas
+## O que são loops?
 
-**O que são loops?**
+Um **loop** (laço) é uma estrutura que repete um bloco de código várias vezes. São fundamentais para automatizar tarefas repetitivas em programas de melhoramento genético.
 
-Um **loop** (laço) é uma estrutura que repete um bloco de código várias vezes. O loop `for` é o mais comum e executa o código uma vez para cada elemento de uma sequência.
+## Tipos de loops no R
+
+### Opções Nativas (R Base)
+
+#### 1. Loop `for` - Número Definido de Iterações
+
+O loop `for` é o mais comum e executa código uma vez para cada elemento de uma sequência.
+
+**Sintaxe:** `for (variável in sequência) { código }`
+
+```{r loop_for}
+# ============================================
+# LOOP FOR - EXEMPLOS BÁSICOS
+# ============================================
+
+# Exemplo 1: Calcular DEPs padronizadas
+deps_peso <- c(25, 18, 32, 15, 28, 22, 8, 30)
+animal_ids <- paste0("A", sprintf("%03d", 1:length(deps_peso)))
+
+media <- mean(deps_peso)
+dp <- sd(deps_peso)
+
+cat("DEPs PADRONIZADAS\n")
+cat("=================\n\n")
+
+for (i in 1:length(deps_peso)) {
+  dep_padronizada <- (deps_peso[i] - media) / dp
+  cat("Animal", animal_ids[i], "- DEP:", deps_peso[i], 
+      "| Padronizada:", round(dep_padronizada, 2), "\n")
+}
+
+
+# Exemplo 2: Simular ganho genético por geração
+n_geracoes <- 10
+dep_inicial <- 500
+intensidade_selecao <- 1.5  # i
+herdabilidade <- 0.30       # h²
+desvio_padrao <- 100        # σ
+
+# Resposta à seleção: R = i × h² × σ
+resposta <- intensidade_selecao * herdabilidade * desvio_padrao
+
+deps_geracao <- numeric(n_geracoes)
+deps_geracao[1] <- dep_inicial
+
+cat("\n\nSIMULAÇÃO DE GANHO GENÉTICO\n")
+cat("============================\n\n")
+
+for (geracao in 2:n_geracoes) {
+  deps_geracao[geracao] <- deps_geracao[geracao - 1] + resposta
+  cat("Geração", geracao, "- DEP média:", 
+      round(deps_geracao[geracao], 1), "kg\n")
+}
+
+ganho_total <- deps_geracao[n_geracoes] - deps_geracao[1]
+cat("\nGanho total:", round(ganho_total, 1), "kg")
+```
+
+#### 2. Loop `while` - Baseado em Condição
+
+O `while` repete **enquanto** uma condição for verdadeira. Usado quando você não sabe quantas iterações serão necessárias.
+
+**Sintaxe:** `while (condição) { código }`
+
+**Cuidado:** pode criar loops infinitos se a condição nunca ficar FALSE!
+
+```{r loop_while}
+# ============================================
+# LOOP WHILE - CONVERGÊNCIA
+# ============================================
+
+# Algoritmo de convergência (exemplo simplificado de EM)
+variancia_genetica <- 100
+variancia_residual <- 200
+criterio_convergencia <- 0.01
+max_iteracoes <- 100
+
+iteracao <- 0
+convergiu <- FALSE
+
+cat("ALGORITMO DE CONVERGÊNCIA\n")
+cat("=========================\n\n")
+
+while (!convergiu & iteracao < max_iteracoes) {
+  iteracao <- iteracao + 1
+  
+  vg_anterior <- variancia_genetica
+  vr_anterior <- variancia_residual
+  
+  # Atualização simulada
+  variancia_genetica <- vg_anterior * 1.05
+  variancia_residual <- vr_anterior * 0.98
+  
+  # Verificar convergência
+  mudanca_vg <- abs(variancia_genetica - vg_anterior)
+  mudanca_vr <- abs(variancia_residual - vr_anterior)
+  
+  if (mudanca_vg < criterio_convergencia & mudanca_vr < criterio_convergencia) {
+    convergiu <- TRUE
+  }
+  
+  if (iteracao %% 10 == 0) {
+    cat("Iteração", iteracao, "- VG:", round(variancia_genetica, 2), 
+        "VR:", round(variancia_residual, 2), "\n")
+  }
+}
+
+cat("\nConvergiu em", iteracao, "iterações")
+cat("\nHerdabilidade final:", 
+    round(variancia_genetica / (variancia_genetica + variancia_residual), 3))
+```
+
+#### 3. Loop `repeat` - Loop Infinito com Controle Manual
+
+O `repeat` repete indefinidamente até encontrar um `break`. **Sempre** precisa de condição de parada.
+
+**Sintaxe:** `repeat { código; if (condição) break }`
+
+```{r loop_repeat}
+# ============================================
+# LOOP REPEAT - MÚLTIPLOS CRITÉRIOS DE PARADA
+# ============================================
+
+set.seed(123)
+populacao_size <- 100
+dep_media <- 500
+geracao <- 0
+max_geracoes <- 50
+meta_dep <- 700
+sem_melhoria <- 0
+max_sem_melhoria <- 10
+
+cat("ALGORITMO GENÉTICO\n")
+cat("==================\n\n")
+
+repeat {
+  geracao <- geracao + 1
+  
+  deps_populacao <- rnorm(populacao_size, mean = dep_media, sd = 50)
+  deps_selecionados <- sort(deps_populacao, decreasing = TRUE)[1:20]
+  nova_media <- mean(deps_selecionados)
+  
+  if (abs(nova_media - dep_media) < 1) {
+    sem_melhoria <- sem_melhoria + 1
+  } else {
+    sem_melhoria <- 0
+  }
+  
+  dep_media <- nova_media
+  
+  if (geracao %% 5 == 0) {
+    cat("Geração", geracao, "- DEP:", round(dep_media, 1), "kg\n")
+  }
+  
+  # Múltiplos critérios de parada
+  if (dep_media >= meta_dep) {
+    cat("\n✓ META ATINGIDA!\n")
+    break
+  }
+  if (geracao >= max_geracoes) {
+    cat("\n⚠ Máximo de gerações\n")
+    break
+  }
+  if (sem_melhoria >= max_sem_melhoria) {
+    cat("\n⚠ Sem melhoria há", max_sem_melhoria, "gerações\n")
+    break
+  }
+}
+```
+
+#### 4. Família `apply()` - Alternativa Funcional
+
+As funções da família `apply` são alternativas mais elegantes e geralmente mais rápidas que loops tradicionais.
+
+```{r apply_familia}
+# ============================================
+# FAMÍLIA APPLY - R BASE
+# ============================================
+
+# apply() - Para matrizes/arrays
+deps_matriz <- matrix(
+  c(25, 32, 1.8,
+    18, 28, 1.5,
+    32, 38, 2.2,
+    15, 22, 1.2,
+    28, 35, 2.0),
+  nrow = 5, byrow = TRUE,
+  dimnames = list(
+    paste0("Animal_", 1:5),
+    c("DEP_Peso", "DEP_Ganho", "DEP_AOL")
+  )
+)
+
+cat("Matriz de DEPs:\n")
+print(deps_matriz)
+
+# Média por animal (linha) - MARGIN = 1
+cat("\nMédia por animal:\n")
+medias_animais <- apply(deps_matriz, 1, mean)
+print(round(medias_animais, 2))
+
+# Média por característica (coluna) - MARGIN = 2
+cat("\nMédia por característica:\n")
+medias_caracteristicas <- apply(deps_matriz, 2, mean)
+print(round(medias_caracteristicas, 2))
+
+
+# lapply() - Retorna lista
+rebanhos <- list(
+  Rebanho_A = c(850, 780, 920, 750, 880),
+  Rebanho_B = c(720, 650, 800, 680, 760),
+  Rebanho_C = c(950, 880, 1020, 870, 930)
+)
+
+cat("\n\nEstatísticas por rebanho (lapply):\n")
+estatisticas <- lapply(rebanhos, function(deps) {
+  list(
+    media = mean(deps), 
+    dp = sd(deps), 
+    n = length(deps),
+    cv = sd(deps)/mean(deps)*100
+  )
+})
+print(estatisticas)
+
+
+# sapply() - Simplifica para vetor/matriz
+cat("\n\nMédias dos rebanhos (sapply):\n")
+medias_rebanhos <- sapply(rebanhos, mean)
+print(round(medias_rebanhos, 1))
+
+
+# tapply() - Aplicar por grupos
+animais <- data.frame(
+  dep_leite = c(850, 750, 920, 680, 820, 650, 880, 700),
+  raca = c("Holandês", "Jersey", "Holandês", "Jersey", 
+           "Holandês", "Jersey", "Holandês", "Jersey")
+)
+
+cat("\n\nMédia de DEP por raça (tapply):\n")
+media_raca <- tapply(animais$dep_leite, animais$raca, mean)
+print(round(media_raca, 1))
+```
+
+### Opções de Pacotes (purrr/tidyverse)
+
+#### Família `map()` - Sintaxe Moderna e Consistente
+
+A família `map()` do pacote **purrr** oferece sintaxe mais consistente e previsível que `apply()`.
+
+```{r map_familia}
+library(purrr)
+
+# ============================================
+# FAMÍLIA MAP - PURRR
+# ============================================
+
+# map() - Retorna lista
+cat("Médias dos rebanhos (map):\n")
+medias_map <- map(rebanhos, mean)
+print(medias_map)
+
+# map_dbl() - Retorna vetor numérico
+cat("\n\nMédias dos rebanhos como vetor (map_dbl):\n")
+medias_fazendas <- map_dbl(rebanhos, mean)
+print(round(medias_fazendas, 1))
+
+# map_chr() - Retorna vetor de caracteres
+cat("\n\nClassificação dos rebanhos (map_chr):\n")
+classificacao <- map_chr(rebanhos, ~{
+  media <- mean(.x)
+  case_when(
+    media > 900 ~ "Excelente",
+    media > 850 ~ "Ótimo",
+    media > 800 ~ "Bom",
+    TRUE ~ "Regular"
+  )
+})
+print(classificacao)
+
+# map_df() - Retorna data frame
+cat("\n\nEstatísticas completas (map_df):\n")
+estatisticas_df <- map_df(rebanhos, ~{
+  tibble(
+    n = length(.x),
+    media = mean(.x),
+    dp = sd(.x),
+    min = min(.x),
+    max = max(.x)
+  )
+}, .id = "rebanho")
+print(estatisticas_df)
+```
+
+## Loops vs. Vetorização
+
+**Vetorização** é quando operações são aplicadas automaticamente a todos os elementos sem loop explícito.
 
 **Por que evitar loops em R?**
 
-R é uma linguagem **vetorizada**, o que significa que muitas operações funcionam automaticamente em vetores inteiros, sem precisar de loops explícitos. Operações vetorizadas são:
+R é uma linguagem **vetorizada**, o que significa que muitas operações funcionam automaticamente em vetores inteiros. Operações vetorizadas são:
+
 - **Mais rápidas** (otimizadas internamente em C/Fortran)
 - **Mais legíveis** (menos linhas de código)
 - **Mais idiomáticas** (o "jeito R" de fazer)
 
 **Quando usar loops:**
+
 - Quando não existe alternativa vetorizada
 - Para operações que dependem de iterações anteriores
 - Em simulações e processos iterativos
 
-```{r}
+```{r vetorizacao_comparacao}
+# ============================================
+# COMPARAÇÃO: LOOP vs VETORIZAÇÃO
+# ============================================
+
+deps <- c(850, 750, 920, 680, 820)
+
+# COM LOOP (lento, verboso)
+deps_padronizadas_loop <- numeric(length(deps))
+for (i in 1:length(deps)) {
+  deps_padronizadas_loop[i] <- (deps[i] - mean(deps)) / sd(deps)
+}
+cat("Com loop:\n")
+print(round(deps_padronizadas_loop, 2))
+
+# VETORIZADO (rápido, limpo)
+deps_padronizadas_vet <- (deps - mean(deps)) / sd(deps)
+cat("\nVetorizado:\n")
+print(round(deps_padronizadas_vet, 2))
+
+# Resultados idênticos
+cat("\nResultados iguais?", all.equal(deps_padronizadas_loop, deps_padronizadas_vet))
+```
+
+**Hierarquia de preferência no R:**
+
+1. **Vetorização** (quando possível) - `deps * 2`
+2. **Família apply/map** - `sapply()`, `map_dbl()`
+3. **Loop for** - quando não há alternativa
+4. **while/repeat** - apenas quando necessário
+
+> **Regra de ouro**: Se você pode vetorizar, vetorize!
+
+```{r exemplo_simples}
 valores <- 1:5
 
 # Loop for (didático, mas não idiomático)
@@ -180,13 +1074,16 @@ soma <- 0
 for (v in valores) {
   soma <- soma + v
 }
-soma
+cat("Soma com loop:", soma, "\n")
 
 # Vetorizado (preferido em R!)
-sum(valores)  # Muito mais simples e rápido
+cat("Soma vetorizada:", sum(valores), "\n")
 ```
 
-### 2.2 Funções: empacotando lógica reutilizável
+
+---
+
+## Funções: empacotando lógica reutilizável
 
 **O que são funções?**
 
@@ -245,7 +1142,7 @@ classificar_imc(val)
 
 ---
 
-## 3. Introdução ao Tidyverse (≈ 45 min)
+# Introdução ao Tidyverse (45 min)
 
 > Vamos aplicar `dplyr` no dataset **palmerpenguins** e criar um pequeno pipeline.
 
@@ -282,7 +1179,7 @@ resumo <- peng_feat |>
 resumo
 ```
 
-### 3.1 Pipe: `%>%` vs. `|>`
+## Pipe: `%>%` vs. `|>`
 ```{r}
 # Ambos funcionam; escolha um padrão para a turma.
 # Exemplo com |> (pipe nativo do R >= 4.1):
@@ -293,7 +1190,7 @@ penguins |>
 
 ---
 
-## 4. Datas com `lubridate` (≈ 10 min)
+# Datas com `lubridate` (10 min)
 
 > Datas aparecem em **quase todos** os projetos. Vamos ilustrar rapidamente.
 
@@ -307,7 +1204,9 @@ mdy("11-18-2025")
 
 # Componentes
 hoje <- today()
-ano(hoje); mes(hoje); wday(hoje, label = TRUE, abbr = FALSE)
+year(hoje)
+month(hoje)
+wday(hoje, label = TRUE, abbr = FALSE)
 
 # Operações simples
 hoje + days(14)
@@ -318,11 +1217,11 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-## 5. Exercícios Práticos (≈ 20–25 min)
+# Exercícios Práticos (20–25 min)
 
 > **Dataset:** `palmerpenguins::penguins`
 
-### Exercício 1 — Condicionais
+## Exercício 1 — Condicionais
 1. Crie um vetor de 8 notas qualquer.  
 2. Classifique com `ifelse()` como **Aprovado/Recuperação** (corte em 7).  
 3. Depois, crie uma classificação mais rica usando `case_when()` com 4 faixas.
@@ -331,7 +1230,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-### Exercício 2 — Funções
+## Exercício 2 — Funções
 1. Escreva uma função `zscore(x)` que centraliza e escala (média 0, desvio 1).  
 2. Aplique em `bill_length_mm` **removendo NAs** antes.  
 3. Faça um segundo argumento opcional `na_rm = TRUE` dentro da função.
@@ -340,7 +1239,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-### Exercício 3 — Pipeline `dplyr`
+## Exercício 3 — Pipeline `dplyr`
 1. Crie `peng3` filtrando linhas completas nas 4 medidas principais.  
 2. Calcule, por espécie, média e desvio da nadadeira (`flipper_length_mm`).  
 3. Ordene do maior para o menor e mostre as 5 primeiras linhas.
@@ -349,7 +1248,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-### Exercício 4 — Datas com `lubridate`
+## Exercício 4 — Datas com `lubridate`
 1. Crie um vetor com 5 datas em formato "dd/mm/aaaa".  
 2. Converta com `dmy()` e extraia `month()` (com rótulo).  
 3. Some 30 dias à primeira data e compute o intervalo até a última.
@@ -360,7 +1259,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-## 6. Boas Práticas e Debugging (≈ 20 min)
+# Boas Práticas e Debugging (20 min)
 
 - Use **nomes descritivos** em `snake_case`.
 - Comente o **porquê** (não só o que) no código.
@@ -368,7 +1267,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 - Leia mensagens de erro **de baixo para cima** (stack trace).
 - Mantenha scripts curtos e reutilizáveis.
 
-### Ferramentas úteis
+# Ferramentas úteis
 ```{r}
 # message(), warning(), stop() para sinalizar eventos
 # browser() para inspecionar dentro de uma função (quando eval=TRUE)
@@ -379,7 +1278,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-## 7. Commit do Dia
+# Commit do Dia
 
 1. Salve como `scripts/02_logica_funcoes.R` ou `materiais/dia2_logica_funcoes.Rmd` (este arquivo).  
 2. No **Terminal do RStudio**:
@@ -393,7 +1292,7 @@ git push origin main
 
 ---
 
-## 8. Checklist de encerramento
+# Checklist de encerramento
 
 - [ ] Dominou operadores lógicos e relacionais
 - [ ] Entendeu diferenças entre `if/else`, `ifelse()` e `case_when()`
@@ -405,7 +1304,7 @@ git push origin main
 
 ---
 
-## 9. Referências rápidas
+# Referências rápidas
 - **`dplyr` cheatsheet**: https://posit.co/resources/cheatsheets/  
 - **R for Data Science (2e)**: https://r4ds.hadley.nz/  
 - **Happy Git with R**: https://happygitwithr.com/  
@@ -414,4 +1313,4 @@ git push origin main
 
 ---
 
-**Nos vemos no Dia 3 para transformação de dados e visualização com ggplot2!** 🚀
+**Nos vemos no Dia 3 para transformação de dados e visualização com ggplot2!**
