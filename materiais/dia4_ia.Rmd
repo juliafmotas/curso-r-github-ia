@@ -42,7 +42,7 @@ knitr::opts_chunk$set(
 
 \newpage
 
-# Integração do ChatGPT e Claude no RStudio
+# Dia 4: Integração do ChatGPT e Claude no RStudio
 
 > **Objetivo do dia**
 
@@ -58,7 +58,7 @@ knitr::opts_chunk$set(
 
 ---
 
-## Revisão Rápida dos Dias Anteriores (≈ 10 min)
+### Revisão Rápida dos Dias Anteriores (≈ 10 min)
 
 ```{r revisao}
 library(tidyverse)
@@ -66,9 +66,9 @@ library(tidyverse)
 
 ---
 
-# Conceitos e Modelos (19h00 - 19h30)
+## Conceitos e Modelos (19h00 - 19h30)
 
-## O que são LLMs (Large Language Models)?
+### O que são LLMs (Large Language Models)?
 
 **LLM = Large Language Model** (Modelo de Linguagem Grande)
 
@@ -96,7 +96,7 @@ library(tidyverse)
 - ✅ Geradores de texto coerente baseados em probabilidades
 - ✅ Assistentes que "entendem" contexto
 
-## Modelos principais que usaremos
+### Modelos principais que usaremos
 
 **1. ChatGPT (OpenAI)**
 
@@ -145,7 +145,7 @@ library(tidyverse)
 - Explicações técnicas detalhadas
 - Debugging de problemas difíceis
 
-## Comparação prática
+### Comparação prática
 
 | Critério | ChatGPT | Claude |
 |----------|---------|--------|
@@ -160,7 +160,7 @@ library(tidyverse)
 
 ---
 
-# O que são APIs?
+## O que são APIs?
 
 **API = Application Programming Interface** (Interface de Programação de Aplicações)
 
@@ -214,9 +214,9 @@ library(tidyverse)
 
 ---
 
-# Limites e Custos
+## Limites e Custos
 
-## Custos por modelo
+### Custos por modelo
 
 **OpenAI (GPT-4o-mini) - mais barato:**
 - Input: $0.150 / 1M tokens (~750k palavras)
@@ -239,7 +239,7 @@ library(tidyverse)
 - Token ≈ 0.5 palavras em português (devido aos acentos)
 - "Olá, como você está?" ≈ 7-8 tokens
 
-## Rate Limits (Limites de taxa)
+### Rate Limits (Limites de taxa)
 
 **Por que existem:**
 - Prevenir abuso e spam
@@ -269,9 +269,9 @@ library(tidyverse)
 
 ---
 
-# Boas Práticas de Uso Responsável de IA
+## Boas Práticas de Uso Responsável de IA
 
-## Privacidade e Dados Sensíveis
+### Privacidade e Dados Sensíveis
 
 **⚠️ NUNCA envie para APIs de IA:**
 - ❌ Senhas ou credenciais
@@ -288,7 +288,7 @@ library(tidyverse)
 
 **Lembre-se:** Tudo que você envia pode ser usado para treinar modelos futuros!
 
-## Versionamento de Código Gerado por IA
+### Versionamento de Código Gerado por IA
 
 **Por que versionar:**
 - Transparência sobre origem do código
@@ -310,7 +310,7 @@ zscore <- function(x) {
 git commit -m "feat: adiciona função zscore (gerada com ChatGPT)"
 ```
 
-## Validação e Teste
+### Validação e Teste
 
 **⚠️ CRÍTICO: NUNCA use código de IA sem entender e testar!**
 
@@ -340,7 +340,7 @@ git commit -m "feat: adiciona função zscore (gerada com ChatGPT)"
    - Adicione validações
    - Otimize performance
 
-## Uso Ético
+### Uso Ético
 
 **Faça:**
 - ✅ Use IA como assistente, não substituto do aprendizado
@@ -358,9 +358,9 @@ git commit -m "feat: adiciona função zscore (gerada com ChatGPT)"
 
 ---
 
-# Configuração de Chaves e Ambiente (19h30 - 20h15)
+## Configuração de Chaves e Ambiente (19h30 - 20h15)
 
-## Variáveis de Ambiente no R
+### Variáveis de Ambiente no R
 
 **O que são variáveis de ambiente?**
 
@@ -387,7 +387,7 @@ Sys.setenv(NOME_DA_VARIAVEL = "valor")
 Sys.getenv()
 ```
 
-## O arquivo .Renviron
+### O arquivo .Renviron
 
 **O que é .Renviron:**
 
@@ -435,9 +435,9 @@ ANTHROPIC_API_KEY=sk-ant-abcdefg123456789
 
 ---
 
-# Criando Chaves de API
+## Criando Chaves de API
 
-## OpenAI (ChatGPT)
+### OpenAI (ChatGPT)
 
 **Passo 1: Criar conta**
 
@@ -477,7 +477,7 @@ Sys.getenv("OPENAI_API_KEY")
 # Deve mostrar: "sk-proj-..."
 ```
 
-## Anthropic (Claude)
+### Anthropic (Claude)
 
 **Passo 1: Criar conta**
 
@@ -515,7 +515,7 @@ Sys.getenv("ANTHROPIC_API_KEY")
 
 ---
 
-# Instalação de Pacotes
+## Instalação de Pacotes
 
 ```{r}
 # Pacotes necessários
@@ -533,7 +533,7 @@ library(httr2)
 library(jsonlite)
 ```
 
-## O que cada pacote faz
+### O que cada pacote faz
 
 **gptstudio:**
 
@@ -565,7 +565,7 @@ library(jsonlite)
 
 ---
 
-# INTERVALO (20h15 - 20h30)
+## INTERVALO (20h15 - 20h30)
 
 Aproveite para:
 
@@ -575,9 +575,9 @@ Aproveite para:
 
 ---
 
-# RStudio + gptstudio (ChatGPT) (20h30 - 21h00)
+## RStudio + gptstudio (ChatGPT) (20h30 - 21h00)
 
-## Conhecendo o gptstudio
+### Conhecendo o gptstudio
 
 **gptstudio** adiciona superpoderes de IA ao RStudio através de Addins.
 
@@ -589,7 +589,7 @@ Aproveite para:
 4. **Write Code**: Gera código a partir de descrição
 5. **Edit Code**: Refatora/melhora código
 
-## Acessando os Addins
+### Acessando os Addins
 
 **Menu:** `Addins → GPTSTUDIO → ...`
 
@@ -601,7 +601,7 @@ Aproveite para:
 
 ---
 
-## Chat Integrado
+### Chat Integrado
 
 **Como abrir:**
 
@@ -677,7 +677,7 @@ gptstudio::chat("Como criar um vetor em R?")
 
 ---
 
-## Explicar Código Selecionado
+### Explicar Código Selecionado
 
 **Como usar:**
 
@@ -709,7 +709,7 @@ dados %>%
 
 ---
 
-## Comentar Código Automaticamente
+### Comentar Código Automaticamente
 
 **Como usar:**
 
@@ -753,7 +753,7 @@ calcular_estatisticas <- function(x) {
 
 ---
 
-## Chamadas via API Manual (httr2)
+### Chamadas via API Manual (httr2)
 
 Para mais controle e automação, podemos chamar a API diretamente.
 
@@ -820,9 +820,9 @@ cat(resposta)
 
 ---
 
-## Casos de Uso Práticos com ChatGPT
+### Casos de Uso Práticos com ChatGPT
 
-### Caso 1: Explicar um erro
+#### Caso 1: Explicar um erro
 
 ```{r caso-erro}
 # Código com erro
@@ -838,7 +838,7 @@ mean(dados$y)  # Retorna NA
 #  Exemplo: mean(dados$y, na.rm = TRUE)"
 ```
 
-### Caso 2: Refatorar função
+#### Caso 2: Refatorar função
 
 ```{r caso-refatorar}
 # Função verbosa
@@ -866,7 +866,7 @@ calcular <- function(x, y) {
 }
 ```
 
-### Caso 3: Gerar testes unitários
+#### Caso 3: Gerar testes unitários
 
 ```{r caso-testes}
 # Sua função
@@ -893,9 +893,9 @@ stopifnot(all(is.nan(teste3)))  # sd=0 → NaN
 
 ---
 
-# RStudio + chattr (Claude) (21h00 - 21h30)
+## RStudio + chattr (Claude) (21h00 - 21h30)
 
-## Conhecendo o chattr
+### Conhecendo o chattr
 
 **chattr** é uma interface unificada para múltiplos modelos de IA, incluindo Claude.
 
@@ -906,7 +906,7 @@ stopifnot(all(is.nan(teste3)))  # sd=0 → NaN
 - Chat interativo no console
 - Fácil trocar entre modelos
 
-## Configuração inicial
+### Configuração inicial
 
 ```{r chattr-config}
 library(chattr)
@@ -927,7 +927,7 @@ chattr_defaults()
 
 ---
 
-## Chat Interativo
+### Chat Interativo
 
 **Como usar:**
 
@@ -950,7 +950,7 @@ chattr()
 
 ---
 
-## Chat Programático
+### Chat Programático
 
 ```{r chattr-programatico}
 # Fazer pergunta diretamente
@@ -976,7 +976,7 @@ print(historico)
 
 ---
 
-## Chamadas via API Manual (Claude)
+### Chamadas via API Manual (Claude)
 
 Para controle total e automação com Claude:
 
@@ -1036,9 +1036,9 @@ cat(resposta)
 
 ---
 
-## Casos de Uso Práticos com Claude
+### Casos de Uso Práticos com Claude
 
-### Caso 1: Análise profunda de código
+#### Caso 1: Análise profunda de código
 
 ```{r caso-analise}
 # Código complexo para analisar
@@ -1081,7 +1081,7 @@ Código:
 # - Alertas sobre edge cases
 ```
 
-### Caso 2: Gerar função robusta
+#### Caso 2: Gerar função robusta
 
 ```{r caso-funcao-robusta}
 # Prompt para Claude:
@@ -1143,7 +1143,7 @@ dados <- data.frame(x = c(1, 2, NA, 4, 5), y = letters[1:5])
 calcular_stats(dados, "x")
 ```
 
-### Caso 3: Explicar traceback complexo
+#### Caso 3: Explicar traceback complexo
 
 ```{r caso-traceback}
 # Erro complexo
@@ -1169,9 +1169,9 @@ Run `rlang::last_trace()` to see where the error occurred.
 
 ---
 
-# Exercício Guiado de Integração (21h30 - 22h00)
+## Exercício Guiado de Integração (21h30 - 22h00)
 
-## Tarefa 1: Revisar código com gptstudio
+### Tarefa 1: Revisar código com gptstudio
 
 **Objetivo:** Usar ChatGPT para revisar um script tidyverse e propor melhorias.
 
@@ -1238,7 +1238,7 @@ print(resultado)
 
 ---
 
-## Tarefa 2: Gerar função com chattr (Claude)
+### Tarefa 2: Gerar função com chattr (Claude)
 
 **Objetivo:** Usar Claude para gerar uma função robusta.
 
@@ -1282,7 +1282,7 @@ Crie uma função em R chamada 'estatisticas_coluna' que:
 
 ---
 
-## Tarefa 3: Documento de Reflexão
+### Tarefa 3: Documento de Reflexão
 
 **Objetivo:** Documentar o processo e aprendizados.
 
@@ -1332,7 +1332,7 @@ output: html_document
 - **Ajustes necessários:** [O que você teve que modificar]
 - **Aprendizados:** [O que você aprendeu no processo]
 
-## Comparação ChatGPT vs Claude
+### Comparação ChatGPT vs Claude
 
 **ChatGPT:**
 - Velocidade: [sua observação]
@@ -1344,7 +1344,7 @@ output: html_document
 - Qualidade: [sua observação]
 - Melhor para: [sua conclusão]
 
-## Reflexão Final
+### Reflexão Final
 
 [Escreva um parágrafo sobre como você pretende usar IA no seu trabalho com R]
 ```
@@ -1409,7 +1409,7 @@ Antes de fazer o commit final, verifique:
 
 ---
 
-## Commit e Push
+### Commit e Push
 
 ```bash
 # Adicionar arquivos
@@ -1431,9 +1431,9 @@ git push origin main
 
 ---
 
-# Recursos Adicionais
+## Recursos Adicionais
 
-## Documentação Oficial
+### Documentação Oficial
 
 **OpenAI:**
 - API Reference: https://platform.openai.com/docs/api-reference
@@ -1450,13 +1450,13 @@ git push origin main
 - chattr: https://mlverse.github.io/chattr/
 - httr2: https://httr2.r-lib.org/
 
-## Tutoriais e Cursos
+### Tutoriais e Cursos
 
 - Prompt Engineering Guide: https://www.promptingguide.ai/
 - Learn Prompting: https://learnprompting.org/
 - OpenAI Cookbook: https://cookbook.openai.com/
 
-## Comunidades
+### Comunidades
 
 - r/ChatGPT: https://reddit.com/r/ChatGPT
 - r/ClaudeAI: https://reddit.com/r/ClaudeAI
@@ -1464,9 +1464,9 @@ git push origin main
 
 ---
 
-# Troubleshooting
+## Troubleshooting
 
-## Erro: API Key inválida
+### Erro: API Key inválida
 
 ```
 Error: 401 Unauthorized
@@ -1483,7 +1483,7 @@ Error: 401 Unauthorized
 3. Edite `.Renviron`: `usethis::edit_r_environ()`
 4. Reinicie R
 
-## Erro: Rate Limit excedido
+### Erro: Rate Limit excedido
 
 ```
 Error: 429 Too Many Requests
@@ -1496,7 +1496,7 @@ Error: 429 Too Many Requests
 - Reduza frequência de chamadas
 - Use modelo mais barato para testes
 
-## Erro: Insufficient credits
+### Erro: Insufficient credits
 
 ```
 Error: 402 Payment Required
@@ -1509,7 +1509,7 @@ Error: 402 Payment Required
 - Configure limite de gastos
 - Verifique método de pagamento
 
-## gptstudio não aparece nos Addins
+### gptstudio não aparece nos Addins
 
 **Soluções:**
 1. Reinstale: `install.packages("gptstudio")`
@@ -1530,9 +1530,9 @@ Error: Could not resolve host
 
 ---
 
-# Dicas Finais
+## Dicas Finais
 
-## Prompts Eficazes
+### Prompts Eficazes
 
 **Seja específico:**
 ❌ "Melhore este código"
@@ -1548,7 +1548,7 @@ Error: Could not resolve host
 **Solicite validações:**
 ✅ "Gere esta função e inclua validação de inputs e tratamento de erros"
 
-## Iteração com IA
+### Iteração com IA
 
 1. **Primeira tentativa:** Prompt simples
 2. **Refinar:** Se não satisfatório, refine o prompt
@@ -1556,14 +1556,14 @@ Error: Could not resolve host
 4. **Validar:** Sempre teste o código gerado
 5. **Iterar:** Peça ajustes específicos
 
-## Quando NÃO usar IA
+### Quando NÃO usar IA
 
 - ❌ Código com dados sensíveis/confidenciais
 - ❌ Decisões críticas sem validação
 - ❌ Substituir documentação oficial
 - ❌ Aprendizado de conceitos fundamentais (use IA como complemento, não substituto)
 
-## Quando SIM usar IA
+### Quando SIM usar IA
 
 - ✅ Entender erros complexos
 - ✅ Gerar boilerplate code

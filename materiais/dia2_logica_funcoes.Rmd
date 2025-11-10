@@ -48,7 +48,7 @@ knitr::opts_chunk$set(
 
 \newpage
 
-# Lógica, Funções e Introdução ao Tidyverse
+# Dia 2: Lógica, Funções e Introdução ao Tidyverse
 
 > **Objetivos do dia**
 >
@@ -61,13 +61,13 @@ knitr::opts_chunk$set(
 
 ---
 
-# Operadores e Condicionais (30 min)
+## Operadores e Condicionais (30 min)
 
-## O que são operadores?
+### O que são operadores?
 
 **Operadores** são símbolos especiais que realizam operações entre valores. Eles são fundamentais para tomar decisões no código e controlar o fluxo de execução.
 
-## Operadores lógicos e relacionais
+### Operadores lógicos e relacionais
 
 **Operadores relacionais** comparam dois valores e retornam `TRUE` ou `FALSE`:
 
@@ -338,7 +338,7 @@ xor(TRUE, FALSE) # TRUE (apenas um é TRUE)
 "Adelie" %in% c("Chinstrap", "Gentoo")   # FALSE
 ```
 
-## Condicionais: tomando decisões no código
+### Condicionais: tomando decisões no código
 
 **Condicionais** permitem que seu código tome decisões baseadas em condições. São como perguntas "se... então... senão...".
 
@@ -717,17 +717,17 @@ table(plantel$decisao_final)
 
 ---
 
-# Loops, Vetorização e Funções (25 min)
+## Loops, Vetorização e Funções (25 min)
 
-## O que são loops?
+### O que são loops?
 
 Um **loop** (laço) é uma estrutura que repete um bloco de código várias vezes. São fundamentais para automatizar tarefas repetitivas em programas de melhoramento genético.
 
-## Tipos de loops no R
+### Tipos de loops no R
 
-### Opções Nativas (R Base)
+#### Opções Nativas (R Base)
 
-#### 1. Loop `for` - Número Definido de Iterações
+1. Loop `for` - Número Definido de Iterações
 
 O loop `for` é o mais comum e executa código uma vez para cada elemento de uma sequência.
 
@@ -781,7 +781,7 @@ ganho_total <- deps_geracao[n_geracoes] - deps_geracao[1]
 cat("\nGanho total:", round(ganho_total, 1), "kg")
 ```
 
-#### 2. Loop `while` - Baseado em Condição
+2. Loop `while` - Baseado em Condição
 
 O `while` repete **enquanto** uma condição for verdadeira. Usado quando você não sabe quantas iterações serão necessárias.
 
@@ -835,7 +835,7 @@ cat("\nHerdabilidade final:",
     round(variancia_genetica / (variancia_genetica + variancia_residual), 3))
 ```
 
-#### 3. Loop `repeat` - Loop Infinito com Controle Manual
+3. Loop `repeat` - Loop Infinito com Controle Manual
 
 O `repeat` repete indefinidamente até encontrar um `break`. **Sempre** precisa de condição de parada.
 
@@ -893,7 +893,7 @@ repeat {
 }
 ```
 
-#### 4. Família `apply()` - Alternativa Funcional
+4. Família `apply()` - Alternativa Funcional
 
 As funções da família `apply` são alternativas mais elegantes e geralmente mais rápidas que loops tradicionais.
 
@@ -967,9 +967,9 @@ media_raca <- tapply(animais$dep_leite, animais$raca, mean)
 print(round(media_raca, 1))
 ```
 
-### Opções de Pacotes (purrr/tidyverse)
+#### Opções de Pacotes (purrr/tidyverse)
 
-#### Família `map()` - Sintaxe Moderna e Consistente
+Família `map()` - Sintaxe Moderna e Consistente
 
 A família `map()` do pacote **purrr** oferece sintaxe mais consistente e previsível que `apply()`.
 
@@ -1017,7 +1017,7 @@ estatisticas_df <- map_df(rebanhos, ~{
 print(estatisticas_df)
 ```
 
-## Loops vs. Vetorização
+### Loops vs. Vetorização
 
 **Vetorização** é quando operações são aplicadas automaticamente a todos os elementos sem loop explícito.
 
@@ -1085,7 +1085,7 @@ cat("Soma vetorizada:", sum(valores), "\n")
 
 ---
 
-## Funções: empacotando lógica reutilizável
+### Funções: empacotando lógica reutilizável
 
 **O que são funções?**
 
@@ -1144,7 +1144,7 @@ classificar_imc(val)
 
 ---
 
-# Introdução ao Tidyverse (45 min)
+## Introdução ao Tidyverse (45 min)
 
 > Vamos aplicar `dplyr` no dataset **palmerpenguins** e criar um pequeno pipeline.
 
@@ -1192,7 +1192,7 @@ penguins |>
 
 ---
 
-# Datas com `lubridate` (10 min)
+## Datas com `lubridate` (10 min)
 
 > Datas aparecem em **quase todos** os projetos. Vamos ilustrar rapidamente.
 
@@ -1219,11 +1219,11 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-# Exercícios Práticos (20–25 min)
+## Exercícios Práticos (20–25 min)
 
 > **Dataset:** `palmerpenguins::penguins`
 
-## Exercício 1 — Condicionais
+### Exercício 1 — Condicionais
 1. Crie um vetor de 8 notas qualquer.  
 2. Classifique com `ifelse()` como **Aprovado/Recuperação** (corte em 7).  
 3. Depois, crie uma classificação mais rica usando `case_when()` com 4 faixas.
@@ -1232,7 +1232,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-## Exercício 2 — Funções
+### Exercício 2 — Funções
 1. Escreva uma função `zscore(x)` que centraliza e escala (média 0, desvio 1).  
 2. Aplique em `bill_length_mm` **removendo NAs** antes.  
 3. Faça um segundo argumento opcional `na_rm = TRUE` dentro da função.
@@ -1241,7 +1241,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-## Exercício 3 — Pipeline `dplyr`
+### Exercício 3 — Pipeline `dplyr`
 1. Crie `peng3` filtrando linhas completas nas 4 medidas principais.  
 2. Calcule, por espécie, média e desvio da nadadeira (`flipper_length_mm`).  
 3. Ordene do maior para o menor e mostre as 5 primeiras linhas.
@@ -1250,7 +1250,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 # Seu código aqui
 ```
 
-## Exercício 4 — Datas com `lubridate`
+### Exercício 4 — Datas com `lubridate`
 1. Crie um vetor com 5 datas em formato "dd/mm/aaaa".  
 2. Converta com `dmy()` e extraia `month()` (com rótulo).  
 3. Some 30 dias à primeira data e compute o intervalo até a última.
@@ -1261,7 +1261,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-# Boas Práticas e Debugging (20 min)
+## Boas Práticas e Debugging (20 min)
 
 - Use **nomes descritivos** em `snake_case`.
 - Comente o **porquê** (não só o que) no código.
@@ -1269,7 +1269,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 - Leia mensagens de erro **de baixo para cima** (stack trace).
 - Mantenha scripts curtos e reutilizáveis.
 
-# Ferramentas úteis
+## Ferramentas úteis
 ```{r}
 # message(), warning(), stop() para sinalizar eventos
 # browser() para inspecionar dentro de uma função (quando eval=TRUE)
@@ -1280,7 +1280,7 @@ interval(ymd("2025-11-01"), ymd("2025-11-18"))
 
 ---
 
-# Commit do Dia
+## Commit do Dia
 
 1. Salve como `scripts/02_logica_funcoes.R` ou `materiais/dia2_logica_funcoes.Rmd` (este arquivo).  
 2. No **Terminal do RStudio**:
@@ -1294,7 +1294,7 @@ git push origin main
 
 ---
 
-# Checklist de encerramento
+## Checklist de encerramento
 
 - [ ] Dominou operadores lógicos e relacionais
 - [ ] Entendeu diferenças entre `if/else`, `ifelse()` e `case_when()`
@@ -1306,7 +1306,7 @@ git push origin main
 
 ---
 
-# Referências rápidas
+## Referências rápidas
 - **`dplyr` cheatsheet**: https://posit.co/resources/cheatsheets/  
 - **R for Data Science (2e)**: https://r4ds.hadley.nz/  
 - **Happy Git with R**: https://happygitwithr.com/  

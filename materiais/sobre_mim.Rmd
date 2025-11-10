@@ -10,6 +10,8 @@ fontsize: 11pt
 ---
 -->
 
+\newpage
+
 # Sobre o Autor
 
 ## Vinícius Junqueira

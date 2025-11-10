@@ -46,7 +46,7 @@ knitr::opts_chunk$set(
 
 \newpage
 
-# Transformação, I/O e Visualização
+# Dia 3: Transformação, I/O e Visualização
 
 > **Objetivos do dia**
 >
@@ -61,11 +61,11 @@ knitr::opts_chunk$set(
 
 ---
 
-# Transformação e I/O de Dados (19h00 - 20h30)
+## Transformação e I/O de Dados (19h00 - 20h30)
 
-## Tidyr: Transformando estruturas de dados
+### Tidyr: Transformando estruturas de dados
 
-### O que é Tidyr?
+#### O que é Tidyr?
 
 **tidyr** é o pacote para reorganizar a estrutura dos seus dados. É essencial porque muitas vezes recebemos dados em formatos "bagunçados" (como planilhas do Excel) e precisamos transformá-los em formato "tidy" para análise.
 
@@ -75,7 +75,7 @@ knitr::opts_chunk$set(
 - `separate()` / `unite()`: dividir ou unir colunas
 - `drop_na()`, `replace_na()`, `fill()`: tratar valores ausentes
 
-### pivot_longer(): Wide para Long
+#### pivot_longer(): Wide para Long
 
 **O que faz:** Transforma múltiplas colunas em duas novas colunas: uma com os nomes das colunas originais e outra com seus valores.
 
@@ -130,7 +130,7 @@ vendas_long %>%
   )
 ```
 
-### pivot_wider(): Long para Wide
+#### pivot_wider(): Long para Wide
 
 **O que faz:** Transforma duas colunas (uma de categorias e outra de valores) em múltiplas colunas, onde cada categoria vira uma coluna.
 
@@ -169,7 +169,7 @@ notas_wide <- notas_long %>%
 notas_wide
 ```
 
-### separate() e unite()
+#### separate() e unite()
 
 **separate():** Divide uma coluna em múltiplas colunas usando um separador.
 
@@ -233,7 +233,7 @@ telefones %>%
 
 ---
 
-## Tratamento de Valores Ausentes (NA)
+### Tratamento de Valores Ausentes (NA)
 
 **O que são NAs?**
 
@@ -255,7 +255,7 @@ telefones %>%
 2. **Remover**: excluir linhas/colunas com NAs (quando apropriado)
 3. **Imputar**: substituir NAs por valores estimados
 
-### Identificar NAs
+#### Identificar NAs
 
 **Funções úteis:**
 - `is.na()`: retorna TRUE/FALSE para cada elemento
@@ -291,7 +291,7 @@ dados_na %>%
   filter(if_all(everything(), ~!is.na(.)))
 ```
 
-### Remover NAs
+#### Remover NAs
 
 **Quando remover NAs:**
 - Quando representam uma porção pequena dos dados (< 5%)
@@ -319,7 +319,7 @@ dados_na %>%
   na.omit()  # base R
 ```
 
-### Substituir NAs
+#### Substituir NAs
 
 **Métodos de imputação (substituição):**
 
@@ -382,7 +382,7 @@ dados_sequencial %>%
 
 ---
 
-## Leitura e Escrita de Dados (I/O)
+### Leitura e Escrita de Dados (I/O)
 
 **I/O = Input/Output** (Entrada/Saída)
 
@@ -390,7 +390,7 @@ A capacidade de ler e escrever arquivos é fundamental para qualquer análise de
 - **Importar** dados de diversas fontes (CSV, Excel, bancos de dados)
 - **Exportar** resultados para compartilhar ou usar em outras ferramentas
 
-### Por que usar readr em vez de funções base do R?
+#### Por que usar readr em vez de funções base do R?
 
 **readr** (parte do tidyverse) é melhor porque:
 - ✅ Mais rápido (até 10x)
@@ -400,7 +400,7 @@ A capacidade de ler e escrever arquivos é fundamental para qualquer análise de
 - ✅ Mensagens mais claras sobre tipos de colunas
 - ✅ Sintaxe consistente e intuitiva
 
-### Leitura de arquivos CSV
+#### Leitura de arquivos CSV
 
 **CSV = Comma-Separated Values** (Valores Separados por Vírgula)
 
@@ -461,7 +461,7 @@ library(here)
 # dados_preview <- read_csv(here("data", "raw", "dados.csv"), n_max = 100)
 ```
 
-### O problema do encoding (acentuação)
+#### O problema do encoding (acentuação)
 
 **Encoding** define como caracteres especiais (acentos, ç, etc.) são armazenados.
 
@@ -479,7 +479,7 @@ library(here)
 2. Teste UTF-8 primeiro, depois latin1
 3. Use `guess_encoding()` do readr para ajudar
 
-### Leitura de arquivos Excel
+#### Leitura de arquivos Excel
 
 **Por que ler Excel?**
 - Formato muito usado em empresas e pesquisas
@@ -526,7 +526,7 @@ library(readxl)
 # excel_sheets(here("data", "raw", "planilha.xlsx"))
 ```
 
-### Escrita de dados
+#### Escrita de dados
 
 **Por que exportar dados?**
 - Compartilhar resultados com colegas
@@ -558,7 +558,7 @@ library(readxl)
 
 **Dica:** Sempre salve dados originais em `data/raw/` e processados em `data/processed/`
 
-### Organização de Projetos com here()
+#### Organização de Projetos com here()
 
 **O problema dos caminhos:**
 
@@ -639,7 +639,7 @@ dados_exemplo <- tibble(
 # dados <- readRDS(here("output", "tables", "notas.rds"))
 ```
 
-### Organização de Projetos com here()
+#### Organização de Projetos com here()
 
 **Por que usar here()?**
 
@@ -681,9 +681,9 @@ here("scripts", "01_analise.R")
 
 ---
 
-## Ferramentas Úteis
+### Ferramentas Úteis
 
-### janitor: Limpeza de dados
+#### janitor: Limpeza de dados
 
 **O que é janitor?**
 
@@ -725,7 +725,7 @@ janitor é um pacote focado em **limpar dados bagunçados** - especialmente aque
 - Mostra quais linhas estão duplicadas
 - Mais informativo que `duplicated()`
 
-### skimr: Exploração rápida
+#### skimr: Exploração rápida
 
 **O que é skimr?**
 
@@ -814,7 +814,7 @@ dados_com_vazios %>%
   remove_empty(c("rows", "cols"))
 ```
 
-### skimr: Exploração rápida
+#### skimr: Exploração rápida
 
 ```{r skimr}
 library(skimr)
@@ -837,7 +837,7 @@ penguins %>%
 
 ---
 
-# INTERVALO (20h30 - 20h50)
+## INTERVALO (20h30 - 20h50)
 
 Aproveite para:
 - Revisar conceitos de transformação
@@ -846,11 +846,11 @@ Aproveite para:
 
 ---
 
-# Visualização com ggplot2 (20h50 - 22h00)
+## Visualização com ggplot2 (20h50 - 22h00)
 
-## Gramática de Gráficos
+### Gramática de Gráficos
 
-### O que é ggplot2?
+#### O que é ggplot2?
 
 **ggplot2** é um sistema de visualização baseado na "Grammar of Graphics" (Gramática de Gráficos) - uma filosofia que trata gráficos como sentenças construídas por camadas.
 
@@ -866,7 +866,7 @@ Aproveite para:
 - **Advérbios** (aes): como mapear variáveis (x, y, cor, tamanho)
 - **Adjetivos** (themes, scales): aparência e estilo
 
-### Componentes essenciais:
+#### Componentes essenciais:
 
 **1. Data (dados)**: O dataset que você quer visualizar
 ```r
@@ -909,7 +909,7 @@ aes(x = flipper_length_mm,        # eixo x
 - `theme_classic()`: clássico
 - `theme()`: personalização completa
 
-### A lógica do + (soma de camadas)
+#### A lógica do + (soma de camadas)
 
 Em ggplot2, você **adiciona** camadas com `+`:
 
@@ -923,7 +923,7 @@ ggplot(data = dados, aes(x = var1, y = var2)) +  # Base
 
 **Importante:** Use `+` no final da linha, não no início!
 
-### Aesthetics globais vs locais
+#### Aesthetics globais vs locais
 
 **Global** (no `ggplot()`): aplica-se a todas as camadas
 ```r
@@ -962,9 +962,9 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm,
 
 ---
 
-## Tipos de Gráficos (geoms)
+### Tipos de Gráficos (geoms)
 
-### Escolhendo o tipo certo de gráfico
+#### Escolhendo o tipo certo de gráfico
 
 **Pergunte-se:**
 1. Quantas variáveis quero mostrar? (1, 2, 3+)
@@ -979,7 +979,7 @@ ggplot(penguins, aes(x = bill_length_mm, y = bill_depth_mm,
 - **Evolução temporal** → Linhas (geom_line)
 - **Parte do todo** → Pizza (evite!) ou Barras empilhadas
 
-### Gráfico de Dispersão (geom_point)
+#### Gráfico de Dispersão (geom_point)
 
 **Quando usar:**
 - Mostrar relação entre duas variáveis numéricas
@@ -1016,7 +1016,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
   geom_smooth(method = "lm", se = TRUE)
 ```
 
-### Gráfico de Barras (geom_bar / geom_col)
+#### Gráfico de Barras (geom_bar / geom_col)
 
 **Diferença importante:**
 - **geom_bar()**: conta automaticamente (para dados brutos)
@@ -1085,7 +1085,7 @@ ggplot(resumo, aes(x = species, y = massa_media)) +
   geom_col(fill = "steelblue")
 ```
 
-### Boxplot (geom_boxplot)
+#### Boxplot (geom_boxplot)
 
 **O que é um boxplot?**
 
@@ -1154,7 +1154,7 @@ ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
   geom_violin()
 ```
 
-### Gráfico de Linhas (geom_line)
+#### Gráfico de Linhas (geom_line)
 
 **Quando usar:**
 - Dados temporais (séries temporais)
@@ -1180,7 +1180,7 @@ ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
 
 **Dica:** Combine `geom_line()` + `geom_point()` para destacar valores individuais
 
-### Histograma e Densidade (geom_histogram / geom_density)
+#### Histograma e Densidade (geom_histogram / geom_density)
 
 **Histograma (geom_histogram)**
 
@@ -1253,7 +1253,7 @@ ggplot(vendas_long, aes(x = mes, y = valor, color = tipo)) +
   geom_point(size = 2)
 ```
 
-### Histograma e Densidade (geom_histogram / geom_density)
+#### Histograma e Densidade (geom_histogram / geom_density)
 
 ```{r geom-histogram}
 # Histograma
@@ -1279,9 +1279,9 @@ ggplot(penguins, aes(x = body_mass_g, fill = species)) +
 
 ---
 
-# Personalização
+## Personalização
 
-## Labels (labs) - Comunicando claramente
+### Labels (labs) - Comunicando claramente
 
 **Por que labels são importantes?**
 
@@ -1308,7 +1308,7 @@ Um gráfico sem bons labels é como um livro sem capa - ninguém sabe do que se 
 
 **Regra de ouro:** Seu gráfico deve se explicar sozinho. Uma pessoa que nunca viu seus dados deveria entender o que está sendo mostrado apenas olhando o gráfico.
 
-## Temas (themes) - Definindo a aparência
+### Temas (themes) - Definindo a aparência
 
 **O que são temas?**
 
@@ -1359,7 +1359,7 @@ theme(
 theme_minimal() + theme(legend.position = "bottom")
 ```
 
-## Escalas (scales) - Controle fino
+### Escalas (scales) - Controle fino
 
 **O que são scales?**
 
@@ -1445,7 +1445,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
   )
 ```
 
-## Temas (themes)
+### Temas (themes)
 
 ```{r themes}
 grafico_base <- ggplot(penguins, aes(x = species, y = body_mass_g, fill = species)) +
@@ -1477,7 +1477,7 @@ grafico_base +
   )
 ```
 
-## Escalas (scales)
+### Escalas (scales)
 
 ```{r scales}
 library(scales)
@@ -1508,7 +1508,7 @@ ggplot(penguins, aes(x = flipper_length_mm, y = body_mass_g)) +
 
 ---
 
-# Combinando Gráficos (patchwork)
+## Combinando Gráficos (patchwork)
 
 **Por que combinar gráficos?**
 
@@ -1593,7 +1593,7 @@ g1 + g2 + g3 +
 - Não sobrecarregue - máximo 4-6 painéis
 - Considere se um único gráfico com facetas seria melhor
 
-# Salvando Gráficos (ggsave)
+## Salvando Gráficos (ggsave)
 
 **Por que usar ggsave?**
 
@@ -1809,9 +1809,9 @@ meu_grafico <- ggplot(penguins, aes(x = species, y = body_mass_g, fill = species
 
 ---
 
-# Exercícios Práticos
+## Exercícios Práticos
 
-## Exercício 1: Transformação de dados
+### Exercício 1: Transformação de dados
 
 ```{r ex1, eval=FALSE}
 # Dados de temperatura (wide)
@@ -1836,7 +1836,7 @@ temp_wide <- tibble(
 
 ```
 
-## Exercício 2: Limpeza e I/O
+### Exercício 2: Limpeza e I/O
 
 ```{r ex2, eval=FALSE}
 # a) Crie um dataset com nomes de colunas bagunçados e limpe com janitor
@@ -1852,7 +1852,7 @@ temp_wide <- tibble(
 
 ```
 
-## Exercício 3: Visualização completa
+### Exercício 3: Visualização completa
 
 ```{r ex3, eval=FALSE}
 # Use o dataset penguins para criar:
@@ -1878,7 +1878,7 @@ temp_wide <- tibble(
 
 ---
 
-# Commit do Dia
+## Commit do Dia
 
 ```bash
 git add scripts/03_transformacao_viz.R
@@ -1888,7 +1888,7 @@ git push origin main
 
 ---
 
-# Checklist de Encerramento
+## Checklist de Encerramento
 
 - [ ] Dominou pivot_longer e pivot_wider
 - [ ] Entendeu separate e unite
@@ -1904,7 +1904,7 @@ git push origin main
 
 ---
 
-# Referências Rápidas
+## Referências Rápidas
 
 - **ggplot2 cheatsheet**: https://posit.co/resources/cheatsheets/
 - **R for Data Science - Data Visualization**: https://r4ds.hadley.nz/data-visualize

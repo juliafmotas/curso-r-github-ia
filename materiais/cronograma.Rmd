@@ -56,7 +56,9 @@ knitr::opts_chunk$set(
 ```
 \newpage
 
-# Informações Gerais do Curso
+# Cronograma
+
+**Informações Gerais do Curso**
 
 Carga horária total: 16 horas  
 Datas: 17/11, 18/11, 24/11 e 25/11  
@@ -75,9 +77,9 @@ Estrutura do curso (visão geral):
 
 \newpage
 
-# Pré-requisitos Técnicos
+## Pré-requisitos Técnicos
 
-## Instalações obrigatórias (para todos os sistemas)
+### Instalações obrigatórias (para todos os sistemas)
 
 1. R (versão 4.3 ou superior)  
    Download: https://cran.r-project.org/
@@ -99,7 +101,7 @@ Estrutura do curso (visão geral):
 
 \newpage
 
-# Estrutura Pedagógica e Filosofia
+## Estrutura Pedagógica e Filosofia
 
 - Multiplataforma: conteúdo compatível com Windows, macOS e Linux  
 - RStudio como IDE padrão  
@@ -110,9 +112,9 @@ Estrutura do curso (visão geral):
 
 \newpage
 
-# Pacotes R Necessários
+## Pacotes R Necessários
 
-## Instalação no Dia 1 a 3 (núcleo do curso)
+### Instalação no Dia 1 a 3 (núcleo do curso)
 ```r
 install.packages(c(
   "tidyverse", "here", "janitor", "skimr",
@@ -122,16 +124,16 @@ install.packages(c(
 ))
 ```
 
-## Pacotes de IA (Dia 4)
+### Pacotes de IA (Dia 4)
 ```r
 install.packages(c("gptstudio", "chattr", "httr2", "jsonlite"))
 ```
 
 \newpage
 
-# Dia 1: 17/11 (Segunda) — Fundamentos e Ambiente de Trabalho
+## Dia 1: 17/11 (Segunda) — Fundamentos e Ambiente de Trabalho
 
-## 19h00 - 20h30 | Ambientação e Setup Completo
+### 19h00 - 20h30 | Ambientação e Setup Completo
 
 Apresentação do curso, objetivos e metodologia.  
 Por que R, GitHub e IA.  
@@ -142,9 +144,9 @@ Fazer fork do repositório do curso.
 Clonar o fork no RStudio (Projeto .Rproj).  
 Verificar `git remote -v` apontando para o fork do aluno.
 
-## 20h30 - 20h50 | Intervalo
+### 20h30 - 20h50 | Intervalo
 
-## 20h50 - 22h00 | Fundamentos do R
+### 20h50 - 22h00 | Fundamentos do R
 
 Objetos e estruturas básicas: vetores, listas, data.frames, fatores.  
 Funções básicas: c(), length(), class(), typeof().  
@@ -160,9 +162,9 @@ git push origin main
 
 \newpage
 
-# Dia 2: 18/11 (Terça) — Lógica, Funções e Introdução ao Tidyverse
+## Dia 2: 18/11 (Terça) — Lógica, Funções e Introdução ao Tidyverse
 
-## 19h00 - 20h30 | Programação em R
+### 19h00 - 20h30 | Programação em R
 
 Operadores lógicos e relacionais.  
 Condicionais: if/else, ifelse() (vetorizado), dplyr::case_when().  
@@ -170,9 +172,9 @@ Loops e funções: for vs. vetorização, criação de funções, validação de
 Boas práticas e debugging: snake_case, comentários, leitura de traceback.  
 Mini demonstração de como a IA pode explicar um erro simples.
 
-## 20h30 - 20h50 | Intervalo
+### 20h30 - 20h50 | Intervalo
 
-## 20h50 - 22h00 | Introdução ao Tidyverse
+### 20h50 - 22h00 | Introdução ao Tidyverse
 
 Filosofia tidyverse e uso de pipes (%>% e |>).  
 Verbos essenciais do dplyr: filter(), select(), mutate(), arrange(), summarize(), group_by().  
@@ -185,9 +187,9 @@ git commit -m "Lógica, funções e tidyverse - Dia 2"
 
 \newpage
 
-# Dia 3: 24/11 (Segunda) — Transformação, I/O e Visualização
+## Dia 3: 24/11 (Segunda) — Transformação, I/O e Visualização
 
-## 19h00 - 20h30 | Transformação e I/O de Dados
+### 19h00 - 20h30 | Transformação e I/O de Dados
 
 Reshape com tidyr: pivot_longer(), pivot_wider(), separate(), unite().  
 Tratamento de NAs: is.na(), drop_na(), replace_na(), fill().  
@@ -195,9 +197,9 @@ Leitura/Escrita: readr::read_csv(), read_csv2(), readxl::read_excel().
 Portabilidade com here::here() e organização de projetos.  
 Ferramentas úteis: janitor::clean_names(), skimr::skim().
 
-## 20h30 - 20h50 | Intervalo
+### 20h30 - 20h50 | Intervalo
 
-## 20h50 - 22h00 | Visualização com ggplot2
+### 20h50 - 22h00 | Visualização com ggplot2
 
 Gramática de gráficos: camadas, aesthetics, geoms comuns.  
 Gráficos: dispersão, barras, boxplot, linhas, histograma/densidade.  
@@ -210,17 +212,17 @@ git commit -m "Transformação, I/O e visualização - Dia 3"
 
 \newpage
 
-# Dia 4: 25/11 (Terça) — Integração do ChatGPT e Claude no RStudio
+## Dia 4: 25/11 (Terça) — Integração do ChatGPT e Claude no RStudio
 
 Objetivo do dia: capacitar o aluno a usar ChatGPT (OpenAI) e Claude (Anthropic) diretamente no RStudio para explicar erros, revisar e gerar código, criar rascunhos de relatórios e automatizar pequenas rotinas via API.
 
-## 19h00 - 19h30 | Conceitos e modelos
+### 19h00 - 19h30 | Conceitos e modelos
 
 Panorama rápido sobre LLMs, APIs, limites e custos.  
 Boas práticas de uso responsável de IA: privacidade, dados sensíveis, versionamento de código gerado.  
 Comparação prática: quando usar ChatGPT e quando usar Claude.
 
-## 19h30 - 20h15 | Configuração de chaves e ambiente
+### 19h30 - 20h15 | Configuração de chaves e ambiente
 
 Variáveis de ambiente no R: uso de ~/.Renviron e Sys.getenv().  
 Criação de chaves de API e configuração local.  
@@ -228,20 +230,20 @@ Nomes convencionados:
 - OPENAI_API_KEY para ChatGPT (OpenAI)
 - ANTHROPIC_API_KEY para Claude (Anthropic)
 
-## 20h15 - 20h30 | Intervalo
+### 20h15 - 20h30 | Intervalo
 
-## 20h30 - 21h00 | RStudio + gptstudio (ChatGPT)
+### 20h30 - 21h00 | RStudio + gptstudio (ChatGPT)
 
 Abertura dos Addins do gptstudio no RStudio (chat pane e code assistant).  
 Uso no editor: seleção de código e prompt de revisão.  
 Exemplos típicos: explicar erro, refatorar função, gerar testes unitários simples.
 
-## 21h00 - 21h30 | RStudio + chattr (Claude)
+### 21h00 - 21h30 | RStudio + chattr (Claude)
 
 Fluxo básico com chattr::chat_claude().  
 Exemplos práticos: explicar um traceback, sugerir validação de argumentos, gerar esqueleto de RMarkdown.  
 
-## 21h30 - 22h00 | Exercício guiado de integração
+### 21h30 - 22h00 | Exercício guiado de integração
 
 Tarefa 1: usar gptstudio para revisar um script curto de dplyr e propor 2 melhorias.  
 Tarefa 2: usar chattr para gerar uma função em R que:
@@ -309,3 +311,5 @@ LinkedIn: www.linkedin.com/in/junqueiravinicius
 
 Última atualização: `r Sys.Date()`  
 Versão: 6.0 – Dia 4 100% integração com IA no RStudio
+
+\newpage

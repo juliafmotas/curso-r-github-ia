@@ -51,31 +51,33 @@ knitr::opts_chunk$set(
 # library(palmerpenguins)
 ```
 
-# Abertura
+# Dia 1: Fundamentos e Ambiente de Trabalho
+
+## Abertura
 
 **Tempo previsto** 19h00–22h00 (intervalo 20h30–20h50)
 
 ---
 
-# Apresentação do Curso (15 min)
+## Apresentação do Curso (15 min)
 
-## Bem-vindos!
+### Bem-vindos!
 
 Olá! Seja muito bem-vindo ao **Curso Intensivo de R com GitHub e IA**. Esta jornada de 16 horas foi cuidadosamente estruturada para transformar você de iniciante a alguém capaz de realizar análises de dados completas usando ferramentas modernas e profissionais.
 
-## Objetivos Gerais do Curso
+### Objetivos Gerais do Curso
 
 Ao final deste curso, você será capaz de:
 
-- Programar em R com confiança, desde operações básicas até análises complexas
+- Programar em R e descobrir como resolver problemas com o seu código
 - Manipular e transformar dados usando o ecossistema tidyverse
 - Criar visualizações profissionais e informativas com ggplot2
 - Versionar seu código com Git e colaborar via GitHub
 - Usar inteligência artificial (ChatGPT e Claude) para acelerar seu aprendizado e resolver problemas
 
-## Metodologia
+### Metodologia
 
-Nossa abordagem é **100% prática e hands-on**:
+Abordagem **100% prática e hands-on**:
 
 - **Teoria mínima necessária** seguida de prática imediata
 - **Datasets reais** desde o primeiro dia
@@ -83,14 +85,14 @@ Nossa abordagem é **100% prática e hands-on**:
 - **IA como assistente** para explicação, depuração e geração de código
 - **Multiplataforma**: todo conteúdo funciona em Windows, macOS e Linux
 
-## Estrutura dos 4 Dias
+### Estrutura dos 4 Dias
 
 - **Dia 1 (hoje)**: Fundamentos de R + Ambiente reprodutível (RStudio, Git, GitHub, fork)
 - **Dia 2**: Lógica de programação, condicionais, funções e tidyverse básico
 - **Dia 3**: Transformações com tidyr/dplyr, leitura/escrita de dados e visualização com ggplot2
 - **Dia 4**: Integração prática do ChatGPT e Claude dentro do RStudio
 
-## Materiais e Suporte
+### Materiais e Suporte
 
 - **Repositório GitHub**: https://github.com/viniciusjunqueira/curso-r-github-ia
 - **Datasets**: incluídos no repositório + pacote palmerpenguins
@@ -98,9 +100,9 @@ Nossa abordagem é **100% prática e hands-on**:
 
 ---
 
-# Por Que R, GitHub e IA? (15 min)
+## Por Que R, GitHub e IA? (15 min)
 
-## Por Que R?
+### Por Que R?
 
 **R é uma linguagem poderosa e gratuita**, criada especificamente para análise de dados e estatística. Algumas razões para aprender R:
 
@@ -124,7 +126,7 @@ Nossa abordagem é **100% prática e hands-on**:
 - Essencial para ciência de dados, bioinformática, economia, ciências sociais
 - Combina bem com Python em pipelines modernos de dados
 
-## Por Que GitHub?
+### Por Que GitHub?
 
 **GitHub não é apenas para programadores!** É uma plataforma essencial para:
 
@@ -148,7 +150,7 @@ Nossa abordagem é **100% prática e hands-on**:
 - Base para deployment de aplicações
 - Padrão da indústria para ciência de dados
 
-## Por Que IA (ChatGPT e Claude)?
+### Por Que IA (ChatGPT e Claude)?
 
 A inteligência artificial revolucionou o aprendizado de programação. **Não é trapaça, é trabalhar de forma inteligente!**
 
@@ -175,7 +177,7 @@ A inteligência artificial revolucionou o aprendizado de programação. **Não �
 
 ---
 
-# Ambientação e Setup (40 min)
+## Ambientação e Setup (40 min)
 
 > **Objetivos desta seção**
 >
@@ -184,14 +186,14 @@ A inteligência artificial revolucionou o aprendizado de programação. **Não �
 > - Entender e aplicar o **workflow com fork**
 > - Preparar ambiente reprodutível com projetos `.Rproj` e `here()`
 
-## Verificações rápidas
+### Verificações rápidas
 ```{r, eval=FALSE}
 R.version.string           # Versão do R
 RStudio.Version()$version  # Versão do RStudio
 system("git --version")    # Confirma Git disponível
 ```
 
-## Configurar Git (uma vez só)
+### Configurar Git (uma vez só)
 No **Terminal do RStudio** (funciona em Windows/macOS/Linux):
 ```bash
 git config --global user.name "Seu Nome"
@@ -200,7 +202,7 @@ git config --global user.email "seu@email.com"
 git config --global --list
 ```
 
-## Autenticar no GitHub (PAT recomendado)
+### Autenticar no GitHub (PAT recomendado)
 
 **O que é um PAT?**
 
@@ -261,7 +263,7 @@ Você verá uma mensagem de confirmação:
 -> Done.
 ```
 
-#### Verificar se funcionou
+### Verificar se funcionou
 ```{r, eval=FALSE}
 usethis::git_sitrep()
 ```
@@ -304,7 +306,7 @@ git remote -v
 
 ---
 
-### Estrutura de projeto e portabilidade
+## Estrutura de projeto e portabilidade
 ```
 curso-r-github-ia/
 ├── curso-r-github-ia.Rproj
@@ -332,9 +334,9 @@ caminho
 
 ---
 
-# Fundamentos de R (50 min)
+## Fundamentos de R (50 min)
 
-## Objetos básicos e operações
+### Objetos básicos e operações
 
 **O que são objetos em R?**
 
@@ -402,7 +404,7 @@ Inf / Inf        # NaN
 NA + 1           # NA
 ```
 
-## Vetores e indexação
+### Vetores e indexação
 
 **O que são vetores?**
 
@@ -453,9 +455,9 @@ x
 class(x)
 ```
 
-## Listas e data.frames
+### Listas e data.frames
 
-### Listas: estruturas flexíveis
+#### Listas: estruturas flexíveis
 
 Uma **lista** é uma estrutura que pode conter elementos de **diferentes tipos** — ao contrário dos vetores, que são homogêneos.  
 Listas são extremamente versáteis e podem armazenar **números, textos, vetores, outras listas** e até **data.frames**!
@@ -467,7 +469,7 @@ Listas são extremamente versáteis e podem armazenar **números, textos, vetore
 
 ---
 
-### Exemplo 1 – Criando uma lista simples
+#### Exemplo 1 – Criando uma lista simples
 
 ```{r}
 # Criando uma lista com diferentes tipos de objetos
@@ -525,7 +527,7 @@ alunos$nome
 alunos$aprov <- ifelse(alunos$nota >= 7, "Aprovado", "Recuperação")
 ```
 
-### Diferença entre lista e data.frame
+#### Diferença entre lista e data.frame
 
 | Aspecto | **Lista (`list`)** | **Data.frame** |
 |----------|--------------------|----------------|
@@ -537,7 +539,7 @@ alunos$aprov <- ifelse(alunos$nota >= 7, "Aprovado", "Recuperação")
 
 ---
 
-### Conversão entre listas e data.frames
+#### Conversão entre listas e data.frames
 
 ```{r}
 # Converter data.frame em lista
@@ -558,7 +560,7 @@ as.data.frame(nova_lista)
 - Todo `data.frame` é uma **lista**, mas nem toda lista é um `data.frame`.
 - Um `data.frame` é basicamente uma **lista disciplinada**, ideal para armazenar dados organizados em linhas e colunas.
 
-## Fatores
+### Fatores
 
 **O que são fatores?**
 
@@ -592,7 +594,7 @@ summary(conceito)
 
 ---
 
-# Exploração inicial de dados (40 min)
+## Exploração inicial de dados (40 min)
 
 > Vamos usar um dataset real (`palmerpenguins`) para praticar **inspeção e resumo** com diferentes funções, incluindo `dplyr::glimpse()`.
 
@@ -683,7 +685,7 @@ table(penguins$species)
 # table(penguins$species, penguins$island)
 ```
 
-## Comparando str() vs glimpse()
+### Comparando str() vs glimpse()
 
 Ambas mostram a estrutura dos dados, mas com estilos diferentes:
 
@@ -705,9 +707,9 @@ dplyr::glimpse(penguins)
 
 ---
 
-# Exercícios guiados (20 min)
+## Exercícios guiados (20 min)
 
-## Exercício 1 — Vetores
+### Exercício 1 — Vetores
 1. Crie um vetor numérico com 8 valores quaisquer.  
 2. Calcule média, mediana e desvio-padrão.  
 3. Filtre apenas os valores **acima da média**.
@@ -716,7 +718,7 @@ dplyr::glimpse(penguins)
 # Seu código aqui
 ```
 
-## Exercício 2 — Data frame
+### Exercício 2 — Data frame
 1. Crie um `data.frame` com colunas: `id`, `nome`, `nota`, `ativo`.  
 2. Crie uma nova coluna `situacao` usando `ifelse(nota >= 7, "Aprovado", "Recuperação")`.  
 3. Mostre apenas as colunas `nome` e `situacao` das 2 primeiras linhas.
@@ -725,7 +727,7 @@ dplyr::glimpse(penguins)
 # Seu código aqui
 ```
 
-## Exercício 3 — Exploração `palmerpenguins`
+### Exercício 3 — Exploração `palmerpenguins`
 1. Use `glimpse()` para ter uma visão geral dos dados.
 2. Conte quantos NAs existem em cada coluna.  
 3. Crie uma nova coluna `massa_kg` convertendo `body_mass_g` para quilogramas.  
@@ -737,7 +739,7 @@ dplyr::glimpse(penguins)
 
 ---
 
-# Primeiro commit (5 min)
+## Primeiro commit (5 min)
 
 No **Terminal do RStudio**:
 ```bash
@@ -750,7 +752,7 @@ git push origin main
 
 ---
 
-# Checklist de encerramento
+## Checklist de encerramento
 
 - [ ] R, RStudio e Git instalados e funcionando.  
 - [ ] Git configurado com `user.name` e `user.email`.  
@@ -762,7 +764,7 @@ git push origin main
 
 ---
 
-# Referências rápidas
+## Referências rápidas
 - **R for Data Science (2e)**: https://r4ds.hadley.nz/  
 - **Happy Git with R**: https://happygitwithr.com/  
 - **Cheatsheets Posit**: https://posit.co/resources/cheatsheets/  
