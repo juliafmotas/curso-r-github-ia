@@ -821,7 +821,7 @@ Se você misturar lógicos (TRUE, FALSE) com números, eles viram números (TRUE
 <h3><span class="header-section-number">7.6.3</span> Listas e data.frames<a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#listas-e-data.frames" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="listas-estruturas-flexíveis" class="section level4 hasAnchor" number="7.6.3.1">
 <h4><span class="header-section-number">7.6.3.1</span> Listas: estruturas flexíveis<a href="#listas-estruturas-flex%C3%ADveis" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p>Uma <strong>lista</strong> é uma estrutura que pode conter elementos de <strong>diferentes tipos</strong> — ao contrário dos vetores, que são homogêneos.<br />
+<p>Uma <strong>lista</strong> (<code>list</code>) é uma estrutura que pode conter elementos de <strong>diferentes tipos</strong> — ao contrário dos vetores, que são homogêneos.<br />
 Listas são extremamente versáteis e podem armazenar <strong>números, textos, vetores, outras listas</strong> e até <strong>data.frames</strong>!</p>
 </div>
 <div id="uso-típico-de-listas" class="section level4 hasAnchor" number="7.6.3.2">
@@ -846,18 +846,22 @@ Listas são extremamente versáteis e podem armazenar <strong>números, textos, 
 <span id="cb27-9"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb27-9" tabindex="-1"></a><span class="co"># Visualizando a lista completa</span></span>
 <span id="cb27-10"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb27-10" tabindex="-1"></a>info</span></code></pre></div>
 <p>A função <code>str()</code> (de <em>structure</em>) exibe um resumo compacto da estrutura de qualquer objeto em R.<br />
-É muito útil para entender rapidamente o conteúdo de listas e data.frames, mostrando:
-- O tipo de cada elemento (numérico, lógico, texto, etc.)
-- O tamanho dos vetores internos
-- Uma prévia dos valores armazenados</p>
+É muito útil para entender rapidamente o conteúdo de listas e data.frames, mostrando:</p>
+<ul>
+<li>O tipo de cada elemento (numérico, lógico, texto, etc.)</li>
+<li>O tamanho dos vetores internos</li>
+<li>Uma prévia dos valores armazenados</li>
+</ul>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb28-1" tabindex="-1"></a><span class="fu">str</span>(info)</span></code></pre></div>
 <p><strong>Data.frames: a estrutura tabular</strong></p>
-<p>Um <strong>data.frame</strong> é a estrutura mais importante para análise de dados em R. É similar a uma planilha do Excel ou uma tabela de banco de dados: tem linhas (observações) e colunas (variáveis).</p>
-<p><strong>Características do data.frame:</strong>
-- Cada coluna pode ser de um tipo diferente (uma coluna numérica, outra texto)
-- Cada coluna é um vetor e deve ter o mesmo comprimento
-- É como uma lista especial onde todos os elementos têm o mesmo tamanho
-- Ideal para dados tabulares (como datasets de pesquisa)</p>
+<p>Um <strong>data.frame</strong> (<code>data.frame</code>) é a estrutura mais importante para análise de dados em R. É similar a uma planilha do Excel ou uma tabela de banco de dados: tem linhas (observações) e colunas (variáveis).</p>
+<p><strong>Características do data.frame:</strong></p>
+<ul>
+<li>Cada coluna pode ser de um tipo diferente (uma coluna numérica, outra texto)</li>
+<li>Cada coluna é um vetor e deve ter o mesmo comprimento</li>
+<li>É como uma lista especial onde todos os elementos têm o mesmo tamanho</li>
+<li>Ideal para dados tabulares (como datasets de pesquisa)</li>
+</ul>
 <div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb29-1" tabindex="-1"></a><span class="co"># Lista: tipos mistos</span></span>
 <span id="cb29-2"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb29-2" tabindex="-1"></a>lst <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">id =</span> <span class="dv">1</span>, <span class="at">nome =</span> <span class="st">&quot;Ana&quot;</span>, <span class="at">aprovado =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb29-3"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb29-3" tabindex="-1"></a>lst<span class="sc">$</span>nome</span>
@@ -892,7 +896,7 @@ Listas são extremamente versáteis e podem armazenar <strong>números, textos, 
 <thead>
 <tr class="header">
 <th>Aspecto</th>
-<th><strong>Lista (<code>list</code>)</strong></th>
+<th><strong>Lista</strong></th>
 <th><strong>Data.frame</strong></th>
 </tr>
 </thead>
@@ -949,7 +953,7 @@ Listas são extremamente versáteis e podem armazenar <strong>números, textos, 
 <div id="fatores" class="section level3 hasAnchor" number="7.6.4">
 <h3><span class="header-section-number">7.6.4</span> Fatores<a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#fatores" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong>O que são fatores?</strong></p>
-<p><strong>Fatores</strong> são a forma do R representar <strong>variáveis categóricas</strong> (também chamadas de qualitativas). São usados para dados que podem assumir um número limitado de valores distintos, chamados de “níveis” (levels).</p>
+<p><strong>Fatores</strong> (<code>factor</code>) são a forma do R representar <strong>variáveis categóricas</strong> (também chamadas de qualitativas). São usados para dados que podem assumir um número limitado de valores distintos, chamados de “níveis” (levels).</p>
 <p><strong>Quando usar fatores:</strong></p>
 <ul>
 <li>Variáveis categóricas: sexo (M/F), região (Norte/Sul/Leste/Oeste), tratamento (Controle/Teste)</li>
@@ -998,28 +1002,28 @@ Listas são extremamente versáteis e podem armazenar <strong>números, textos, 
 <p>Uma tibble é uma versão mais moderna e segura de um data.frame, usada no tidyverse.</p>
 <p>Principais diferenças:</p>
 <ul>
-<li>Impressão:
+<li><p>Impressão:</p>
 <ul>
 <li><code>data.frame</code> imprime tudo (todas as linhas e todas as colunas, às vezes vira uma parede de texto).</li>
 <li><code>tibble</code> imprime só as primeiras linhas e corta na largura da tela, mostrando também o tipo de cada coluna.</li>
 </ul></li>
-<li>Tipos na impressão:
+<li><p>Tipos na impressão:</p>
 <ul>
 <li>tibbles sempre mostram o tipo de dado de cada coluna (<code>&lt;dbl&gt;</code>, <code>&lt;int&gt;</code>, <code>&lt;chr&gt;</code>, <code>&lt;fct&gt;</code>, etc.).</li>
 <li>data.frames não mostram isso.</li>
 </ul></li>
-<li>Subsetting:
+<li><p>Subsetting:</p>
 <ul>
 <li>Em um <code>data.frame</code>, <code>df[, "coluna"]</code> pode virar vetor.</li>
 <li>Em uma tibble, <code>tb[ , "coluna"]</code> ainda é tibble (mais previsível).</li>
 <li>Para vetor puro, usa-se <code>tb[["coluna"]]</code> ou <code>tb$coluna</code>.</li>
 </ul></li>
-<li>Nomes estranhos:
+<li><p>Nomes estranhos:</p>
 <ul>
 <li>tibbles aceitam nomes de colunas não sintáticos (por exemplo <code>"2024 (%)"</code>), e você acessa com crase: <code>tb$</code>2024 (%)``.</li>
 <li>data.frames costumam tentar corrigir/alterar o nome automaticamente.</li>
 </ul></li>
-<li>Nunca converte string automaticamente para <code>factor</code>.
+<li><p>Nunca converte string automaticamente para <code>factor</code>.</p>
 <ul>
 <li><code>data.frame(...)</code> antigamente convertia texto em fator (dependia de <code>stringsAsFactors</code>).</li>
 <li>tibbles NÃO fazem conversão automática de texto para fator. Texto fica texto.</li>
@@ -1066,11 +1070,13 @@ Listas são extremamente versáteis e podem armazenar <strong>números, textos, 
 <span id="cb34-3"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb34-3" tabindex="-1"></a></span>
 <span id="cb34-4"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb34-4" tabindex="-1"></a><span class="co"># glimpse(): estilo tidyverse, mais compacto e legível</span></span>
 <span id="cb34-5"><a href="dia-1-fundamentos-e-ambiente-de-trabalho.html#cb34-5" tabindex="-1"></a>dplyr<span class="sc">::</span><span class="fu">glimpse</span>(penguins)</span></code></pre></div>
-<p><strong>Vantagens do <code>glimpse()</code>:</strong>
-- Mostra tipo de cada coluna de forma clara
-- Apresenta primeiros valores de forma compacta
-- Melhor para datasets com muitas colunas
-- Estilo moderno e consistente com tidyverse</p>
+<p><strong>Vantagens do <code>glimpse()</code>:</strong></p>
+<ul>
+<li>Mostra tipo de cada coluna de forma clara</li>
+<li>Apresenta primeiros valores de forma compacta</li>
+<li>Melhor para datasets com muitas colunas</li>
+<li>Estilo moderno e consistente com tidyverse</li>
+</ul>
 <blockquote>
 <p><strong>Dica</strong>: quando houver NAs, sempre use <code>na.rm = TRUE</code> nas funções de resumo estatístico.</p>
 </blockquote>
