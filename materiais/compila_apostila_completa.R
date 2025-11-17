@@ -1,13 +1,14 @@
-setwd('./materiais/')
-bookdown::render_book("index.Rmd", "bookdown::pdf_book")
+setwd('/Users/viniciusjunqueira/Library/CloudStorage/OneDrive-Pessoal/Cursos/curso-r-github-ia/materiais')
 
-setwd('./materiais/')
+bookdown::render_book("index.Rmd", "bookdown::pdf_book")
 
 # Para formato GitBook (recomendado para web)
 bookdown::render_book("index.Rmd", "bookdown::gitbook")
 
-# OU para formato BS4 (Bootstrap 4 - mais moderno)
-# bookdown::render_book("index.Rmd", "bookdown::bs4_book")
+system('cp -rf materiais/_book/* docs/')
 
-# Após renderizar
-file.rename("materiais/_book", "docs")
+# Verificar se a pasta docs existe e tem arquivos
+list.files("docs")
+
+# No R, na raiz do projeto
+file.create(".nojekyll")
