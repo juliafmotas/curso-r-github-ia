@@ -148,6 +148,8 @@ MIT License - Veja LICENSE para detalhes
 - **Email**: [junqueiravinicius@hotmail.com](mailto:junqueiravinicius@hotmail.com)
 - **LinkedIn**: [linkedin.com/in/junqueiravinicius/](https://www.linkedin.com/in/junqueiravinicius/)
 - **Instagram**: [@vinicius_junq](https://instagram.com/vinicius_junq)
+- **X**: [@vsjunqueira](https://x.com/vsjunqueira)
+
 
 ---
 
