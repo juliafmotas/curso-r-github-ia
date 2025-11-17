@@ -135,18 +135,19 @@ Sugestões e correções são bem-vindas! Por favor:
 
 MIT License - Veja LICENSE para detalhes
 
-## 👨‍🏫 Instrutor
+## 👨🏫 Instrutor
 
-**Vinícius**
+**Vinícius Silva Junqueira**
 
 - Doutorado em Genética e Melhoramento (UFV)
 - Experiência em melhoramento genético e análise genômica
-- Colaborações internacionais (EUA, Argentina)
+- Programação científica em R, Python, Fortran
 
 ## 📧 Contato
 
-- Email: seu-email@example.com
-- GitHub Issues: Para reportar problemas
+- **Email**: [junqueiravinicius@hotmail.com](mailto:junqueiravinicius@hotmail.com)
+- **LinkedIn**: [linkedin.com/in/junqueiravinicius/](https://www.linkedin.com/in/junqueiravinicius/)
+- **Instagram**: [@vinicius_junq](https://instagram.com/vinicius_junq)
 
 ---
 
