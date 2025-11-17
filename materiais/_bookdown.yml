@@ -1,4 +1,5 @@
 book_filename: "Curso_Completo_R_GitHub_IA"
+output_dir: "_book"
 rmd_files:
   - "index.Rmd"
   - "sobre_mim.Rmd"
