@@ -1205,10 +1205,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="intervalo-20h30---20h50" class="section level2 hasAnchor" number="9.2">
 <h2><span class="header-section-number">9.2</span> INTERVALO (20h30 - 20h50)<a href="dia-3-transformação-io-e-visualização.html#intervalo-20h30---20h50" class="anchor-section" aria-label="Anchor link to header"></a></h2>
-<p>Aproveite para:
-- Revisar conceitos de transformação
-- Experimentar com seus dados
-- Preparar para ggplot2!</p>
+<p>Aproveite para:</p>
+<ul>
+<li>Revisar conceitos de transformação</li>
+<li>Experimentar com seus dados</li>
+<li>Preparar para ggplot2!</li>
+</ul>
 <hr />
 </div>
 <div id="visualização-com-ggplot2-20h50---22h00" class="section level2 hasAnchor" number="9.3">
@@ -1252,22 +1254,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb79-3"><a href="dia-3-transformação-io-e-visualização.html#cb79-3" tabindex="-1"></a>    <span class="at">y =</span> body_mass_g,               <span class="co"># eixo y</span></span>
 <span id="cb79-4"><a href="dia-3-transformação-io-e-visualização.html#cb79-4" tabindex="-1"></a>    <span class="at">color =</span> species,               <span class="co"># cor por espécie</span></span>
 <span id="cb79-5"><a href="dia-3-transformação-io-e-visualização.html#cb79-5" tabindex="-1"></a>    <span class="at">size =</span> bill_length_mm)         <span class="co"># tamanho por comprimento do bico</span></span></code></pre></div>
-<p><strong>3. Geometries (geom)</strong>: Tipo de representação visual
-- <code>geom_point()</code>: pontos (gráfico de dispersão)
-- <code>geom_line()</code>: linhas
-- <code>geom_bar()</code>: barras
-- <code>geom_boxplot()</code>: boxplots
-- <code>geom_histogram()</code>: histogramas
-- E muitos outros…</p>
-<p><strong>4. Scales</strong>: Controle fino de como os dados são mapeados
-- <code>scale_x_continuous()</code>: escala do eixo x
-- <code>scale_color_manual()</code>: cores personalizadas
-- <code>scale_y_log10()</code>: escala logarítmica</p>
-<p><strong>5. Themes</strong>: Aparência geral (não afeta os dados)
-- <code>theme_minimal()</code>: minimalista
-- <code>theme_bw()</code>: preto e branco
-- <code>theme_classic()</code>: clássico
-- <code>theme()</code>: personalização completa</p>
+<p><strong>3. Geometries (geom)</strong>: Tipo de representação visual</p>
+<ul>
+<li><code>geom_point()</code>: pontos (gráfico de dispersão)</li>
+<li><code>geom_line()</code>: linhas</li>
+<li><code>geom_bar()</code>: barras</li>
+<li><code>geom_boxplot()</code>: boxplots</li>
+<li><code>geom_histogram()</code>: histogramas</li>
+<li>E muitos outros…</li>
+</ul>
+<p><strong>4. Scales</strong>: Controle fino de como os dados são mapeados</p>
+<ul>
+<li><code>scale_x_continuous()</code>: escala do eixo x</li>
+<li><code>scale_color_manual()</code>: cores personalizadas</li>
+<li><code>scale_y_log10()</code>: escala logarítmica</li>
+</ul>
+<p><strong>5. Themes</strong>: Aparência geral (não afeta os dados)</p>
+<ul>
+<li><code>theme_minimal()</code>: minimalista</li>
+<li><code>theme_bw()</code>: preto e branco</li>
+<li><code>theme_classic()</code>: clássico</li>
+<li><code>theme()</code>: personalização completa</li>
+</ul>
 </div>
 <div id="a-lógica-do-soma-de-camadas" class="section level4 hasAnchor" number="9.3.1.3">
 <h4><span class="header-section-number">9.3.1.3</span> A lógica do + (soma de camadas)<a href="#a-l%C3%B3gica-do-soma-de-camadas" class="anchor-section" aria-label="Anchor link to header"></a></h4>
@@ -1314,35 +1322,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">9.3.2</span> Tipos de Gráficos (geoms)<a href="#tipos-de-gr%C3%A1ficos-geoms" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <div id="escolhendo-o-tipo-certo-de-gráfico" class="section level4 hasAnchor" number="9.3.2.1">
 <h4><span class="header-section-number">9.3.2.1</span> Escolhendo o tipo certo de gráfico<a href="#escolhendo-o-tipo-certo-de-gr%C3%A1fico" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><strong>Pergunte-se:</strong>
-1. Quantas variáveis quero mostrar? (1, 2, 3+)
-2. Que tipo de variáveis? (categórica vs numérica)
-3. Qual história quero contar? (distribuição, relação, comparação, evolução)</p>
-<p><strong>Guia rápido:</strong>
-- <strong>Relação entre 2 numéricas</strong> → Dispersão (geom_point)
-- <strong>Comparar categorias</strong> → Barras (geom_bar/geom_col)
-- <strong>Distribuição de 1 numérica</strong> → Histograma ou Densidade
-- <strong>Comparar distribuições</strong> → Boxplot ou Violin
-- <strong>Evolução temporal</strong> → Linhas (geom_line)
-- <strong>Parte do todo</strong> → Pizza (evite!) ou Barras empilhadas</p>
+<p><strong>Pergunte-se:</strong></p>
+<ol style="list-style-type: decimal">
+<li>Quantas variáveis quero mostrar? (1, 2, 3+)</li>
+<li>Que tipo de variáveis? (categórica vs numérica)</li>
+<li>Qual história quero contar? (distribuição, relação, comparação, evolução)</li>
+</ol>
+<p><strong>Guia rápido:</strong></p>
+<ul>
+<li><strong>Relação entre 2 numéricas</strong> → Dispersão (geom_point)</li>
+<li><strong>Comparar categorias</strong> → Barras (geom_bar/geom_col)</li>
+<li><strong>Distribuição de 1 numérica</strong> → Histograma ou Densidade</li>
+<li><strong>Comparar distribuições</strong> → Boxplot ou Violin</li>
+<li><strong>Evolução temporal</strong> → Linhas (geom_line)</li>
+<li><strong>Parte do todo</strong> → Pizza (evite!) ou Barras empilhadas</li>
+</ul>
 </div>
 <div id="gráfico-de-dispersão-geom_point" class="section level4 hasAnchor" number="9.3.2.2">
 <h4><span class="header-section-number">9.3.2.2</span> Gráfico de Dispersão (geom_point)<a href="#gr%C3%A1fico-de-dispers%C3%A3o-geom_point" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><strong>Quando usar:</strong>
-- Mostrar relação entre duas variáveis numéricas
-- Identificar correlações, tendências ou padrões
-- Visualizar clusters ou outliers</p>
-<p><strong>Parâmetros úteis:</strong>
-- <code>size</code>: tamanho dos pontos (número ou mapeado a variável)
-- <code>alpha</code>: transparência (útil quando há sobreposição)
-- <code>shape</code>: forma dos pontos (círculo, triângulo, quadrado, etc.)
-- <code>color</code>: cor (fixa ou mapeada a variável categórica)</p>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Mostrar relação entre duas variáveis numéricas</li>
+<li>Identificar correlações, tendências ou padrões</li>
+<li>Visualizar clusters ou outliers</li>
+</ul>
+<p><strong>Parâmetros úteis:</strong></p>
+<ul>
+<li><code>size</code>: tamanho dos pontos (número ou mapeado a variável)</li>
+<li><code>alpha</code>: transparência (útil quando há sobreposição)</li>
+<li><code>shape</code>: forma dos pontos (círculo, triângulo, quadrado, etc.)</li>
+<li><code>color</code>: cor (fixa ou mapeada a variável categórica)</li>
+</ul>
 <p><strong>Dica:</strong> Use <code>geom_smooth()</code> junto para adicionar linha de tendência!</p>
-<p><strong>Tipos de relação que você pode identificar:</strong>
-- Positiva: x aumenta, y aumenta
-- Negativa: x aumenta, y diminui
-- Não-linear: curva ou padrão complexo
-- Sem relação: pontos dispersos aleatoriamente</p>
+<p><strong>Tipos de relação que você pode identificar:</strong></p>
+<ul>
+<li>Positiva: x aumenta, y aumenta</li>
+<li>Negativa: x aumenta, y diminui</li>
+<li>Não-linear: curva ou padrão complexo</li>
+<li>Sem relação: pontos dispersos aleatoriamente</li>
+</ul>
 <div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="dia-3-transformação-io-e-visualização.html#cb84-1" tabindex="-1"></a><span class="co"># Dispersão básica</span></span>
 <span id="cb84-2"><a href="dia-3-transformação-io-e-visualização.html#cb84-2" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> flipper_length_mm, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
 <span id="cb84-3"><a href="dia-3-transformação-io-e-visualização.html#cb84-3" tabindex="-1"></a>  <span class="fu">geom_point</span>()</span>
@@ -1359,38 +1377,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="gráfico-de-barras-geom_bar-geom_col" class="section level4 hasAnchor" number="9.3.2.3">
 <h4><span class="header-section-number">9.3.2.3</span> Gráfico de Barras (geom_bar / geom_col)<a href="#gr%C3%A1fico-de-barras-geom_bar-geom_col" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><strong>Diferença importante:</strong>
-- <strong>geom_bar()</strong>: conta automaticamente (para dados brutos)
-- Use quando: quer contar quantas vezes cada categoria aparece
-- Exemplo: quantos alunos de cada curso</p>
+<p><strong>Diferença importante:</strong></p>
 <ul>
-<li><strong>geom_col()</strong>: usa valores que já estão calculados
+<li><p><strong>geom_bar()</strong>: conta automaticamente (para dados brutos)</p>
+<ul>
+<li>Use quando: quer contar quantas vezes cada categoria aparece</li>
+<li>Exemplo: quantos alunos de cada curso</li>
+</ul></li>
+<li><p><strong>geom_col()</strong>: usa valores que já estão calculados</p>
 <ul>
 <li>Use quando: já tem os valores agregados</li>
 <li>Exemplo: vendas totais por mês (já somadas)</li>
 </ul></li>
 </ul>
-<p><strong>Quando usar barras:</strong>
-- Comparar quantidades entre categorias
-- Mostrar rankings
-- Visualizar composição (barras empilhadas)
-- Dados temporais discretos (meses, anos)</p>
+<p><strong>Quando usar barras:</strong></p>
+<ul>
+<li>Comparar quantidades entre categorias</li>
+<li>Mostrar rankings</li>
+<li>Visualizar composição (barras empilhadas)</li>
+<li>Dados temporais discretos (meses, anos)</li>
+</ul>
 <p><strong>Parâmetros importantes:</strong></p>
-<p><strong>position</strong>: Como organizar múltiplas barras
-- <code>"stack"</code> (padrão): empilhadas uma sobre a outra
-- <code>"dodge"</code>: lado a lado
-- <code>"fill"</code>: empilhadas proporcionalmente (100%)</p>
-<p><strong>width</strong>: Largura das barras (0-1)
-- Menor = barras mais finas com mais espaço</p>
-<p><strong>fill vs color</strong>:
-- <code>fill</code>: cor de preenchimento da barra
-- <code>color</code>: cor da borda da barra</p>
-<p><strong>Dicas de design:</strong>
-- Ordene categorias por valor (não alfabeticamente)
-- Use cores apenas quando necessário (não decore por decorar)
-- Evite 3D (distorce percepção)
-- Comece eixo y em zero (não engane visualmente)
-- Considere barras horizontais se nomes de categorias forem longos</p>
+<p><strong>position</strong>: Como organizar múltiplas barras</p>
+<ul>
+<li><code>"stack"</code> (padrão): empilhadas uma sobre a outra</li>
+<li><code>"dodge"</code>: lado a lado</li>
+<li><code>"fill"</code>: empilhadas proporcionalmente (100%)</li>
+</ul>
+<p><strong>width</strong>: Largura das barras (0-1)</p>
+<ul>
+<li>Menor = barras mais finas com mais espaço</li>
+</ul>
+<p><strong>fill vs color</strong>:</p>
+<ul>
+<li><code>fill</code>: cor de preenchimento da barra</li>
+<li><code>color</code>: cor da borda da barra</li>
+</ul>
+<p><strong>Dicas de design:</strong></p>
+<ul>
+<li>Ordene categorias por valor (não alfabeticamente)</li>
+<li>Use cores apenas quando necessário (não decore por decorar)</li>
+<li>Evite 3D (distorce percepção)</li>
+<li>Comece eixo y em zero (não engane visualmente)</li>
+<li>Considere barras horizontais se nomes de categorias forem longos</li>
+</ul>
 <div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="dia-3-transformação-io-e-visualização.html#cb85-1" tabindex="-1"></a><span class="co"># Contagem (geom_bar)</span></span>
 <span id="cb85-2"><a href="dia-3-transformação-io-e-visualização.html#cb85-2" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species)) <span class="sc">+</span></span>
 <span id="cb85-3"><a href="dia-3-transformação-io-e-visualização.html#cb85-3" tabindex="-1"></a>  <span class="fu">geom_bar</span>()</span>
@@ -1439,27 +1469,37 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     mínimo (ou Q1 - 1.5*IQR)
     
     ●  ← outliers (pontos fora do padrão)</code></pre>
-<p><strong>Quando usar:</strong>
-- Comparar distribuições entre grupos
-- Identificar outliers
-- Ver simetria/assimetria dos dados
-- Quando tem muitas categorias (mais eficiente que múltiplos histogramas)</p>
-<p><strong>Vantagens:</strong>
-- Mostra 5 estatísticas de uma vez (min, Q1, mediana, Q3, max)
-- Identifica outliers automaticamente
-- Compacto - fácil comparar muitos grupos</p>
-<p><strong>Desvantagens:</strong>
-- Não mostra a forma exata da distribuição
-- Pode esconder bimodalidade (duas “montanhas”)
-- Menos intuitivo para público não-técnico</p>
-<p><strong>Alternativas:</strong>
-- <strong>Violin plot</strong> (<code>geom_violin</code>): mostra a forma completa da distribuição
-- <strong>Jitter plot</strong> (<code>geom_jitter</code>): mostra todos os pontos individuais
-- <strong>Combinação</strong>: boxplot + jitter = melhor dos dois mundos</p>
-<p><strong>Dicas:</strong>
-- Use <code>geom_jitter()</code> junto para mostrar pontos individuais
-- Ordene grupos por mediana para facilitar comparação
-- Use cores para distinguir grupos, mas não exagere</p>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Comparar distribuições entre grupos</li>
+<li>Identificar outliers</li>
+<li>Ver simetria/assimetria dos dados</li>
+<li>Quando tem muitas categorias (mais eficiente que múltiplos histogramas)</li>
+</ul>
+<p><strong>Vantagens:</strong></p>
+<ul>
+<li>Mostra 5 estatísticas de uma vez (min, Q1, mediana, Q3, max)</li>
+<li>Identifica outliers automaticamente</li>
+<li>Compacto - fácil comparar muitos grupos</li>
+</ul>
+<p><strong>Desvantagens:</strong></p>
+<ul>
+<li>Não mostra a forma exata da distribuição</li>
+<li>Pode esconder bimodalidade (duas “montanhas”)</li>
+<li>Menos intuitivo para público não-técnico</li>
+</ul>
+<p><strong>Alternativas:</strong></p>
+<ul>
+<li><strong>Violin plot</strong> (<code>geom_violin</code>): mostra a forma completa da distribuição</li>
+<li><strong>Jitter plot</strong> (<code>geom_jitter</code>): mostra todos os pontos individuais</li>
+<li><strong>Combinação</strong>: boxplot + jitter = melhor dos dois mundos</li>
+</ul>
+<p><strong>Dicas:</strong></p>
+<ul>
+<li>Use <code>geom_jitter()</code> junto para mostrar pontos individuais</li>
+<li>Ordene grupos por mediana para facilitar comparação</li>
+<li>Use cores para distinguir grupos, mas não exagere</li>
+</ul>
 <div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="dia-3-transformação-io-e-visualização.html#cb87-1" tabindex="-1"></a><span class="co"># Boxplot básico</span></span>
 <span id="cb87-2"><a href="dia-3-transformação-io-e-visualização.html#cb87-2" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> species, <span class="at">y =</span> body_mass_g)) <span class="sc">+</span></span>
 <span id="cb87-3"><a href="dia-3-transformação-io-e-visualização.html#cb87-3" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>()</span>
@@ -1479,61 +1519,83 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="gráfico-de-linhas-geom_line" class="section level4 hasAnchor" number="9.3.2.5">
 <h4><span class="header-section-number">9.3.2.5</span> Gráfico de Linhas (geom_line)<a href="#gr%C3%A1fico-de-linhas-geom_line" class="anchor-section" aria-label="Anchor link to header"></a></h4>
-<p><strong>Quando usar:</strong>
-- Dados temporais (séries temporais)
-- Mostrar tendências ou evolução
-- Dados com ordem natural (temperatura ao longo do dia)
-- Conectar pontos sequenciais</p>
-<p><strong>CUIDADO:</strong> Não use linhas para:
-- Dados categóricos sem ordem (espécies, nomes)
-- Quando não há continuidade entre pontos</p>
-<p><strong>Por que usar linhas em vez de barras para séries temporais?</strong>
-- Linhas enfatizam tendência e fluxo
-- Mais fácil ver mudanças ao longo do tempo
-- Menos “peso visual” quando há muitos pontos
-- Facilita comparação de múltiplas séries</p>
-<p><strong>Parâmetros úteis:</strong>
-- <code>size</code>: espessura da linha
-- <code>linetype</code>: tipo de linha (sólida, tracejada, pontilhada)
-- <code>color</code>: cor da linha
-- <code>group</code>: quando tem múltiplas linhas</p>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Dados temporais (séries temporais)</li>
+<li>Mostrar tendências ou evolução</li>
+<li>Dados com ordem natural (temperatura ao longo do dia)</li>
+<li>Conectar pontos sequenciais</li>
+</ul>
+<p><strong>CUIDADO:</strong> Não use linhas para:</p>
+<ul>
+<li>Dados categóricos sem ordem (espécies, nomes)</li>
+<li>Quando não há continuidade entre pontos</li>
+</ul>
+<p><strong>Por que usar linhas em vez de barras para séries temporais?</strong></p>
+<ul>
+<li>Linhas enfatizam tendência e fluxo</li>
+<li>Mais fácil ver mudanças ao longo do tempo</li>
+<li>Menos “peso visual” quando há muitos pontos</li>
+<li>Facilita comparação de múltiplas séries</li>
+</ul>
+<p><strong>Parâmetros úteis:</strong></p>
+<ul>
+<li><code>size</code>: espessura da linha</li>
+<li><code>linetype</code>: tipo de linha (sólida, tracejada, pontilhada)</li>
+<li><code>color</code>: cor da linha</li>
+<li><code>group</code>: quando tem múltiplas linhas</li>
+</ul>
 <p><strong>Dica:</strong> Combine <code>geom_line()</code> + <code>geom_point()</code> para destacar valores individuais</p>
 </div>
 <div id="histograma-e-densidade-geom_histogram-geom_density" class="section level4 hasAnchor" number="9.3.2.6">
 <h4><span class="header-section-number">9.3.2.6</span> Histograma e Densidade (geom_histogram / geom_density)<a href="dia-3-transformação-io-e-visualização.html#histograma-e-densidade-geom_histogram-geom_density" class="anchor-section" aria-label="Anchor link to header"></a></h4>
 <p><strong>Histograma (geom_histogram)</strong></p>
 <p><strong>O que mostra:</strong> A distribuição de uma variável numérica dividida em “bins” (intervalos).</p>
-<p><strong>Quando usar:</strong>
-- Entender a forma da distribuição (simétrica, assimétrica, bimodal)
-- Identificar moda (valor mais frequente)
-- Ver dispersão dos dados
-- Detectar outliers</p>
-<p><strong>Parâmetro crítico: bins (ou binwidth)</strong>
-- <code>bins</code>: número de barras (padrão = 30)
-- <code>binwidth</code>: largura de cada barra
-- <strong>Importante:</strong> Número de bins muda a interpretação!
-- Poucos bins → padrões grosseiros, perde detalhes
-- Muitos bins → muito detalhado, difícil ver padrão geral
-- Teste diferentes valores!</p>
-<p><strong>Tipos de distribuição que você pode identificar:</strong>
-- <strong>Normal</strong> (sino): simétrica, maioria no centro
-- <strong>Assimétrica positiva</strong>: cauda longa à direita
-- <strong>Assimétrica negativa</strong>: cauda longa à esquerda
-- <strong>Bimodal</strong>: duas “montanhas” (dois grupos distintos)
-- <strong>Uniforme</strong>: todas as barras similares (raro em dados reais)</p>
+<p><strong>Quando usar:</strong></p>
+<ul>
+<li>Entender a forma da distribuição (simétrica, assimétrica, bimodal)</li>
+<li>Identificar moda (valor mais frequente)</li>
+<li>Ver dispersão dos dados</li>
+<li>Detectar outliers</li>
+</ul>
+<p><strong>Parâmetro crítico: bins (ou binwidth)</strong></p>
+<ul>
+<li><code>bins</code>: número de barras (padrão = 30)</li>
+<li><code>binwidth</code>: largura de cada barra</li>
+<li><strong>Importante:</strong> Número de bins muda a interpretação!
+<ul>
+<li>Poucos bins → padrões grosseiros, perde detalhes</li>
+<li>Muitos bins → muito detalhado, difícil ver padrão geral</li>
+<li>Teste diferentes valores!</li>
+</ul></li>
+</ul>
+<p><strong>Tipos de distribuição que você pode identificar:</strong></p>
+<ul>
+<li><strong>Normal</strong> (sino): simétrica, maioria no centro</li>
+<li><strong>Assimétrica positiva</strong>: cauda longa à direita</li>
+<li><strong>Assimétrica negativa</strong>: cauda longa à esquerda</li>
+<li><strong>Bimodal</strong>: duas “montanhas” (dois grupos distintos)</li>
+<li><strong>Uniforme</strong>: todas as barras similares (raro em dados reais)</li>
+</ul>
 <p><strong>Densidade (geom_density)</strong></p>
 <p><strong>O que mostra:</strong> Uma versão “suavizada” do histograma - uma curva contínua.</p>
-<p><strong>Vantagens sobre histograma:</strong>
-- Não depende de escolha arbitrária de bins
-- Mais suave e fácil de interpretar
-- Melhor para comparar múltiplas distribuições sobrepostas
-- Mais “bonito” visualmente</p>
-<p><strong>Desvantagens:</strong>
-- Pode ser menos intuitivo para público não-técnico
-- Pode suavizar demais e esconder detalhes</p>
-<p><strong>Quando usar cada um:</strong>
-- <strong>Histograma</strong>: primeira exploração, apresentação para não-técnicos
-- <strong>Densidade</strong>: comparar grupos, análise mais refinada, publicações</p>
+<p><strong>Vantagens sobre histograma:</strong></p>
+<ul>
+<li>Não depende de escolha arbitrária de bins</li>
+<li>Mais suave e fácil de interpretar</li>
+<li>Melhor para comparar múltiplas distribuições sobrepostas</li>
+<li>Mais “bonito” visualmente</li>
+</ul>
+<p><strong>Desvantagens:</strong></p>
+<ul>
+<li>Pode ser menos intuitivo para público não-técnico</li>
+<li>Pode suavizar demais e esconder detalhes</li>
+</ul>
+<p><strong>Quando usar cada um:</strong></p>
+<ul>
+<li><strong>Histograma</strong>: primeira exploração, apresentação para não-técnicos</li>
+<li><strong>Densidade</strong>: comparar grupos, análise mais refinada, publicações</li>
+</ul>
 <p><strong>Dica:</strong> Use <code>alpha</code> (transparência) quando sobrepor múltiplas distribuições!</p>
 <div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="dia-3-transformação-io-e-visualização.html#cb88-1" tabindex="-1"></a><span class="co"># Criar dados temporais</span></span>
 <span id="cb88-2"><a href="dia-3-transformação-io-e-visualização.html#cb88-2" tabindex="-1"></a>vendas_tempo <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
