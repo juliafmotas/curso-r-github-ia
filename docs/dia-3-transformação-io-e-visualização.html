@@ -1719,11 +1719,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb90-4"><a href="dia-3-transformação-io-e-visualização.html#cb90-4" tabindex="-1"></a>  <span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>,</span>
 <span id="cb90-5"><a href="dia-3-transformação-io-e-visualização.html#cb90-5" tabindex="-1"></a>  <span class="at">panel.grid.minor =</span> <span class="fu">element_blank</span>()  <span class="co"># Remove grade secundária</span></span>
 <span id="cb90-6"><a href="dia-3-transformação-io-e-visualização.html#cb90-6" tabindex="-1"></a>)</span></code></pre></div>
-<p><strong>Elementos ajustáveis:</strong>
-- <strong>element_text()</strong>: texto (título, eixos, legendas)
-- <strong>element_line()</strong>: linhas (eixos, grades)
-- <strong>element_rect()</strong>: retângulos (fundo, bordas)
-- <strong>element_blank()</strong>: remove o elemento</p>
+<p><strong>Elementos ajustáveis:</strong></p>
+<ul>
+<li><strong>element_text()</strong>: texto (título, eixos, legendas)</li>
+<li><strong>element_line()</strong>: linhas (eixos, grades)</li>
+<li><strong>element_rect()</strong>: retângulos (fundo, bordas)</li>
+<li><strong>element_blank()</strong>: remove o elemento</li>
+</ul>
 <p><strong>Dica:</strong> Combine tema pronto + ajustes finos:</p>
 <div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb91-1"><a href="dia-3-transformação-io-e-visualização.html#cb91-1" tabindex="-1"></a><span class="fu">theme_minimal</span>() <span class="sc">+</span> <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
 </div>
@@ -1731,11 +1733,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h3><span class="header-section-number">9.4.3</span> Escalas (scales) - Controle fino<a href="dia-3-transformação-io-e-visualização.html#escalas-scales---controle-fino" class="anchor-section" aria-label="Anchor link to header"></a></h3>
 <p><strong>O que são scales?</strong></p>
 <p>Scales controlam <strong>como</strong> os dados são mapeados para propriedades visuais. Toda aesthetic (x, y, color, size, etc.) tem uma scale.</p>
-<p><strong>Por que ajustar scales?</strong>
-- Cores mais bonitas ou acessíveis
-- Eixos com quebras específicas
-- Transformações (log, sqrt)
-- Formatação de valores (moeda, percentual)</p>
+<p><strong>Por que ajustar scales?</strong></p>
+<ul>
+<li>Cores mais bonitas ou acessíveis</li>
+<li>Eixos com quebras específicas</li>
+<li>Transformações (log, sqrt)</li>
+<li>Formatação de valores (moeda, percentual)</li>
+</ul>
 <p><strong>Tipos principais:</strong></p>
 <p><strong>1. Scales de posição (eixos x e y)</strong></p>
 <div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="dia-3-transformação-io-e-visualização.html#cb92-1" tabindex="-1"></a><span class="co"># Controlar quebras e limites</span></span>
@@ -1853,11 +1857,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="combinando-gráficos-patchwork" class="section level2 hasAnchor" number="9.5">
 <h2><span class="header-section-number">9.5</span> Combinando Gráficos (patchwork)<a href="#combinando-gr%C3%A1ficos-patchwork" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>Por que combinar gráficos?</strong></p>
-<p>Muitas vezes você quer mostrar múltiplas visualizações relacionadas lado a lado:
-- Comparar diferentes aspectos dos mesmos dados
-- Mostrar “antes e depois”
-- Painéis para relatórios e apresentações
-- Contar uma história visual completa</p>
+<p>Muitas vezes você quer mostrar múltiplas visualizações relacionadas lado a lado:</p>
+<ul>
+<li>Comparar diferentes aspectos dos mesmos dados</li>
+<li>Mostrar “antes e depois”</li>
+<li>Painéis para relatórios e apresentações</li>
+<li>Contar uma história visual completa</li>
+</ul>
 <p><strong>patchwork vs alternativas:</strong></p>
 <ul>
 <li><strong>Base R</strong> (<code>par(mfrow)</code>, <code>layout</code>): complexo, limitado</li>
@@ -1908,25 +1914,31 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="dia-3-transformação-io-e-visualização.html#cb102-1" tabindex="-1"></a>(g1 <span class="sc">+</span> g2) <span class="sc">/</span> (g3 <span class="sc">+</span> g4) <span class="sc">+</span></span>
 <span id="cb102-2"><a href="dia-3-transformação-io-e-visualização.html#cb102-2" tabindex="-1"></a>  <span class="fu">plot_layout</span>(<span class="at">guides =</span> <span class="st">&quot;collect&quot;</span>) <span class="sc">&amp;</span>  <span class="co"># &amp; aplica a todos</span></span>
 <span id="cb102-3"><a href="dia-3-transformação-io-e-visualização.html#cb102-3" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">&quot;bottom&quot;</span>)</span></code></pre></div>
-<p><strong>Dicas de design:</strong>
-- Mantenha escalas consistentes entre gráficos relacionados
-- Use cores consistentes para mesmas categorias
-- Não sobrecarregue - máximo 4-6 painéis
-- Considere se um único gráfico com facetas seria melhor</p>
+<p><strong>Dicas de design:</strong></p>
+<ul>
+<li>Mantenha escalas consistentes entre gráficos relacionados</li>
+<li>Use cores consistentes para mesmas categorias</li>
+<li>Não sobrecarregue - máximo 4-6 painéis</li>
+<li>Considere se um único gráfico com facetas seria melhor</li>
+</ul>
 </div>
 <div id="salvando-gráficos-ggsave" class="section level2 hasAnchor" number="9.6">
 <h2><span class="header-section-number">9.6</span> Salvando Gráficos (ggsave)<a href="#salvando-gr%C3%A1ficos-ggsave" class="anchor-section" aria-label="Anchor link to header"></a></h2>
 <p><strong>Por que usar ggsave?</strong></p>
-<p>Você precisa salvar gráficos para:
-- Incluir em relatórios, artigos, apresentações
-- Compartilhar com colegas
-- Backup de visualizações importantes
-- Usar em outros softwares</p>
-<p><strong>ggsave() é inteligente:</strong>
-- Detecta formato pela extensão (.png, .pdf, .jpg, etc.)
-- Ajusta resolução automaticamente
-- Salva o último gráfico por padrão (ou você especifica)
-- Funciona perfeitamente com here()</p>
+<p>Você precisa salvar gráficos para:</p>
+<ul>
+<li>Incluir em relatórios, artigos, apresentações</li>
+<li>Compartilhar com colegas</li>
+<li>Backup de visualizações importantes</li>
+<li>Usar em outros softwares</li>
+</ul>
+<p><strong>ggsave() é inteligente:</strong></p>
+<ul>
+<li>Detecta formato pela extensão (.png, .pdf, .jpg, etc.)</li>
+<li>Ajusta resolução automaticamente</li>
+<li>Salva o último gráfico por padrão (ou você especifica)</li>
+<li>Funciona perfeitamente com here()</li>
+</ul>
 <p><strong>Sintaxe básica:</strong></p>
 <div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb103-1"><a href="dia-3-transformação-io-e-visualização.html#cb103-1" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
 <span id="cb103-2"><a href="dia-3-transformação-io-e-visualização.html#cb103-2" tabindex="-1"></a>  <span class="at">filename =</span> <span class="st">&quot;meu_grafico.png&quot;</span>,  <span class="co"># Nome e formato</span></span>
@@ -1936,53 +1948,69 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb103-6"><a href="dia-3-transformação-io-e-visualização.html#cb103-6" tabindex="-1"></a>  <span class="at">dpi =</span> <span class="dv">300</span>                      <span class="co"># Resolução (pontos por polegada)</span></span>
 <span id="cb103-7"><a href="dia-3-transformação-io-e-visualização.html#cb103-7" tabindex="-1"></a>)</span></code></pre></div>
 <p><strong>Formatos e quando usar:</strong></p>
-<p><strong>1. PNG (.png)</strong>
-- <strong>Raster</strong> (pixels)
-- ✅ Bom para: web, apresentações, compartilhamento rápido
-- ✅ Suporta transparência
-- ✅ Tamanho razoável com boa qualidade
-- ❌ Perde qualidade ao ampliar muito
-- <strong>DPI recomendado:</strong> 300 (alta qualidade), 150 (web)</p>
-<p><strong>2. PDF (.pdf)</strong>
-- <strong>Vetor</strong> (matemático)
-- ✅ Bom para: publicações acadêmicas, impressão profissional
-- ✅ Escala infinitamente sem perder qualidade
-- ✅ Tamanho pequeno para gráficos simples
-- ❌ Pode ser grande com muitos pontos
-- <strong>Sem DPI</strong> (vetor não tem pixels)</p>
-<p><strong>3. SVG (.svg)</strong>
-- <strong>Vetor</strong> (para web)
-- ✅ Bom para: web, design, editável em Illustrator
-- ✅ Escala perfeitamente
-- ✅ Pode ser editado como código
-- ❌ Suporte limitado em alguns contextos
-- <strong>Sem DPI</strong> (vetor)</p>
-<p><strong>4. JPEG (.jpg)</strong>
-- <strong>Raster</strong> (pixels)
-- ✅ Tamanho muito pequeno
-- ❌ Perde qualidade (compressão)
-- ❌ Não suporta transparência
-- <strong>Evite para gráficos!</strong> (Use PNG)</p>
-<p><strong>5. TIFF (.tiff)</strong>
-- <strong>Raster</strong> (pixels)
-- ✅ Alta qualidade sem compressão
-- ✅ Aceito em publicações
-- ❌ Arquivos muito grandes
-- <strong>Use apenas se exigido</strong></p>
+<p><strong>1. PNG (.png)</strong></p>
+<ul>
+<li><strong>Raster</strong> (pixels)</li>
+<li>✅ Bom para: web, apresentações, compartilhamento rápido</li>
+<li>✅ Suporta transparência</li>
+<li>✅ Tamanho razoável com boa qualidade</li>
+<li>❌ Perde qualidade ao ampliar muito</li>
+<li><strong>DPI recomendado:</strong> 300 (alta qualidade), 150 (web)</li>
+</ul>
+<p><strong>2. PDF (.pdf)</strong></p>
+<ul>
+<li><strong>Vetor</strong> (matemático)</li>
+<li>✅ Bom para: publicações acadêmicas, impressão profissional</li>
+<li>✅ Escala infinitamente sem perder qualidade</li>
+<li>✅ Tamanho pequeno para gráficos simples</li>
+<li>❌ Pode ser grande com muitos pontos</li>
+<li><strong>Sem DPI</strong> (vetor não tem pixels)</li>
+</ul>
+<p><strong>3. SVG (.svg)</strong></p>
+<ul>
+<li><strong>Vetor</strong> (para web)</li>
+<li>✅ Bom para: web, design, editável em Illustrator</li>
+<li>✅ Escala perfeitamente</li>
+<li>✅ Pode ser editado como código</li>
+<li>❌ Suporte limitado em alguns contextos</li>
+<li><strong>Sem DPI</strong> (vetor)</li>
+</ul>
+<p><strong>4. JPEG (.jpg)</strong></p>
+<ul>
+<li><strong>Raster</strong> (pixels)</li>
+<li>✅ Tamanho muito pequeno</li>
+<li>❌ Perde qualidade (compressão)</li>
+<li>❌ Não suporta transparência</li>
+<li><strong>Evite para gráficos!</strong> (Use PNG)</li>
+</ul>
+<p><strong>5. TIFF (.tiff)</strong></p>
+<ul>
+<li><strong>Raster</strong> (pixels)</li>
+<li>✅ Alta qualidade sem compressão</li>
+<li>✅ Aceito em publicações</li>
+<li>❌ Arquivos muito grandes</li>
+<li><strong>Use apenas se exigido</strong></li>
+</ul>
 <p><strong>Configurações importantes:</strong></p>
-<p><strong>DPI (Dots Per Inch) - resolução:</strong>
-- <strong>72 dpi</strong>: tela de computador (baixa qualidade)
-- <strong>150 dpi</strong>: apresentações, web (qualidade média)
-- <strong>300 dpi</strong>: impressão, publicações (alta qualidade) ✅
-- <strong>600 dpi</strong>: impressão profissional (raramente necessário)</p>
-<p><strong>Tamanho (width e height):</strong>
-- Padrão: polegadas (inches)
-- 1 polegada = 2.54 cm
-- Tamanhos comuns:
-- <strong>Apresentação slide:</strong> 10 x 7.5 polegadas (16:9)
-- <strong>Artigo coluna única:</strong> 3.5 x 3.5 polegadas
-- <strong>Artigo largura total:</strong> 7 x 5 polegadas
-- <strong>Poster:</strong> 24 x 18 polegadas</p>
+<p><strong>DPI (Dots Per Inch) - resolução:</strong></p>
+<ul>
+<li><strong>72 dpi</strong>: tela de computador (baixa qualidade)</li>
+<li><strong>150 dpi</strong>: apresentações, web (qualidade média)</li>
+<li><strong>300 dpi</strong>: impressão, publicações (alta qualidade) ✅</li>
+<li><strong>600 dpi</strong>: impressão profissional (raramente necessário)</li>
+</ul>
+<p><strong>Tamanho (width e height):</strong></p>
+<ul>
+<li>Padrão: polegadas (inches)</li>
+<li>1 polegada = 2.54 cm</li>
+<li>Tamanhos comuns:
+<ul>
+<li><strong>Apresentação slide:</strong> 10 x 7.5 polegadas (16:9)</li>
+<li><strong>Artigo coluna única:</strong> 3.5 x 3.5 polegadas</li>
+<li><strong>Artigo largura total:</strong> 7 x 5 polegadas</li>
+<li><strong>Poster:</strong> 24 x 18 polegadas</li>
+</ul></li>
+</ul>
 <p><strong>Boas práticas:</strong></p>
 <div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="dia-3-transformação-io-e-visualização.html#cb104-1" tabindex="-1"></a><span class="co"># Use here() para portabilidade</span></span>
 <span id="cb104-2"><a href="dia-3-transformação-io-e-visualização.html#cb104-2" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
@@ -2004,19 +2032,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb104-18"><a href="dia-3-transformação-io-e-visualização.html#cb104-18" tabindex="-1"></a>  )</span>
 <span id="cb104-19"><a href="dia-3-transformação-io-e-visualização.html#cb104-19" tabindex="-1"></a>}</span></code></pre></div>
 <p><strong>Resolução de problemas:</strong></p>
-<p><strong>Texto muito pequeno/grande:</strong>
-- Ajuste <code>width</code> e <code>height</code> (não <code>dpi</code>)
-- Ou ajuste tamanhos de fonte no gráfico antes de salvar</p>
-<p><strong>Arquivo muito grande:</strong>
-- PNG: reduza DPI para 150
-- PDF com muitos pontos: converta para PNG
-- Simplifique o gráfico (menos pontos, objetos)</p>
-<p><strong>Cores diferentes do RStudio:</strong>
-- Especifique <code>bg = "white"</code> (ou cor de fundo desejada)
-- Alguns temas têm fundo transparente por padrão</p>
-<p><strong>Eixos cortados:</strong>
-- Adicione <code>scale_y_continuous(expand = expansion(mult = 0.05))</code>
-- Ou ajuste margens: <code>theme(plot.margin = margin(1, 1, 1, 1, "cm"))</code></p>
+<p><strong>Texto muito pequeno/grande:</strong></p>
+<ul>
+<li>Ajuste <code>width</code> e <code>height</code> (não <code>dpi</code>)</li>
+<li>Ou ajuste tamanhos de fonte no gráfico antes de salvar</li>
+</ul>
+<p><strong>Arquivo muito grande:</strong></p>
+<ul>
+<li>PNG: reduza DPI para 150</li>
+<li>PDF com muitos pontos: converta para PNG</li>
+<li>Simplifique o gráfico (menos pontos, objetos)</li>
+</ul>
+<p><strong>Cores diferentes do RStudio:</strong></p>
+<ul>
+<li>Especifique <code>bg = "white"</code> (ou cor de fundo desejada)</li>
+<li>Alguns temas têm fundo transparente por padrão</li>
+</ul>
+<p><strong>Eixos cortados:</strong></p>
+<ul>
+<li>Adicione <code>scale_y_continuous(expand = expansion(mult = 0.05))</code></li>
+<li>Ou ajuste margens: <code>theme(plot.margin = margin(1, 1, 1, 1, "cm"))</code></li>
+</ul>
 <div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb105-1"><a href="dia-3-transformação-io-e-visualização.html#cb105-1" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
 <span id="cb105-2"><a href="dia-3-transformação-io-e-visualização.html#cb105-2" tabindex="-1"></a></span>
 <span id="cb105-3"><a href="dia-3-transformação-io-e-visualização.html#cb105-3" tabindex="-1"></a><span class="co"># Criar vários gráficos</span></span>
